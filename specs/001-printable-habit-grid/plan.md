@@ -8,17 +8,17 @@
 
 A static web page lets a person set habit count, day count, layout (one row per habit, habits as columns, or one mini calendar per habit), per-row count, dot size and spacing, and paper size. A live preview redraws on every valid change. The download produces a PDF from the same Typst source as the preview.
 
-Technical approach (from research.md): one Typst template (`typst/tracker.typ`) holds the whole layout. The browser compiles it to SVG for the preview and to PDF for the download, using Typst compiled to WebAssembly. Overflow is detected from the compiled page count, so the same layout code decides both the warning and the output. No server is involved.
+Technical approach (from research.md): one Typst template (`typst/tracker.typ`) holds the whole layout. The browser compiles it to one PDF with Typst compiled to WebAssembly. The preview draws that PDF with PDF.js, and the download is the same file, so the preview matches the print by construction. Overflow is detected from the compiled page count, so the same layout code decides both the warning and the output. No server is involved.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 7.x (strict mode) for the page; Typst 0.14.2 template language, the version bundled with typst.ts 0.7.0 (see research.md §8)
 
-**Primary Dependencies**: Typst compiled to WebAssembly for in-browser compilation (`@myriad-dreamin/typst.ts`); Vite as the build tool. No UI framework: plain DOM, since the page is a form plus one preview.
+**Primary Dependencies**: Typst compiled to WebAssembly for in-browser compilation (`@myriaddreamin/typst.ts`); PDF.js (`pdfjs-dist`) to draw the preview; Vite as the build tool. No UI framework: plain DOM, since the page is a form plus one preview.
 
 **Storage**: N/A. Options live in page state only; nothing is saved.
 
-**Testing**: Vitest for option validation and layout-option logic; Playwright-free end-to-end check via a script that compiles the same options to SVG and PDF and compares rasterized output (Principle II).
+**Testing**: Vitest for option validation, the fit model against the engine's page count, and the timing check. A margin check rasterizes each PDF and confirms content sits inside the 10 mm margin (Principle III), run in a dev container.
 
 **Target Platform**: Desktop and laptop browsers (modern Chromium, Firefox, Safari). Mobile is out of scope per spec.
 
@@ -37,9 +37,9 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 | Principle | Check | Status |
 |-----------|-------|--------|
 | I. Single Layout Source | Grid drawn only in `typst/tracker.typ`. The page holds form controls and passes values to Typst; it has no grid drawing code. | PASS |
-| II. Preview Equals Print | Preview (SVG) and download (PDF) come from one source. A comparison script rasterizes both at print resolution and must show no difference. Required for every layout change. | PASS (verification planned) |
+| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. The constitution's wording still describes a comparison; see the open amendment question. | PASS (by construction; amendment pending) |
 | III. Hand-Fillable Output | Dots are empty circles drawn with stroke only; default size is 4 mm, within the 2–5 mm range. Margins are kept inside the page (Typst page margins). | PASS |
-| IV. Responsive Options | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid SVG until a valid value arrives. | PASS |
+| IV. Responsive Options | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid PDF on screen until a valid value arrives. | PASS |
 | V. Scope Discipline | No accounts, storage, or analytics. Three layouts are required by the spec (user-specified), so their complexity is justified; it's the only added configurability. | PASS (justified below) |
 | Technical: Typst | Typst used for layout and rendering. | PASS |
 | Technical: A4 default, Letter available | Page size selector in the Typst inputs; A4 default. | PASS |
@@ -78,7 +78,10 @@ web/
 ├── src/
 │   ├── main.ts          # Wires form inputs to compile + preview
 │   ├── options.ts       # Option parsing and validation (FR-012)
-│   ├── typst-engine.ts  # Loads typst.ts; compiles to SVG and PDF
+│   ├── typst-compile.ts # Compiles the template to one PDF (no build-time imports)
+│   ├── typst-engine.ts  # Page entry: the template as raw text, compiled to a PDF
+│   ├── typst-init.ts    # Browser only: points typst.ts at its WebAssembly module
+│   ├── preview.ts       # Draws the PDF into the preview with PDF.js
 │   └── style.css
 └── public/              # Static assets
 
@@ -87,13 +90,13 @@ tests/
 │   ├── options.test.ts          # Validation rules, limits, defaults
 │   └── fit.test.ts              # Layout fit formulas vs Typst page count
 ├── comparison/
-│   ├── compare.ts               # Rasterizes preview SVG and PDF, diffs them
-│   └── cases.json               # Option combinations to compare
+│   ├── margins.ts               # Rasterizes each PDF, checks the 10 mm margin
+│   └── cases.json               # Option combinations to check
 └── perf/
     └── timing.test.ts              # Worst-case compile time (SC-002)
 ```
 
-**Structure Decision**: A single static web app under `web/`, with the layout in `typst/`. There's no backend because nothing needs to be stored or shared. The comparison script lives under `tests/` and runs outside the browser, so the PDF and SVG are checked the same way every time.
+**Structure Decision**: A single static web app under `web/`, with the layout in `typst/`. There's no backend because nothing needs to be stored or shared. The margin check lives under `tests/` and runs outside the browser, on the same PDF the page downloads.
 
 ## Complexity Tracking
 

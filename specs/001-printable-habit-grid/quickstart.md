@@ -6,7 +6,7 @@ How to run the feature and check that it works. Build steps and dependencies are
 
 - Node.js (LTS) and pnpm
 - The packages listed in plan.md (Typst WASM engine, Vite, Vitest). **Installing them needs your approval first.**
-- For the preview-vs-PDF check: a PDF rasterizer and an SVG rasterizer (see research.md §6). Also needs approval before install.
+- For the margin check: the dev container (ImageMagick and Ghostscript are inside it).
 
 ## Run the page
 
@@ -27,13 +27,13 @@ Open the printed local URL. Expect the form with defaults: layout "one row per h
 6. **Layout 3** (FR-003): switch to "one mini calendar per habit", then set 20 habits. Expect calendars in a wrapping grid, with the overflow block applied when the grid runs past the page.
 7. **Printed size** (SC-004): print the default PDF at 100% scale on home paper, once on A4 and once on US Letter. All dots and labels should be inside the 10 mm margin on both.
 
-## Preview equals print (Principle II)
+## Margin check (Principle III)
 
 ```bash
-pnpm compare
+pnpm margins
 ```
 
-Runs each case in `tests/comparison/cases.json`, rasterizes the SVG preview and the PDF at 300 dpi, and fails on any pixel difference. Record the result in the review for any change that touches layout or rendering.
+Compiles each fitting case, rasterizes its PDF at 300 dpi with Ghostscript, and fails if printed content falls inside the 10 mm margin. It needs ImageMagick and Ghostscript, which the dev container provides. The preview draws the same PDF as the download, so this check covers both.
 
 ## Unit tests
 

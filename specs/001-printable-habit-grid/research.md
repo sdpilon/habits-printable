@@ -4,12 +4,12 @@ No NEEDS CLARIFICATION markers remained in the spec after `/speckit-clarify`, so
 
 ## 1. Where Typst compiles: in the browser
 
-- **Decision**: Compile Typst to WebAssembly in the browser (`@myriad-dreamin/typst.ts`). The preview is SVG; the download is PDF; both come from the same template and inputs.
+- **Decision**: Compile Typst to WebAssembly in the browser (`@myriaddreamin/typst.ts`). The engine produces one PDF; the preview draws that PDF with PDF.js, and the download is the same file.
 - **Rationale**: "Preview is instant" (spec intro) rules out a server round trip on each option change. Using one engine for both outputs is the simplest way to meet Principle II. No backend keeps the scope to what the spec asks for (no accounts, no storage).
 - **Alternatives considered**:
   - Server-side Typst CLI, with the page requesting SVG/PDF over HTTP. Rejected: adds latency against SC-002 and needs a server.
   - Preview drawn in SVG/Canvas by JavaScript, PDF from Typst. Rejected: two drawing implementations, which Principle I forbids.
-- **Verify**: the typst.ts version that supports Typst 0.13.x; its SVG output and PDF output for the same source.
+- **Verify**: the typst.ts version that supports Typst 0.13.x; its PDF output for the same source. (Resolved: typst.ts 0.7.0 bundles Typst 0.14.2; see section 8.)
 
 ## 2. Overflow detection
 
@@ -34,11 +34,12 @@ No NEEDS CLARIFICATION markers remained in the spec after `/speckit-clarify`, so
 - **Rationale**: 4 mm is large enough for a pen tip and within FR-004's hand-fill requirement. The 7 default matches a week, which reads well. Defaults can change without touching the spec's limits.
 - **Alternatives considered**: 31 per row by default. Rejected: a full month on one line is hard to read on A4 with a 40 mm label area.
 
-## 6. Test strategy for preview equals print
+## 6. Preview and download
 
-- **Decision**: For each case in `tests/comparison/cases.json`, render the SVG preview and the PDF at 300 dpi, rasterize both, and report any pixel difference. A non-empty diff fails the case.
-- **Rationale**: Principle II says any difference is a defect. Pixel comparison at print resolution is what SC-003 measures.
-- **Verify**: rasterizer choice (e.g., poppler's `pdftoppm` for PDF, a Node SVG rasterizer for the preview). Tools that need installing require approval before installation.
+- **Decision**: The preview draws the same PDF file as the download, using PDF.js on a canvas. The SVG pipeline and the pixel comparison were removed.
+- **Rationale**: Two renderings of one layout can never match exactly. Measured in Chromium, PDF.js renders the default page in 17 ms and the largest fitting page in 17 ms, both well under 0.2 s. A single file makes Principle II true by construction.
+- **Margin check**: each fitting case's PDF is rasterized at 300 dpi with Ghostscript (through ImageMagick), and printed content must sit inside 10 mm on every side (`tests/comparison/margins.ts`).
+- **Alternatives considered**: a pixel comparison of SVG against PDF (tested with two renderer stacks, neither reached zero differences); geometry comparison of SVG and PDF (large effort and needs a tolerance).
 
 ## 7. Tooling
 
@@ -48,6 +49,5 @@ No NEEDS CLARIFICATION markers remained in the spec after `/speckit-clarify`, so
 ## 8. Verified typst.ts API (T009)
 
 - Package: `@myriaddreamin/typst.ts` 0.7.0, with peers `@myriaddreamin/typst-ts-renderer` 0.7.0 and `@myriaddreamin/typst-ts-web-compiler` 0.7.0 (both required at load time).
-- `$typst.svg({ mainContent, inputs })` and `$typst.pdf({ mainContent, inputs })` match the engine's calls. `pdf()` can return `undefined`, which the engine handles.
-- Each call compiles separately, so the engine compiles twice per update. Tracked as an open question in the implementation review.
+- `$typst.pdf({ mainContent, inputs })` matches the engine's call. `pdf()` can return `undefined`, which the engine handles. The engine no longer calls `$typst.svg`.
 - The bundled Typst is 0.14.2: `typst-assets` 0.14.2 is in the wasm, and the Typst source commit it was built from has workspace version 0.14.2. The fit test and the comparison harness compile through this same engine, so they test the version the page uses.

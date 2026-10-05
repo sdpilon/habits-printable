@@ -20,11 +20,11 @@
 
 **Purpose**: Project initialization per plan.md (pnpm, Vite, TypeScript strict, Vitest)
 
-- [X] T001 Create `package.json` at the repo root with scripts `dev`, `build`, `test`, `compare`, and `perf` (commands in quickstart.md)
+- [X] T001 Create `package.json` at the repo root with scripts `dev`, `build`, `test`, `margins`, and `perf` (commands in quickstart.md)
 - [X] T002 [P] Create `tsconfig.json` at the repo root with `"strict": true`
 - [X] T003 [P] Create `vite.config.ts` at the repo root with `root: "web"`
 - [X] T004 [P] Create `vitest.config.ts` at the repo root
-- [X] T005 Install packages with pnpm: `@myriad-dreamin/typst.ts` (pinned to typst.ts 0.7.0, which bundles Typst 0.14.2), `vite`, `typescript`, `vitest`, and the comparison harness's rasterizers: a PDF rasterizer (poppler `pdftoppm`) and an SVG rasterizer (choose one and record it). **Requires your approval before running** (request-install).
+- [X] T005 Install packages with pnpm: `@myriaddreamin/typst.ts` (pinned to typst.ts 0.7.0, which bundles Typst 0.14.2), `vite`, `typescript`, `vitest`, and the comparison harness's rasterizers: a PDF rasterizer (poppler `pdftoppm`) and an SVG rasterizer (choose one and record it). **Requires your approval before running** (request-install).
 - [X] T006 [P] Create `web/index.html` with the options form (habits, days, and per-row inputs, which User Story 1 scenario 2 needs), preview pane, and download button
 - [X] T007 [P] Create `web/src/style.css` with page-level styles for the form and preview
 
@@ -37,11 +37,11 @@
 **Purpose**: The shared pieces every story uses: the Typst template skeleton, the compile engine, option validation, and the comparison harness. **No user story work starts until this phase is complete.**
 
 - [X] T008 Create `typst/tracker.typ` with an input read for every field in `contracts/tracker-options.schema.json`, and a page setup that uses A4 by default and Letter when `paper` is `letter` (FR-011, research.md §3)
-- [X] T009 Create `web/src/typst-engine.ts` that loads typst.ts, compiles `typst/tracker.typ` with the options as inputs, and returns both SVG (preview) and PDF (download) from the same compile (research.md §1). Before building on the engine, confirm the SVG and PDF output APIs of the pinned version and record the check in `research.md` §1.
+- [X] T009 Create `web/src/typst-engine.ts` that loads typst.ts, compiles `typst/tracker.typ` with the options as inputs, and returns the one PDF that both the preview and the download use (research.md §1). Before building on the engine, confirm the SVG and PDF output APIs of the pinned version and record the check in `research.md` §1.
 - [X] T010 [P] Create `web/src/options.ts` with the `TrackerOptions` type, the defaults, and validation using these constraints verbatim from data-model.md: `habits`: integer, `1 ≤ habits ≤ 20`; `days`: integer, `1 ≤ days ≤ 365`; `perRow`: integer, `1 ≤ perRow ≤ 31`; `dotDiameterMm`: number, `2 ≤ value ≤ 5`; `dotSpacingMm`: number, `0.5 ≤ value ≤ 5`; `paper`: `a4` or `letter`, default `a4`; `layout`: `rows`, `columns`, or `calendars`, default `rows`. Defaults: habits 5, days 31, perRow 7, dotDiameterMm 4, dotSpacingMm 1.5
 - [X] T011 Add overflow detection in `web/src/typst-engine.ts`: a compile whose output has more than one page sets `overflowing = true` (FR-013, research.md §2)
-- [X] T012 Create `web/src/main.ts` that reads the form, validates with `options.ts`, compiles through `typst-engine.ts`, and displays the SVG preview (FR-008, FR-012)
-- [X] T013 [P] Create `tests/comparison/compare.ts` that renders the SVG preview and the PDF at 300 dpi, rasterizes both, and fails on any pixel difference (Principle II, research.md §6). It also fails if any non-white pixel falls within 10 mm of a page edge, for both A4 and US Letter (Principle III, data-model.md Fit rules).
+- [X] T012 Create `web/src/main.ts` that reads the form, validates with `options.ts`, compiles through `typst-engine.ts`, and draws the PDF preview with PDF.js (FR-008, FR-012)
+- [X] T013 [P] Create `tests/comparison/margins.ts` that rasterizes each fitting case's PDF at 300 dpi and fails if any printed content lies within 10 mm of a page edge, for both A4 and US Letter (Principle III, data-model.md Fit rules).
 - [X] T014 [P] Create `tests/comparison/cases.json` with the default case on both A4 and US Letter, and boundary values (habits 1 and 20, days 1 and 365, perRow 1 and 31, dot diameter 2 and 5). The default cases run the margin check in T013.
 - [X] T015 [P] Create `tests/unit/options.test.ts` covering each validation rule and default in T010. Also create `tests/unit/fit.test.ts`, which compares each layout's fit formula in data-model.md with the page count from T011 for every case in `tests/comparison/cases.json`. A disagreement fails the test.
 
@@ -59,7 +59,7 @@
 - [X] T017 [US1] In `typst/tracker.typ`, draw a blank 40 mm label area to the left of each habit row (FR-005)
 - [X] T018 [US1] In `typst/tracker.typ`, print a small day number on days 5, 10, 15, and so on in each habit row, as printed text outside the dots (FR-015)
 - [X] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output of the latest valid compile in `typst-engine.ts`, so the PDF matches the options on screen even if a preview update is still running (spec Edge Cases: download during preview update). It stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
-- [ ] T020 [US1] Run `pnpm compare` on the default case in `tests/comparison/cases.json` and record the result (Principle II)
+- [ ] T020 [US1] Run `pnpm margins` on the default case in `tests/comparison/cases.json` and record the result (Principle III)
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
 
@@ -93,7 +93,7 @@
 - [X] T029 [US3] In `typst/tracker.typ`, print the every-fifth-day numbers in layouts `columns` and `calendars` too (FR-015)
 - [X] T030 [US3] In `web/index.html` and `web/src/main.ts`, add controls for layout, dot size, dot spacing, and paper size, wired into `TrackerOptions` (FR-003, FR-007, FR-011). The per-row control is added earlier, in T006.
 - [X] T031 [US3] Add cases for layouts `columns` and `calendars`, including overflow cases, to `tests/comparison/cases.json`
-- [ ] T032 [US3] Run `pnpm compare` on every case in `tests/comparison/cases.json` and record the results in the review (Principle II)
+- [ ] T032 [US3] Run `pnpm margins` on every case in `tests/comparison/cases.json` and record the results in the review (Principle III)
 
 **Checkpoint**: All user stories work on their own.
 
@@ -142,7 +142,7 @@
 
 ```text
 Task: "Create web/src/options.ts ..."            (T010)
-Task: "Create tests/comparison/compare.ts ..."   (T013)
+Task: "Create tests/comparison/margins.ts ..."   (T013)
 Task: "Create tests/comparison/cases.json ..."   (T014)
 Task: "Create tests/unit/options.test.ts ..."    (T015)
 ```
@@ -156,7 +156,7 @@ Task: "Create tests/unit/options.test.ts ..."    (T015)
 1. Phase 1: Setup
 2. Phase 2: Foundational (blocks everything)
 3. Phase 3: User Story 1
-4. **Stop and validate**: run quickstart.md scenario 1 and `pnpm compare` on the default case
+4. **Stop and validate**: run quickstart.md scenario 1 and `pnpm margins` on the default case
 
 ### Incremental Delivery
 
@@ -171,5 +171,5 @@ Task: "Create tests/unit/options.test.ts ..."    (T015)
 ## Notes
 
 - [P] tasks touch different files and have no dependencies
-- Layout changes must pass `pnpm compare` before the story is complete (Principle II)
+- Layout changes must pass `pnpm margins` before the story is complete (Principle III)
 - Commit after each phase checkpoint
