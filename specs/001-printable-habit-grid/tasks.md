@@ -75,7 +75,7 @@
 - [X] T022 [US2] In `web/src/main.ts`, show a clear placeholder for empty or intermediate values and keep the last valid preview on screen until a valid value arrives (FR-012, User Story 2 scenario 3)
 - [X] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview, and keep the newest valid compile available for the download in T019 (Edge Cases: stale preview)
 - [X] T024 [US2] In `web/src/main.ts`, show the overflow warning on screen when `overflowing` is true (FR-013, SC-006)
-- [ ] T025 [US2] Create `tests/perf/timing.test.ts` that compiles the largest page that fits (20 habits, 31 days, layout `calendars`, 7 per row) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
+- [X] T025 [US2] Create `tests/perf/timing.test.ts` that compiles the largest page that fits (20 habits, 31 days, layout `calendars`, 7 per row) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
 
 **Checkpoint**: User Stories 1 and 2 both work on their own.
 
