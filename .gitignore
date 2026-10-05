@@ -4,3 +4,18 @@ __pycache__/
 
 # Spec Kit extension catalog cache (machine-local)
 .specify/extensions/.cache/
+
+# Node / web build
+node_modules/
+dist/
+coverage/
+*.log
+.env*
+
+# OS and editor
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
