@@ -1,12 +1,13 @@
 // Preview-vs-PDF comparison (Principle II) and the printable-margin check (Principle III).
-// Runs the same Typst template through the CLI as the page does through typst.ts. The SVG
-// stands in for the on-screen preview, and the PDF is the download.
-// Needs: typst, pdftoppm (poppler), rsvg-convert (librsvg), magick (ImageMagick).
+// Compiles with the same typst.ts engine as the page. The SVG stands in for the on-screen preview,
+// and the PDF is the download.
+// Needs: pdftoppm (poppler), rsvg-convert (librsvg), magick (ImageMagick). See Brewfile.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { toTypstInputs, type TrackerOptions } from '../../web/src/options.ts';
+import { compileSource } from '../../web/src/typst-compile.ts';
+import type { TrackerOptions } from '../../web/src/options.ts';
 
 const root = process.cwd();
 const DPI = 300;
@@ -18,13 +19,7 @@ interface Case {
 }
 
 const { cases } = JSON.parse(readFileSync(join(root, 'tests/comparison/cases.json'), 'utf8')) as { cases: Case[] };
-
-function typst(options: TrackerOptions, output: string): void {
-  const args = ['compile', '--root', root];
-  for (const [key, value] of Object.entries(toTypstInputs(options))) args.push('--input', `${key}=${value}`);
-  args.push(join(root, 'typst/tracker.typ'), output);
-  execFileSync('typst', args, { stdio: 'pipe' });
-}
+const source = readFileSync(join(root, 'typst/tracker.typ'), 'utf8');
 
 function run(cmd: string, args: string[]): string {
   const result = spawnSync(cmd, args, { encoding: 'utf8' });
@@ -32,7 +27,7 @@ function run(cmd: string, args: string[]): string {
   return `${result.stdout}${result.stderr}`;
 }
 
-// Pixel count that differs between two PNGs. Zero means identical.
+// Pixels that differ between two PNGs. Zero means identical.
 function differingPixels(a: string, b: string, diff: string): number {
   const out = run('magick', ['compare', '-metric', 'AE', a, b, diff]).trim();
   const count = Number(out.split(/\s+/)[0]);
@@ -56,18 +51,18 @@ let failures = 0;
 
 for (const testCase of cases) {
   const dir = join(work, testCase.name);
-  execFileSync('mkdir', ['-p', dir]);
+  mkdirSync(dir, { recursive: true });
 
-  typst(testCase.options, join(dir, 'page-{p}.svg'));
-  const pages = readdirSync(dir).filter((f) => f.endsWith('.svg')).length;
-  if (pages !== 1) {
-    console.log(`${testCase.name}: skipped (overflow, ${pages} pages; download is blocked)`);
+  const compiled = await compileSource(source, testCase.options);
+  if (compiled.overflowing) {
+    console.log(`${testCase.name}: skipped (overflow, ${compiled.pageCount} pages; download is blocked)`);
     continue;
   }
 
-  typst(testCase.options, join(dir, 'doc.pdf'));
+  writeFileSync(join(dir, 'preview.svg'), compiled.svg);
+  writeFileSync(join(dir, 'doc.pdf'), compiled.pdf);
   run('pdftoppm', ['-r', String(DPI), '-png', '-singlefile', join(dir, 'doc.pdf'), join(dir, 'pdf')]);
-  run('rsvg-convert', ['-d', String(DPI), '-p', String(DPI), '-o', join(dir, 'svg.png'), join(dir, 'page-1.svg')]);
+  run('rsvg-convert', ['-d', String(DPI), '-p', String(DPI), '-o', join(dir, 'svg.png'), join(dir, 'preview.svg')]);
 
   const diff = differingPixels(join(dir, 'pdf.png'), join(dir, 'svg.png'), join(dir, 'diff.png'));
   const margin = insideMargin(join(dir, 'pdf.png'));
