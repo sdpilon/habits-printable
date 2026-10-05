@@ -1,10 +1,10 @@
-// Compiles a Typst source with the options as inputs, to a preview (SVG) and a PDF.
+// Compiles a Typst source with the options as inputs to one PDF. The preview renders this same PDF,
+// and the download is this same file, so the two are identical by construction.
 // Has no build-time imports, so Node scripts and tests can use it with any source string.
 import { $typst } from '@myriaddreamin/typst.ts';
 import { toTypstInputs, type TrackerOptions } from './options.ts';
 
 export interface Compiled {
-  svg: string;
   pdf: Uint8Array;
   pageCount: number;
   // More than one page means the grid does not fit (FR-013); download is then blocked.
@@ -12,14 +12,10 @@ export interface Compiled {
 }
 
 export async function compileSource(source: string, options: TrackerOptions): Promise<Compiled> {
-  const inputs = toTypstInputs(options);
-  const [svg, pdf] = await Promise.all([
-    $typst.svg({ mainContent: source, inputs }),
-    $typst.pdf({ mainContent: source, inputs }),
-  ]);
+  const pdf = await $typst.pdf({ mainContent: source, inputs: toTypstInputs(options) });
   if (!pdf) throw new Error('Typst did not return a PDF for the current options.');
   const pageCount = countPdfPages(pdf);
-  return { svg, pdf, pageCount, overflowing: pageCount > 1 };
+  return { pdf, pageCount, overflowing: pageCount > 1 };
 }
 
 // Counts page objects (/Type /Page), not the /Pages tree node.

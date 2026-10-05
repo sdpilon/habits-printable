@@ -1,6 +1,8 @@
 // Wires the options form to validation, compile, preview, and download.
+import './typst-init.ts';
 import { validate, type Field, type RawOptions } from './options.ts';
 import { compileTracker, type Compiled } from './typst-engine.ts';
+import { renderPreview } from './preview.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
@@ -12,6 +14,7 @@ const download = document.querySelector<HTMLButtonElement>('#download')!;
 let latestRequest = 0;
 // The newest valid compile; the download always uses it (T019).
 let latestValid: Compiled | null = null;
+let renderQueue: Promise<void> = Promise.resolve();
 
 function readForm(): RawOptions {
   const value = (name: Field) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
@@ -53,9 +56,13 @@ async function update(): Promise<void> {
   if (request !== latestRequest) return;
 
   latestValid = compiled;
-  preview.innerHTML = compiled.svg;
   warning.hidden = !compiled.overflowing;
   download.disabled = compiled.overflowing;
+  // Renders are queued so an older render can never finish after a newer one (T023).
+  renderQueue = renderQueue.then(() => {
+    if (request === latestRequest) return renderPreview(preview, compiled.pdf);
+  });
+  await renderQueue;
 }
 
 download.addEventListener('click', () => {

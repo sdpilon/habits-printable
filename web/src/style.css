@@ -78,7 +78,7 @@ button:disabled {
   overflow: auto;
 }
 
-#preview svg {
+#preview canvas {
   display: block;
   max-width: 100%;
   height: auto;
