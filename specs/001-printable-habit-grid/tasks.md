@@ -20,12 +20,12 @@
 
 **Purpose**: Project initialization per plan.md (pnpm, Vite, TypeScript strict, Vitest)
 
-- [ ] T001 Create `package.json` at the repo root with scripts `dev`, `build`, `test`, and `compare` (commands in quickstart.md)
+- [ ] T001 Create `package.json` at the repo root with scripts `dev`, `build`, `test`, `compare`, and `perf` (commands in quickstart.md)
 - [ ] T002 [P] Create `tsconfig.json` at the repo root with `"strict": true`
 - [ ] T003 [P] Create `vite.config.ts` at the repo root with `root: "web"`
 - [ ] T004 [P] Create `vitest.config.ts` at the repo root
-- [ ] T005 Install packages with pnpm: `@myriad-dreamin/typst.ts`, `vite`, `typescript`, `vitest`. **Requires your approval before running** (request-install).
-- [ ] T006 [P] Create `web/index.html` with the options form, preview pane, and download button
+- [ ] T005 Install packages with pnpm: `@myriad-dreamin/typst.ts` (pin the exact version that supports Typst 0.13.x and record it in `package.json`), `vite`, `typescript`, `vitest`, and the comparison harness's rasterizers: a PDF rasterizer (poppler `pdftoppm`) and an SVG rasterizer (choose one and record it). **Requires your approval before running** (request-install).
+- [ ] T006 [P] Create `web/index.html` with the options form (habits, days, and per-row inputs, which User Story 1 scenario 2 needs), preview pane, and download button
 - [ ] T007 [P] Create `web/src/style.css` with page-level styles for the form and preview
 
 **Checkpoint**: `pnpm dev` serves an empty page with the form
@@ -37,13 +37,13 @@
 **Purpose**: The shared pieces every story uses: the Typst template skeleton, the compile engine, option validation, and the comparison harness. **No user story work starts until this phase is complete.**
 
 - [ ] T008 Create `typst/tracker.typ` with an input read for every field in `contracts/tracker-options.schema.json`, and a page setup that uses A4 by default and Letter when `paper` is `letter` (FR-011, research.md §3)
-- [ ] T009 Create `web/src/typst-engine.ts` that loads typst.ts, compiles `typst/tracker.typ` with the options as inputs, and returns both SVG (preview) and PDF (download) from the same compile (research.md §1)
-- [ ] T010 [P] Create `web/src/options.ts` with the `TrackerOptions` type, the defaults, and validation using these constraints verbatim from data-model.md: `habits`: integer, `1 ≤ habits ≤ 20`; `days`: integer, `1 ≤ days ≤ 365`; `perRow`: integer, `1 ≤ perRow ≤ 31`; `dotDiameterMm`: number, `2 ≤ value ≤ 5`; `dotSpacingMm`: number, `0.5 ≤ value ≤ 5`; `labelWidthMm`: fixed at `40`; `paper`: `a4` or `letter`, default `a4`; `layout`: `rows`, `columns`, or `calendars`, default `rows`. Defaults: habits 5, days 31, perRow 7, dotDiameterMm 4, dotSpacingMm 1.5
+- [ ] T009 Create `web/src/typst-engine.ts` that loads typst.ts, compiles `typst/tracker.typ` with the options as inputs, and returns both SVG (preview) and PDF (download) from the same compile (research.md §1). Before building on the engine, confirm the SVG and PDF output APIs of the pinned version and record the check in `research.md` §1.
+- [ ] T010 [P] Create `web/src/options.ts` with the `TrackerOptions` type, the defaults, and validation using these constraints verbatim from data-model.md: `habits`: integer, `1 ≤ habits ≤ 20`; `days`: integer, `1 ≤ days ≤ 365`; `perRow`: integer, `1 ≤ perRow ≤ 31`; `dotDiameterMm`: number, `2 ≤ value ≤ 5`; `dotSpacingMm`: number, `0.5 ≤ value ≤ 5`; `paper`: `a4` or `letter`, default `a4`; `layout`: `rows`, `columns`, or `calendars`, default `rows`. Defaults: habits 5, days 31, perRow 7, dotDiameterMm 4, dotSpacingMm 1.5
 - [ ] T011 Add overflow detection in `web/src/typst-engine.ts`: a compile whose output has more than one page sets `overflowing = true` (FR-013, research.md §2)
 - [ ] T012 Create `web/src/main.ts` that reads the form, validates with `options.ts`, compiles through `typst-engine.ts`, and displays the SVG preview (FR-008, FR-012)
-- [ ] T013 [P] Create `tests/comparison/compare.ts` that renders the SVG preview and the PDF at 300 dpi, rasterizes both, and fails on any pixel difference (Principle II, research.md §6)
-- [ ] T014 [P] Create `tests/comparison/cases.json` with the default case and boundary values (habits 1 and 20, days 1 and 365, perRow 1 and 31, dot diameter 2 and 5)
-- [ ] T015 [P] Create `tests/unit/options.test.ts` covering each validation rule and default in T010
+- [ ] T013 [P] Create `tests/comparison/compare.ts` that renders the SVG preview and the PDF at 300 dpi, rasterizes both, and fails on any pixel difference (Principle II, research.md §6). It also fails if any non-white pixel falls within 10 mm of a page edge, for both A4 and US Letter (Principle III, data-model.md Fit rules).
+- [ ] T014 [P] Create `tests/comparison/cases.json` with the default case on both A4 and US Letter, and boundary values (habits 1 and 20, days 1 and 365, perRow 1 and 31, dot diameter 2 and 5). The default cases run the margin check in T013.
+- [ ] T015 [P] Create `tests/unit/options.test.ts` covering each validation rule and default in T010. Also create `tests/unit/fit.test.ts`, which compares each layout's fit formula in data-model.md with the page count from T011 for every case in `tests/comparison/cases.json`. A disagreement fails the test.
 
 **Checkpoint**: Foundation ready. The page compiles a placeholder layout and the comparison harness runs.
 
@@ -58,7 +58,7 @@
 - [ ] T016 [US1] In `typst/tracker.typ`, draw layout `rows`: one habit per row; dots are empty circles (stroke only) that wrap onto more lines within the habit when `perRow` is reached, in order (FR-003, FR-004, FR-006)
 - [ ] T017 [US1] In `typst/tracker.typ`, draw a blank 40 mm label area to the left of each habit row (FR-005)
 - [ ] T018 [US1] In `typst/tracker.typ`, print a small day number on days 5, 10, 15, and so on in each habit row, as printed text outside the dots (FR-015)
-- [ ] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output from `typst-engine.ts`; it stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
+- [ ] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output of the latest valid compile in `typst-engine.ts`, so the PDF matches the options on screen even if a preview update is still running (spec Edge Cases: download during preview update). It stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
 - [ ] T020 [US1] Run `pnpm compare` on the default case in `tests/comparison/cases.json` and record the result (Principle II)
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
@@ -73,9 +73,9 @@
 
 - [ ] T021 [US2] In `web/src/main.ts`, add input listeners on every option field so each change recompiles the preview without an apply action (FR-008)
 - [ ] T022 [US2] In `web/src/main.ts`, show a clear placeholder for empty or intermediate values and keep the last valid preview on screen until a valid value arrives (FR-012, User Story 2 scenario 3)
-- [ ] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview (Edge Cases: stale preview)
+- [ ] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview, and keep the newest valid compile available for the download in T019 (Edge Cases: stale preview)
 - [ ] T024 [US2] In `web/src/main.ts`, show the overflow warning on screen when `overflowing` is true (FR-013, SC-006)
-- [ ] T025 [US2] In `web/src/typst-engine.ts`, add a timing log for each compile so SC-002 (preview updates within 0.2 s) can be checked on the worst case (20 habits, 365 days)
+- [ ] T025 [US2] Create `tests/perf/timing.ts` that compiles the worst case (20 habits, 365 days, layout `rows`) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
 
 **Checkpoint**: User Stories 1 and 2 both work on their own.
 
@@ -87,11 +87,11 @@
 
 **Independent Test**: Change a layout option and confirm both the preview and the downloaded PDF change to match (quickstart.md scenarios 5 and 6).
 
-- [ ] T026 [US3] In `typst/tracker.typ`, draw layout `columns`: habits as columns, days as rows, `perRow` as habits per row group, labels above each column; too-tall grids trigger overflow instead of wrapping (FR-003, FR-006, FR-013)
-- [ ] T027 [US3] In `typst/tracker.typ`, draw layout `calendars`: one mini calendar per habit, `perRow` dots per calendar row, calendars in a grid that fills the page width and wraps (FR-003, FR-006)
+- [ ] T026 [US3] In `typst/tracker.typ`, draw layout `columns`: habits as columns, days as rows, `perRow` as habits per row group, rotated name labels in a header above each column; too-tall grids trigger overflow instead of wrapping, using the columns fit rule in data-model.md (FR-003, FR-006, FR-013)
+- [ ] T027 [US3] In `typst/tracker.typ`, draw layout `calendars`: one mini calendar per habit, `perRow` dots per calendar row, calendars in a grid that fills the page width and wraps, with the name header spanning each calendar block, using the calendars fit rule in data-model.md (FR-003, FR-005, FR-006)
 - [ ] T028 [US3] In `typst/tracker.typ`, apply `dotDiameterMm` and `dotSpacingMm` to all three layouts; dots must stay inside the page margins (FR-007, FR-011)
 - [ ] T029 [US3] In `typst/tracker.typ`, print the every-fifth-day numbers in layouts `columns` and `calendars` too (FR-015)
-- [ ] T030 [US3] In `web/index.html` and `web/src/main.ts`, add controls for layout, perRow, dot size, dot spacing, and paper size, wired into `TrackerOptions` (FR-001, FR-002, FR-006, FR-007, FR-011)
+- [ ] T030 [US3] In `web/index.html` and `web/src/main.ts`, add controls for layout, dot size, dot spacing, and paper size, wired into `TrackerOptions` (FR-003, FR-007, FR-011). The per-row control is added earlier, in T006.
 - [ ] T031 [US3] Add cases for layouts `columns` and `calendars`, including overflow cases, to `tests/comparison/cases.json`
 - [ ] T032 [US3] Run `pnpm compare` on every case in `tests/comparison/cases.json` and record the results in the review (Principle II)
 
@@ -104,8 +104,8 @@
 **Purpose**: Final checks across all stories
 
 - [ ] T033 Run the scenarios in `specs/001-printable-habit-grid/quickstart.md` (1 to 7) and record the outcome of each
-- [ ] T034 Print the default PDF at 100% scale on home paper and confirm no dots or labels are clipped (SC-004)
-- [ ] T035 [P] Update `specs/001-printable-habit-grid/spec.md` User Story 1 scenarios to say they assume layout `rows` (the default)
+- [ ] T034 Print the default PDF at 100% scale on home paper, once on A4 and once on US Letter, and confirm no dots or labels are clipped and all content is inside the 10 mm margin on both (SC-004, Principle III)
+- [ ] T035 [P] Update `specs/001-printable-habit-grid/spec.md` User Story 1 scenarios so they state they assume layout `rows`, the default per-row count, and wrapping of dots within each habit (A1)
 
 ---
 
