@@ -3,7 +3,7 @@
   "title": "TrackerOptions",
   "description": "Input dictionary passed from the web page to typst/tracker.typ. Every download and preview is built from one valid value of this object.",
   "type": "object",
-  "required": ["layout", "habits", "days", "perRow", "dotDiameterMm", "dotSpacingMm", "labelWidthMm", "paper"],
+  "required": ["layout", "habits", "days", "perRow", "dotDiameterMm", "dotSpacingMm", "paper"],
   "additionalProperties": false,
   "properties": {
     "layout": { "type": "string", "enum": ["rows", "columns", "calendars"] },
@@ -12,7 +12,6 @@
     "perRow": { "type": "integer", "minimum": 1, "maximum": 31 },
     "dotDiameterMm": { "type": "number", "minimum": 2, "maximum": 5 },
     "dotSpacingMm": { "type": "number", "minimum": 0.5, "maximum": 5 },
-    "labelWidthMm": { "type": "number", "const": 40 },
     "paper": { "type": "string", "enum": ["a4", "letter"] }
   }
 }
