@@ -50,4 +50,4 @@ No NEEDS CLARIFICATION markers remained in the spec after `/speckit-clarify`, so
 - Package: `@myriaddreamin/typst.ts` 0.7.0, with peers `@myriaddreamin/typst-ts-renderer` 0.7.0 and `@myriaddreamin/typst-ts-web-compiler` 0.7.0 (both required at load time).
 - `$typst.svg({ mainContent, inputs })` and `$typst.pdf({ mainContent, inputs })` match the engine's calls. `pdf()` can return `undefined`, which the engine handles.
 - Each call compiles separately, so the engine compiles twice per update. Tracked as an open question in the implementation review.
-- The Typst version bundled in typst.ts 0.7.0 is not stated by the package. The local CLI is Typst 0.15.1. Page counts from the two have not yet been compared in the browser engine (T020, T032).
+- The bundled Typst is 0.14.2: `typst-assets` 0.14.2 is in the wasm, and the Typst source commit it was built from has workspace version 0.14.2. The fit test and the comparison harness compile through this same engine, so they test the version the page uses.

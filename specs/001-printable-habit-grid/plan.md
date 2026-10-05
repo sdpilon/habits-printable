@@ -12,7 +12,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x (strict mode) for the page; Typst 0.13.x template language (version pinned at implementation, see research.md)
+**Language/Version**: TypeScript 7.x (strict mode) for the page; Typst 0.14.2 template language, the version bundled with typst.ts 0.7.0 (see research.md §8)
 
 **Primary Dependencies**: Typst compiled to WebAssembly for in-browser compilation (`@myriad-dreamin/typst.ts`); Vite as the build tool. No UI framework: plain DOM, since the page is a form plus one preview.
 

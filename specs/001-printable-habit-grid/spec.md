@@ -114,7 +114,7 @@ The person adjusts how the dots are arranged on the page (for example how many d
 ### Measurable Outcomes
 
 - **SC-001**: A person can go from opening the page to downloading a printable tracker in under 1 minute on first use.
-- **SC-002**: The preview visibly updates within 0.2 seconds of any valid option change.
+- **SC-002**: The preview visibly updates within 0.2 seconds of any valid option change that fits on one page. The timing check measures the largest page that fits. Previews of overflowing layouts show the overflow warning and are not timed.
 - **SC-003**: For 100% of tested option combinations, the downloaded PDF matches the on-screen preview with no visible differences when compared at print resolution.
 - **SC-004**: Printed at 100% scale on standard home paper, 100% of dots and label areas are fully visible with no clipping at the edges.
 - **SC-005**: 100% of invalid option values (empty, zero, negative, non-numeric, over maximum) produce a clear on-screen message and cannot produce a downloaded PDF.
