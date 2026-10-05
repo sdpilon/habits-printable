@@ -49,4 +49,4 @@ Covers the validation rules and limits in `TrackerOptions` (data-model.md).
 pnpm perf
 ```
 
-Compiles the worst case (20 habits, 365 days, layout `rows`) ten times and fails if the median compile time is above 0.2 s.
+Compiles the largest page that fits (20 habits, 31 days, layout `calendars`, 7 per row) ten times and fails if the median compile time is above 0.2 s.

@@ -53,13 +53,14 @@ Typst's page count (T011) decides overflow. The formulas below are a planning ch
 - Margin: 10 mm on every side. Usable area = page minus margins. This is the printable margin that Principle III requires on both papers.
 - Pitch = `dotDiameterMm` + `dotSpacingMm`.
 - Label header height `LABEL_H` = 6 mm. Gap between blocks `GAP` = 4 mm.
+- Day-number bands: `NUM_H` = 3 mm above each dot line (layouts rows and calendars), so a dot line is `lineH = pitch + NUM_H`. `NUM_W` = 6 mm at the left of each row (layout columns).
 - A layout overflows when its content is wider or taller than the usable area. Overflow blocks download (FR-013). Nothing is paginated or shrunk.
 
 Layout (1) `rows`: fully specified.
 
 - Lines per habit: `L = ceil(days / perRow)`.
 - Block width: `40 mm + perRow × pitch` (the 40 mm label sits left of the dots).
-- Block height: `L × pitch`.
+- Block height: `L × lineH`.
 - Total height: `habits × block height + (habits − 1) × GAP`.
 - Fits when block width ≤ usable width and total height ≤ usable height.
 
@@ -69,12 +70,12 @@ Layout (2) `columns`: each habit's name is written vertically (rotated) in a hea
 - Column width: `pitch`. The rotated name sits in the header above the column, so the column stays one dot wide.
 - Header height `LABEL_COL_H` = 30 mm (planning default: room for a short name read vertically).
 - Total height: `G × (LABEL_COL_H + days × pitch) + (G − 1) × GAP`.
-- Total width: `min(habits, perRow) × column width`.
+- Total width: `NUM_W + min(habits, perRow) × column width`.
 - Fits when total width ≤ usable width and total height ≤ usable height. With 365 days, the height alone exceeds one page, so the layout always overflows at that day count.
 
 Layout (3) `calendars`: the name sits in a header that spans the calendar block.
 
-- Block height: `BH = LABEL_H + ceil(days / perRow) × pitch`.
+- Block height: `BH = LABEL_H + ceil(days / perRow) × lineH`.
 - Block width: `perRow × pitch`. The label header spans this width and is `LABEL_H` tall.
 - Blocks per page row: `N = floor((usable width + GAP) / (block width + GAP))`.
 - Total height: `ceil(habits / N) × BH + (ceil(habits / N) − 1) × GAP`.

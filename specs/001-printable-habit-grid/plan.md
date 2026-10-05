@@ -24,7 +24,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 **Project Type**: Static web application (client-side only).
 
-**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured on a mid-range laptop with the worst case: 20 habits, 365 days, layout `rows` (the case timed by T025).
+**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured on a mid-range laptop with the largest page that fits: 20 habits, 31 days, layout `calendars`, 7 per row (the case timed by T025).
 
 **Constraints**: All layout in one Typst file (Principle I). PDF exported at 100% scale with no tool-side scaling (constitution Technical Constraints). Dot diameter 2 to 5 mm; row label area 40 mm in layout (1) only (header sizes in data-model.md); per-row max 31; habits max 20; days max 365 (spec clarifications).
 
@@ -90,7 +90,7 @@ tests/
 │   ├── compare.ts               # Rasterizes preview SVG and PDF, diffs them
 │   └── cases.json               # Option combinations to compare
 └── perf/
-    └── timing.ts                # Worst-case compile time (SC-002)
+    └── timing.test.ts              # Worst-case compile time (SC-002)
 ```
 
 **Structure Decision**: A single static web app under `web/`, with the layout in `typst/`. There's no backend because nothing needs to be stored or shared. The comparison script lives under `tests/` and runs outside the browser, so the PDF and SVG are checked the same way every time.
