@@ -14,5 +14,5 @@
     { "name": "calendars-one-per-row", "options": { "layout": "calendars", "habits": 5, "days": 31, "perRow": 31, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } }
   ],
   "margin_mm": 10,
-  "note": "Default cases run the Principle III margin check (tasks.md T013). Pixel comparison of preview and PDF runs for every case (T020, T032)."
+  "note": "Every case runs the Principle III margin check (tests/comparison/margins.ts). The preview draws the same PDF as the download, so no separate preview comparison is needed."
 }
