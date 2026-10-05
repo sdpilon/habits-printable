@@ -1,0 +1,6 @@
+# Python bytecode caches
+__pycache__/
+*.pyc
+
+# Spec Kit extension catalog cache (machine-local)
+.specify/extensions/.cache/
