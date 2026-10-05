@@ -11,10 +11,12 @@ breaks the guarantee that what is previewed is what is printed.
 
 ### II. Preview Equals Print
 
-For identical option values, the exported PDF MUST be visually identical to the preview. Any change
-that affects layout, dot geometry, spacing, or label areas MUST be checked by comparing the preview
-against the PDF rendered at print resolution. A difference in the compared output is a defect, not a
-tolerance to accept.
+For identical option values, the exported PDF and the on-screen preview MUST be the same file. The
+preview MUST be drawn from the exported PDF, so the two are identical by construction and no separate
+comparison of renderings is required. Any change that affects layout, dot geometry, spacing, or label
+areas MUST pass the printable-margin check (`tests/comparison/margins.ts`) before it is accepted.
+Rationale: two separate renderings of one layout can drift apart through antialiasing and rounding;
+one file cannot. A failing margin check is a defect, not a tolerance to accept.
 
 ### III. Hand-Fillable Output
 
@@ -50,8 +52,9 @@ amendment adds them. Simplicity is preferred over configurability that no spec r
 
 - Every feature MUST begin with a specification under `specs/` created through the Spec Kit
   workflow, and MUST pass its quality checklist before planning begins.
-- Every change that touches layout or rendering MUST include a preview-versus-PDF comparison
-  (Principle II) as part of its verification, and that comparison MUST be recorded in the review.
+- Every change that touches layout or rendering MUST run the printable-margin check (Principle III)
+  as part of its verification, and the result MUST be recorded in the review. Principle II holds by
+  construction: the preview and the download use the same compiled PDF.
 - Reviews MUST confirm compliance with Principles I through V before merge. A change that violates a
   principle MUST either be corrected or accompanied by a constitution amendment.
 
@@ -70,4 +73,4 @@ Versioning policy (semantic versioning):
 Compliance review: every spec, plan, and review MUST check the Core Principles and Technical
 Constraints. Complexity beyond what a spec requires MUST be justified against Principle V.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
+**Version**: 1.1.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
