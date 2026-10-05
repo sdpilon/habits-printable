@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Printable Habit Grid</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main>
+      <form id="options" autocomplete="off">
+        <h1>Printable Habit Grid</h1>
+
+        <label>Layout
+          <select name="layout">
+            <option value="rows" selected>One row per habit</option>
+            <option value="columns">Habits as columns</option>
+            <option value="calendars">One mini calendar per habit</option>
+          </select>
+        </label>
+
+        <label>Habits <input name="habits" type="number" min="1" max="20" step="1" value="5" /></label>
+        <label>Days <input name="days" type="number" min="1" max="365" step="1" value="31" /></label>
+        <label>Dots per row <input name="perRow" type="number" min="1" max="31" step="1" value="7" /></label>
+        <label>Dot diameter (mm) <input name="dotDiameterMm" type="number" min="2" max="5" step="0.1" value="4" /></label>
+        <label>Dot spacing (mm) <input name="dotSpacingMm" type="number" min="0.5" max="5" step="0.1" value="1.5" /></label>
+
+        <label>Paper
+          <select name="paper">
+            <option value="a4" selected>A4</option>
+            <option value="letter">US Letter</option>
+          </select>
+        </label>
+
+        <ul id="messages" aria-live="polite"></ul>
+        <button id="download" type="button" disabled>Download PDF</button>
+      </form>
+
+      <section aria-label="Preview">
+        <p id="warning" hidden>The grid is too large for one page. Reduce habits, days, or dots per row to enable download.</p>
+        <div id="preview"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
