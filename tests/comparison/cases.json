@@ -1,0 +1,18 @@
+{
+  "cases": [
+    { "name": "default-a4", "options": { "layout": "rows", "habits": 5, "days": 31, "perRow": 7, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "default-letter", "options": { "layout": "rows", "habits": 5, "days": 31, "perRow": 7, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "letter" } },
+    { "name": "rows-minimums", "options": { "layout": "rows", "habits": 1, "days": 1, "perRow": 1, "dotDiameterMm": 2, "dotSpacingMm": 0.5, "paper": "a4" } },
+    { "name": "rows-max-habits-and-days", "options": { "layout": "rows", "habits": 20, "days": 365, "perRow": 7, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "rows-too-wide", "options": { "layout": "rows", "habits": 5, "days": 31, "perRow": 31, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "rows-31-small-dots", "options": { "layout": "rows", "habits": 5, "days": 31, "perRow": 31, "dotDiameterMm": 2, "dotSpacingMm": 0.5, "paper": "a4" } },
+    { "name": "columns-small", "options": { "layout": "columns", "habits": 5, "days": 31, "perRow": 5, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "columns-too-tall", "options": { "layout": "columns", "habits": 20, "days": 365, "perRow": 20, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "columns-too-wide", "options": { "layout": "columns", "habits": 20, "days": 31, "perRow": 20, "dotDiameterMm": 5, "dotSpacingMm": 5, "paper": "a4" } },
+    { "name": "calendars-default", "options": { "layout": "calendars", "habits": 20, "days": 31, "perRow": 7, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "calendars-too-tall", "options": { "layout": "calendars", "habits": 20, "days": 365, "perRow": 7, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } },
+    { "name": "calendars-one-per-row", "options": { "layout": "calendars", "habits": 5, "days": 31, "perRow": 31, "dotDiameterMm": 4, "dotSpacingMm": 1.5, "paper": "a4" } }
+  ],
+  "margin_mm": 10,
+  "note": "Default cases run the Principle III margin check (tasks.md T013). Pixel comparison of preview and PDF runs for every case (T020, T032)."
+}
