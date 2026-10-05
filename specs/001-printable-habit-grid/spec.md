@@ -17,6 +17,13 @@
 - Q: What is the largest number of habits a tracker may contain? → A: 20 habits maximum.
 - Q: Which layout should the grid use? → A: The person chooses among three layouts: (1) one row per habit, (2) habits as columns with days as rows, (3) one mini calendar per habit. The layout is a shared option that drives both the preview and the PDF.
 - Q: What is the largest per-row count allowed in any layout? → A: 31 maximum, applied to every layout.
+- Q: In the habits-as-columns layout, when the days don't fit vertically on the page, should they wrap into side-by-side column blocks or block the download? → A: Block. Show the overflow warning; do not wrap.
+- Q: In the mini-calendar layout, how should the calendars be arranged on the page? → A: A grid that fills the page width and wraps to new lines; the same overflow block applies when the grid runs past the page.
+- Q: How wide should each habit's blank label area be? → A: 40 mm, fixed in every layout.
+- Q: What range of dot diameters should the person be allowed to choose, in millimetres? → A: 2 to 5 mm.
+- Q: Should the grid print day numbers so the person can find a given day without counting dots? → A: Yes, number every fifth day in every layout.
+- Q: Should the 40 mm label area apply in every layout? → A: No. 40 mm applies to layout (1) only. Layouts (2) and (3) use the label shapes in FR-005.
+- Q: How should each habit's name be written above its column in the habits-as-columns layout? → A: Written vertically (rotated) in a header above the column, so each column stays one dot wide. (Planning choice: in the mini-calendar layout the name spans the calendar's width.)
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -26,12 +33,12 @@ A person wants a paper habit tracker. They open the web page, choose how many ha
 
 **Why this priority**: This is the core value of the product. Without a downloadable, printable PDF with the chosen counts, nothing else is useful.
 
-**Independent Test**: Set the habit count and day count on the page, download the PDF, print it (or view it), and confirm it shows exactly that many rows of dots with exactly that many dots per row.
+**Independent Test**: Set the habit count, day count, and per-row count on the page (layout: one row per habit), download the PDF, print it (or view it), and confirm each habit shows all of its days as empty dots, in order, wrapping at the per-row count.
 
 **Acceptance Scenarios**:
 
-1. **Given** the options page is open with default values, **When** the person clicks download without changing anything, **Then** a PDF is produced containing the default number of habits and days, each habit represented by one row of empty dots.
-2. **Given** the person sets 5 habits and 30 days, **When** they download the PDF, **Then** the PDF has 5 habit rows, each with 30 dots, and every dot is an empty circle suitable for hand-filling.
+1. **Given** the options page is open with default values, **When** the person clicks download without changing anything, **Then** a PDF is produced containing the default number of habits and days, each habit represented by its own block of empty dots (the default layout, one row per habit, wraps at the default per-row count of 7).
+2. **Given** the person sets 5 habits, 30 days, and 10 dots per row (layout: one row per habit), **When** they download the PDF, **Then** the PDF has 5 habit blocks, each showing 30 dots in order across three lines of 10, and every dot is an empty circle suitable for hand-filling.
 3. **Given** a downloaded PDF, **When** it is printed on standard home paper at 100% scale, **Then** all dots and habit labels are fully on the page and not clipped at the edges.
 
 ---
@@ -83,16 +90,17 @@ The person adjusts how the dots are arranged on the page (for example how many d
 - **FR-002**: The system MUST let the person choose one number of days to track, shared by every habit in the tracker. The default is 31 days and the maximum is 365 days.
 - **FR-003**: The system MUST offer three layouts: (1) each habit as one row of dots, (2) habits as columns with days as rows, and (3) each habit as its own mini calendar of dots. In every layout, each dot stands for one day for one habit.
 - **FR-004**: Each dot MUST be an empty circle large enough to be filled in by hand with a pen or pencil.
-- **FR-005**: Each habit MUST include a blank label area, in every layout, so the person can write the habit name by hand.
+- **FR-005**: Each habit MUST include a blank label area, in every layout, so the person can write the habit name by hand. In layout (1) the label is a 40 mm column to the left of the dots. In layout (2) the name is written vertically in a header above the column. In layout (3) the name is written in a header that spans the calendar. The header sizes are planning defaults (data-model.md, Label decision).
 - **FR-006**: The system MUST let the person set the per-row count for the chosen layout, from 1 up to a maximum of 31, and MUST keep dots in order across that layout's rows. In layout (1) the count is dots per habit row, with remaining dots wrapping onto additional rows. In layout (2) it is habits per row. In layout (3) it is dots per calendar row.
-- **FR-007**: The system MUST let the person choose the dot size and the spacing between dots.
+- **FR-007**: The system MUST let the person choose the dot size, from 2 to 5 mm in diameter, and the spacing between dots, from 0.5 to 5 mm. The spacing range is a planning default, recorded here so validation can reject out-of-range values.
 - **FR-008**: The system MUST show a preview of the tracker on the same web page as the options, and update it as soon as any option changes, without a separate apply action.
 - **FR-009**: The system MUST provide a download of the tracker as a PDF.
 - **FR-010**: The downloaded PDF MUST be visually identical to the preview for the same option values, including dot positions, sizes, spacing, and label areas.
 - **FR-011**: The PDF MUST be sized to a standard printable page (A4 by default, with US Letter available) and MUST keep all content inside printable margins.
 - **FR-012**: The system MUST reject or clearly flag option values that are empty, zero, negative, non-numeric, or above the configured maximums, and MUST keep the preview showing the last valid layout or a clear placeholder in the meantime.
-- **FR-013**: When the chosen options cannot fit on one page, the system MUST show a warning and MUST disable download until the habit count or other options are reduced so the tracker fits on one page. It MUST NOT paginate, silently drop habits, days, or dots, or shrink dots to force a fit.
+- **FR-013**: When the chosen options cannot fit on one page, the system MUST show a warning and MUST disable download until the habit count or other options are reduced so the tracker fits on one page. It MUST NOT paginate, silently drop habits, days, or dots, or shrink dots to force a fit. This applies to every layout: in layout (2), a day count too tall for one page triggers the same block rather than wrapping into side-by-side columns.
 - **FR-014**: The layout and rendering MUST be produced with Typst, so that the same layout definition drives both the preview and the PDF (user-mandated constraint, recorded here so that planning keeps it).
+- **FR-015**: The grid MUST print day numbers on every fifth day (5, 10, 15, and so on) in every layout, so the person can locate a day without counting dots. Day numbers are printed text only and are not part of the hand-filled dots.
 
 ### Key Entities *(include if feature involves data)*
 
