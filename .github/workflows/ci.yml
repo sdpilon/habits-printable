@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install native tools
+        run: brew bundle --file=Brewfile
+
+      - name: Install pnpm (version from packageManager)
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Timing check
+        run: pnpm perf
+
+      - name: Preview-vs-PDF comparison
+        run: pnpm compare
