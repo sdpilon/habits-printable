@@ -178,3 +178,15 @@ Task: "Create tests/unit/options.test.ts ..."    (T015)
 - [P] tasks touch different files and have no dependencies
 - Layout changes must pass `pnpm margins` before the story is complete (Principle III)
 - Commit after each phase checkpoint
+
+## Phase 7: Convergence
+
+- [X] T036 In `web/src/main.ts` `update()`, gate the queued preview render on the newest valid request instead of the newest request, so a valid layout whose render is still pending is drawn even if a later input is invalid, and the preview never keeps a layout older than the last valid options per Edge Cases: stale preview (partial)
+  - Result: `update()` now tracks `latestValidRequest` and renders the newest valid compile. Warning and download still follow only the newest input. `tsc --noEmit`, `pnpm test` (29/29), and `pnpm build` pass. The race itself has not been reproduced in a browser; it needs a manual check (type a valid value, then clear the field before the preview redraws).
+
+## Phase 8: Convergence
+
+- [X] T037 In `web/src/main.ts`, disable the download as soon as an input changes and re-enable it only when the newest compile finishes, so the downloaded PDF always matches the options currently in the form per Edge Cases: download during preview update (partial)
+  - Result: `update()` disables download at the start of every change and re-enables it only from the newest compile. Stale compiles leave it alone. `tsc --noEmit`, `pnpm test` (29/29), and `pnpm build` pass. Not reproduced in a browser.
+- [X] T038 In `web/src/main.ts`, catch render errors in the preview queue so one failed render cannot stop later preview updates per US2/AC3 (partial)
+  - Result: each queued render catches its own error and logs it, so the queue keeps running and the previous preview stays on screen. `tsc --noEmit`, `pnpm test` (29/29), and `pnpm build` pass. Not reproduced in a browser.
