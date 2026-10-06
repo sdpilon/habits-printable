@@ -10,6 +10,13 @@
 
 ## Clarifications
 
+### Session 2026-10-06
+
+- Q: Should the download checks also run on US Letter paper, not only the default A4? → A: Drop A4. The suite tests only US Letter, because that is the only paper size the operator uses. The A4 default stays a product requirement (constitution Technical Constraints) but is not covered by these tests.
+- Q: How long should the suite wait for the preview to finish updating before it treats the wait as a failure? → A: 5 seconds.
+- Q: When one scenario fails, should the suite keep running the remaining scenarios or stop there? → A: Run every scenario and report every failure in the same run.
+- Q: Should the suite test the production build of the page, or the development server? → A: Production build, served locally.
+
 ### Session 2026-10-05
 
 - Q: Which user-facing behavior do the end-to-end tests cover? → A: The complete path a person takes in the web page: choosing options, seeing the preview update, being blocked by invalid or overflowing options, and downloading the PDF. Unit and comparison checks already cover the layout and margin logic, so the end-to-end tests cover only what happens in the browser.
@@ -20,7 +27,7 @@
 
 ### User Story 1 - Confirm the download path works end to end (Priority: P1)
 
-A developer changes the page, the layout code, or the options, and runs one command. The test opens the real page in a browser, sets valid options, waits for the preview, downloads the PDF, and checks that the file is a single-page A4 PDF. If any step fails, the developer sees which step failed and a screenshot of the page at that moment.
+A developer changes the page, the layout code, or the options, and runs one command. The test opens the real page in a browser, sets valid options, waits for the preview, downloads the PDF, and checks that the file is a single-page US Letter PDF. If any step fails, the developer sees which step failed and a screenshot of the page at that moment.
 
 **Why this priority**: The download is the product's only output. A regression here means no usable paper, so this is the minimum useful test.
 
@@ -28,7 +35,7 @@ A developer changes the page, the layout code, or the options, and runs one comm
 
 **Acceptance Scenarios**:
 
-1. **Given** the page is open with default options, **When** the test waits for the preview and presses download, **Then** a PDF file is saved whose page size is A4 and whose page count is one.
+1. **Given** the page is open with default options, **When** the test waits for the preview and presses download, **Then** a PDF file is saved whose page size is US Letter and whose page count is one.
 2. **Given** the page is open, **When** the test sets a non-default habit count, days count, and layout, **Then** the preview shows a grid whose visible habit count and day count match the chosen values.
 3. **Given** a successful run, **When** the test finishes, **Then** the report lists each scenario as passed, with no scenario skipped without a stated reason.
 
@@ -68,9 +75,9 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 
 ### Edge Cases
 
-- The preview is still rendering when the test presses download. The test must wait for the preview to finish, not press download on a stale preview, and must fail if the preview never settles within a stated time limit.
+- The preview is still rendering when the test presses download. The test must wait for the preview to finish, not press download on a stale preview, and must fail if the preview has not settled within 5 seconds.
 - The browser blocks or does not save the download. The run must report this as a failure with the step name, not as a pass with no file.
-- The development server is not running. The run must stop before any scenario starts and say that the page could not be reached.
+- The local production build cannot be built or served. The run must stop before any scenario starts and say that the page could not be reached.
 - Two runs happen at the same time on one machine. Each run must write its files to its own output location so that one run cannot read another run's PDF.
 - A previous run left a PDF behind. The run must check the file it just downloaded, not an older one.
 
@@ -80,16 +87,17 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 
 - **FR-001**: The project MUST provide one command that runs the end-to-end test suite against the web page, starts the page itself if it is not already running, and exits with a non-zero status when any scenario fails.
 - **FR-002**: The suite MUST drive the page the way a person does: it sets options through the page's controls, reads the preview, and presses the download control. It MUST NOT call the layout code directly.
-- **FR-003**: The suite MUST verify that the downloaded file is a PDF with the default page size A4 and exactly one page, and it MUST check the file it downloaded in the same run.
+- **FR-003**: The suite MUST verify that the downloaded file is a PDF with the page size US Letter and exactly one page, and it MUST check the file it downloaded in the same run.
 - **FR-004**: The suite MUST verify that each option change updates the preview without any apply action.
 - **FR-005**: The suite MUST verify that each invalid value kind (empty, zero, negative, non-numeric, above maximum) shows a message and leaves download unavailable, and that a valid value restores download.
 - **FR-006**: The suite MUST verify, for each of the three layouts, that an overflowing option combination shows the overflow warning and leaves download unavailable.
 - **FR-007**: When a scenario fails, the suite MUST report the scenario name, the step that failed, and save a screenshot of the page at the time of failure.
 - **FR-008**: The suite MUST NOT pass a scenario that was skipped or that produced no file; a missing download is a failure.
-- **FR-009**: The suite MUST run without any hosted service, account, or network access beyond the local development server.
+- **FR-009**: The suite MUST run without any hosted service, account, or network access beyond the locally served production build.
 - **FR-010**: A developer MUST be able to run the suite on their own machine by following written setup steps, with no setup beyond those steps.
 - **FR-011**: The suite MUST NOT change the layout, the preview, or the download behavior it tests. It only observes and reports.
 - **FR-012**: The suite MUST keep its own test files separate from the existing unit, comparison, and performance tests.
+- **FR-013**: The suite MUST run every scenario even when an earlier scenario fails, and MUST report every failing scenario in the same run.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -110,7 +118,7 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 
 - The end-to-end tests run on a developer's own machine on demand. Running them in a hosted pipeline is a follow-on decision, because the project has no git remote yet.
 - The first version covers one current desktop Chromium-based browser. Other browsers and mobile viewports are out of scope until a follow-on feature defines what must match across them.
-- The page is started locally by the suite using the project's existing development server. No staging or production site is tested.
+- The page is built and served locally by the suite as a production build, which is what people receive. No staging or hosted site is tested.
 - The suite checks the page's visible behavior and the downloaded file's page count and size. It does not re-check dot positions or margins; those stay with the existing margin check (constitution Principle II) and unit tests.
 - The layout ranges, maximums, and overflow rules come from feature 001 and are not changed here. Scenario values are chosen from those rules.
 - Option values for scenarios are fixed in the test code, not generated randomly, so that a failure can be reproduced.
