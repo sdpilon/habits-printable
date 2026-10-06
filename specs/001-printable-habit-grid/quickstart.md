@@ -4,9 +4,8 @@ How to run the feature and check that it works. Build steps and dependencies are
 
 ## Prerequisites
 
-- Node.js (LTS) and pnpm
-- The packages listed in plan.md (Typst WASM engine, Vite, Vitest). **Installing them needs your approval first.**
-- For the margin check: the dev container (ImageMagick and Ghostscript are inside it).
+- Node.js 24 (as in CI) and pnpm
+- The packages listed in plan.md (Typst WASM engine, Vite, Vitest, PDF.js, the margin check's canvas). **Installing them needs your approval first.**
 
 ## Run the page
 
@@ -33,7 +32,7 @@ Open the printed local URL. Expect the form with defaults: layout "one row per h
 pnpm margins
 ```
 
-Compiles each fitting case, rasterizes its PDF at 300 dpi with Ghostscript, and fails if printed content falls inside the 10 mm margin. It needs ImageMagick and Ghostscript, which the dev container provides. The preview draws the same PDF as the download, so this check covers both.
+Compiles each fitting case, rasterizes its PDF at 300 dpi with PDF.js (through `@napi-rs/canvas`), and fails if printed content falls inside the 10 mm margin. It needs no native tools on the machine. The preview draws the same PDF as the download, so this check covers both.
 
 ## Unit tests
 

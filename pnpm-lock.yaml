@@ -122,6 +122,9 @@ importers:
         specifier: 6.4.299
         version: 6.4.299
     devDependencies:
+      '@napi-rs/canvas':
+        specifier: 1.0.10
+        version: 1.0.10
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -807,7 +810,6 @@ snapshots:
       '@napi-rs/canvas-linux-x64-musl': 1.0.10
       '@napi-rs/canvas-win32-arm64-msvc': 1.0.10
       '@napi-rs/canvas-win32-x64-msvc': 1.0.10
-    optional: true
 
   '@oxc-project/types@0.152.0': {}
 

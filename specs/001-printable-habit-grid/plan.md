@@ -18,7 +18,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 **Storage**: N/A. Options live in page state only; nothing is saved.
 
-**Testing**: Vitest for option validation, the fit model against the engine's page count, and the timing check. A margin check rasterizes each PDF and confirms content sits inside the 10 mm margin (Principle III), run in a dev container.
+**Testing**: Vitest for option validation, the fit model against the engine's page count, and the timing check. A margin check rasterizes each PDF and confirms content sits inside the 10 mm margin (Principle III), run with `pnpm margins` on Node 24.
 
 **Target Platform**: Desktop and laptop browsers (modern Chromium, Firefox, Safari). Mobile is out of scope per spec.
 

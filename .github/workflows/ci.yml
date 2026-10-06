@@ -10,9 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install native tools
-        run: brew bundle --file=Brewfile
-
       - name: Install pnpm (version from packageManager)
         uses: pnpm/action-setup@v4
 
@@ -34,5 +31,5 @@ jobs:
       - name: Timing check
         run: pnpm perf
 
-      - name: Preview-vs-PDF comparison
-        run: pnpm compare
+      - name: Margin check
+        run: pnpm margins

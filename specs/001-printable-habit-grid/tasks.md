@@ -24,7 +24,7 @@
 - [X] T002 [P] Create `tsconfig.json` at the repo root with `"strict": true`
 - [X] T003 [P] Create `vite.config.ts` at the repo root with `root: "web"`
 - [X] T004 [P] Create `vitest.config.ts` at the repo root
-- [X] T005 Install packages with pnpm: `@myriaddreamin/typst.ts` (pinned to typst.ts 0.7.0, which bundles Typst 0.14.2), `vite`, `typescript`, `vitest`, and the comparison harness's rasterizers: a PDF rasterizer (poppler `pdftoppm`) and an SVG rasterizer (choose one and record it). **Requires your approval before running** (request-install).
+- [X] T005 Install packages with pnpm: `@myriaddreamin/typst.ts` (pinned to typst.ts 0.7.0, which bundles Typst 0.14.2), `vite`, `typescript`, `vitest`, and the margin check's rasterizer `@napi-rs/canvas` (pinned exact; PDF.js from `pdfjs-dist` renders onto it, so no native tools are needed). **Requires your approval before running** (request-install).
 - [X] T006 [P] Create `web/index.html` with the options form (habits, days, and per-row inputs, which User Story 1 scenario 2 needs), preview pane, and download button
 - [X] T007 [P] Create `web/src/style.css` with page-level styles for the form and preview
 
