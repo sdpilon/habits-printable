@@ -14,13 +14,15 @@
 
 - Q: Should the download checks also run on US Letter paper, not only the default A4? → A: Drop A4. The suite tests only US Letter, because that is the only paper size the operator uses. The A4 default stays a product requirement (constitution Technical Constraints) but is not covered by these tests.
 - Q: How long should the suite wait for the preview to finish updating before it treats the wait as a failure? → A: 5 seconds.
+- Q: Should the end-to-end suite run in the existing CI workflow on every pull request, or stay local for now? → A: Add it to the existing CI workflow so it runs on every pull request. The CI runner is Linux.
+- Q: When the suite fails in CI, how long should the failure screenshots stay available to download? → A: 7 days.
 - Q: When one scenario fails, should the suite keep running the remaining scenarios or stop there? → A: Run every scenario and report every failure in the same run.
 - Q: Should the suite test the production build of the page, or the development server? → A: Production build, served locally.
 
 ### Session 2026-10-05
 
 - Q: Which user-facing behavior do the end-to-end tests cover? → A: The complete path a person takes in the web page: choosing options, seeing the preview update, being blocked by invalid or overflowing options, and downloading the PDF. Unit and comparison checks already cover the layout and margin logic, so the end-to-end tests cover only what happens in the browser.
-- Q: Where do the tests run? → A: On the developer's own machine, started by one command on demand. The project has no git remote yet, so a hosted pipeline is not required by this feature. Running on a hosted pipeline later is a follow-on decision.
+- Q: Where do the tests run? → A: On the developer's own machine, started by one command on demand. (Superseded on 2026-10-06: the suite also runs in the existing CI workflow; see above.)
 - Q: Which browsers? → A: One current desktop Chromium-based browser for the first version. Other browsers are a follow-on decision, because the printable output must match across browsers and that comparison is not yet defined.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -93,11 +95,12 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 - **FR-006**: The suite MUST verify, for each of the three layouts, that an overflowing option combination shows the overflow warning and leaves download unavailable.
 - **FR-007**: When a scenario fails, the suite MUST report the scenario name, the step that failed, and save a screenshot of the page at the time of failure.
 - **FR-008**: The suite MUST NOT pass a scenario that was skipped or that produced no file; a missing download is a failure.
-- **FR-009**: The suite MUST run without any hosted service, account, or network access beyond the locally served production build.
+- **FR-009**: The suite MUST run in the repository's existing CI workflow on every pull request, and on a developer's own machine, without any test service or account beyond the repository's CI and the locally served production build.
 - **FR-010**: A developer MUST be able to run the suite on their own machine by following written setup steps, with no setup beyond those steps.
 - **FR-011**: The suite MUST NOT change the layout, the preview, or the download behavior it tests. It only observes and reports.
 - **FR-012**: The suite MUST keep its own test files separate from the existing unit, comparison, and performance tests.
 - **FR-013**: The suite MUST run every scenario even when an earlier scenario fails, and MUST report every failing scenario in the same run.
+- **FR-014**: When the suite runs in CI and a scenario fails, the failure screenshots MUST be kept as downloadable run artifacts for 7 days.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -116,7 +119,7 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 
 ## Assumptions
 
-- The end-to-end tests run on a developer's own machine on demand. Running them in a hosted pipeline is a follow-on decision, because the project has no git remote yet.
+- The end-to-end tests run in the existing CI workflow on every pull request, and can also be run on a developer's own machine on demand. The CI runner is Linux, so the suite must work there.
 - The first version covers one current desktop Chromium-based browser. Other browsers and mobile viewports are out of scope until a follow-on feature defines what must match across them.
 - The page is built and served locally by the suite as a production build, which is what people receive. No staging or hosted site is tested.
 - The suite checks the page's visible behavior and the downloaded file's page count and size. It does not re-check dot positions or margins; those stay with the existing margin check (constitution Principle II) and unit tests.
