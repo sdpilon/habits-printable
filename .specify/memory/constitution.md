@@ -21,7 +21,7 @@ one file cannot. A failing margin check is a defect, not a tolerance to accept.
 ### III. Hand-Fillable Output
 
 Every dot MUST be an empty circle large enough to be filled in by pen or pencil at the default size,
-and the default layout MUST keep all content inside printable margins on A4 and US Letter paper.
+and the default layout MUST keep all content inside printable margins on US Letter paper.
 Output MUST NOT depend on color, interactivity, or any on-page element that is not printed. Rationale:
 the product's only purpose is a physical sheet that a person marks by hand.
 
@@ -42,7 +42,7 @@ amendment adds them. Simplicity is preferred over configurability that no spec r
 
 - Layout and rendering MUST use Typst. This is a user-mandated constraint and MUST NOT be replaced
   without a MAJOR amendment.
-- The default paper size MUST be A4; US Letter MUST be available.
+- The paper size MUST be US Letter. No other paper size is supported, and A4 MUST NOT be offered.
 - Exports MUST be generated at 100% scale with no scaling applied by the tool, so that printed
   dimensions match the preview.
 - Maximum habit count, day count, and dots per row MUST be defined as explicit limits in the
@@ -73,4 +73,4 @@ Versioning policy (semantic versioning):
 Compliance review: every spec, plan, and review MUST check the Core Principles and Technical
 Constraints. Complexity beyond what a spec requires MUST be justified against Principle V.
 
-**Version**: 1.1.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
+**Version**: 2.0.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-06
