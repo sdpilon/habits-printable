@@ -1,6 +1,6 @@
 # Feature Specification: Printable Habit Grid
 
-**Feature Branch**: None. This feature is developed on the project's git branches (`main`, or a topic branch such as `chore/npm-margin-check`); no per-feature branch is created.
+**Feature Branch**: `001-printable-habit-grid`
 
 **Created**: 2026-10-05
 

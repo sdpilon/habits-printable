@@ -1,6 +1,6 @@
 # Implementation Plan: Printable Habit Grid
 
-**Branch**: None (see spec.md) | **Date**: 2026-10-05 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-printable-habit-grid` | **Date**: 2026-10-05 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `specs/001-printable-habit-grid/spec.md`
 
