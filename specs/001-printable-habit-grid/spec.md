@@ -1,6 +1,6 @@
 # Feature Specification: Printable Habit Grid
 
-**Feature Branch**: Not applicable (project is not a git repository)
+**Feature Branch**: None. This feature is developed on the project's git branches (`main`, or a topic branch such as `chore/npm-margin-check`); no per-feature branch is created.
 
 **Created**: 2026-10-05
 
@@ -114,7 +114,7 @@ The person adjusts how the dots are arranged on the page (for example how many d
 ### Measurable Outcomes
 
 - **SC-001**: A person can go from opening the page to downloading a printable tracker in under 1 minute on first use.
-- **SC-002**: The preview visibly updates within 0.2 seconds of any valid option change that fits on one page. The timing check measures the largest page that fits. Previews of overflowing layouts show the overflow warning and are not timed.
+- **SC-002**: The preview visibly updates within 0.2 seconds of any valid option change that fits on one page. The timing check measures the compile of the fitting page with the most dots (A4, calendars layout, 9 habits, 360 days, 24 per row, 2 mm dots: 3,240 dots), as the median of ten compiles. Drawing the PDF with PDF.js is not part of this measure. Previews of overflowing layouts show the overflow warning and are not timed.
 - **SC-003**: For 100% of option combinations, the on-screen preview and the downloaded PDF are the same file: the preview is drawn from the downloaded PDF, so they match by construction.
 - **SC-004**: Printed at 100% scale on standard home paper, 100% of dots and label areas are fully visible with no clipping at the edges.
 - **SC-005**: 100% of invalid option values (empty, zero, negative, non-numeric, over maximum) produce a clear on-screen message and cannot produce a downloaded PDF.

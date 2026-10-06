@@ -4,7 +4,7 @@
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/, quickstart.md
 
-**Tests**: The spec does not request TDD. Included: option validation unit tests (plan.md lists Vitest) and the preview-vs-PDF comparison, which constitution Principle II requires for every layout change.
+**Tests**: The spec does not request TDD. Included: option validation unit tests (plan.md lists Vitest), the fit-model check against the page count, the timing check (SC-002), and the printable-margin check (`pnpm margins`), which constitution Principle III requires for every layout change. Principle II holds by construction (the preview draws the download's PDF), so no preview-vs-PDF comparison is needed.
 
 **Organization**: Tasks are grouped by user story so each story can be implemented and checked on its own.
 
@@ -58,7 +58,7 @@
 - [X] T016 [US1] In `typst/tracker.typ`, draw layout `rows`: one habit per row; dots are empty circles (stroke only) that wrap onto more lines within the habit when `perRow` is reached, in order (FR-003, FR-004, FR-006)
 - [X] T017 [US1] In `typst/tracker.typ`, draw a blank 40 mm label area to the left of each habit row (FR-005)
 - [X] T018 [US1] In `typst/tracker.typ`, print a small day number on days 5, 10, 15, and so on in each habit row, as printed text outside the dots (FR-015)
-- [X] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output of the latest valid compile in `typst-engine.ts`, so the PDF matches the options on screen even if a preview update is still running (spec Edge Cases: download during preview update). It stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
+- [X] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output of the latest valid compile in `typst-engine.ts`, so the PDF matches the options on screen even if a preview update is still running (spec Edge Cases: download during preview update). This task also keeps the newest valid compile (the tracking that T023 builds on). It stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
 - [ ] T020 [US1] Run `pnpm margins` on the default case in `tests/comparison/cases.json` and record the result (Principle III)
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
@@ -73,9 +73,9 @@
 
 - [X] T021 [US2] In `web/src/main.ts`, add input listeners on every option field so each change recompiles the preview without an apply action (FR-008)
 - [X] T022 [US2] In `web/src/main.ts`, show a clear placeholder for empty or intermediate values and keep the last valid preview on screen until a valid value arrives (FR-012, User Story 2 scenario 3)
-- [X] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview, and keep the newest valid compile available for the download in T019 (Edge Cases: stale preview)
+- [X] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview, using the newest-valid tracking from T019 (Edge Cases: stale preview)
 - [X] T024 [US2] In `web/src/main.ts`, show the overflow warning on screen when `overflowing` is true (FR-013, SC-006)
-- [X] T025 [US2] Create `tests/perf/timing.test.ts` that compiles the largest page that fits (20 habits, 31 days, layout `calendars`, 7 per row) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
+- [X] T025 [US2] Create `tests/perf/timing.test.ts` that compiles the fitting page with the most dots (A4, layout `calendars`, 9 habits, 360 days, 24 per row, 2 mm dots; 3,240 dots) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
 
 **Checkpoint**: User Stories 1 and 2 both work on their own.
 
@@ -120,7 +120,7 @@
 
 ### User Story Dependencies
 
-- **US1 (P1)**: Starts after Phase 2. No dependency on other stories.
+- **US1 (P1)**: Starts after Phase 2. No dependency on other stories. T019 keeps the newest valid compile itself, so it does not wait for US2's T023.
 - **US2 (P2)**: Starts after Phase 2. Uses the preview wiring from T012. Independent of US1's drawing work.
 - **US3 (P3)**: Starts after US1, because it extends the `rows` drawing in `typst/tracker.typ`.
 

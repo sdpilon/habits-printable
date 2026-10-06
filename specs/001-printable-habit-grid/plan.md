@@ -1,6 +1,6 @@
 # Implementation Plan: Printable Habit Grid
 
-**Branch**: `001-printable-habit-grid` | **Date**: 2026-10-05 | **Spec**: [spec.md](./spec.md)
+**Branch**: None (see spec.md) | **Date**: 2026-10-05 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `specs/001-printable-habit-grid/spec.md`
 
@@ -24,7 +24,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 **Project Type**: Static web application (client-side only).
 
-**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured on a mid-range laptop with the largest page that fits: 20 habits, 31 days, layout `calendars`, 7 per row (the case timed by T025).
+**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured as the compile only (PDF.js drawing is not timed) for the fitting page with the most dots: A4, layout `calendars`, 9 habits, 360 days, 24 per row, 2 mm dots (3,240 dots; the case timed by T025).
 
 **Constraints**: All layout in one Typst file (Principle I). PDF exported at 100% scale with no tool-side scaling (constitution Technical Constraints). Dot diameter 2 to 5 mm; row label area 40 mm in layout (1) only (header sizes in data-model.md); per-row max 31; habits max 20; days max 365 (spec clarifications).
 
