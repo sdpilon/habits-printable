@@ -29,7 +29,7 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 
 ## 3. How the suite knows a preview has settled
 
-**Decision**: `update()` in `web/src/main.ts` sets `aria-busy="true"` on the preview section when a change starts and `aria-busy="false"` when its render queue has finished. The suite waits for `aria-busy="false"` with a 5-second timeout (clarified). The attribute is set on the section with `id="preview-section"`, which is added to `index.html`.
+**Decision**: `update()` in `web/src/main.ts` sets `aria-busy="true"` on the preview section when a change starts and `aria-busy="false"` when its render queue has finished. The suite waits for `aria-busy="false"` with a 5-second timeout (clarified). The attribute is set on the section with `id="preview-section"`, which is added to `index.html`. The same section carries `data-habits` and `data-days`, set in the render callback after each successful render, so they describe the layout last drawn. US1 AC2 reads them (see plan Complexity Tracking).
 
 **Rationale**: The page has no existing signal for a finished preview. `aria-busy` is standard, not visible, and useful for assistive technology. The change does not alter layout, preview, or download behaviour (FR-011). The download button's `disabled` state can't be used alone, because it stays disabled for invalid input and overflow too.
 

@@ -30,8 +30,8 @@ The form is found by `#options`. Inputs are found by `name`, not position.
 | Element | Meaning |
 |---------|---------|
 | `#preview-section` | **New (test-visible)**. The preview section. Its `aria-busy` attribute is `"true"` from the moment an option change is accepted until the newest render has finished, then `"false"`. |
-| `#preview-section[data-habits]` | **New (test-visible)**. The habit count of the layout currently shown, as a decimal integer string. Set when a valid layout renders. Removed when the options are invalid or the layout does not fit, so it never reports a stale count (Principle IV). |
-| `#preview-section[data-days]` | **New (test-visible)**. The day count of the layout currently shown, as a decimal integer string. Set and removed together with `data-habits`. |
+| `#preview-section[data-habits]` | **New (test-visible)**. The habit count of the layout last drawn into `#preview`, as a decimal integer string. Set after each successful render, including layouts that overflow (the preview still draws them and download is disabled). Unchanged on invalid input, because the last valid preview stays on screen (FR-012). Absent until the first render. |
+| `#preview-section[data-days]` | **New (test-visible)**. The day count of the layout last drawn into `#preview`, as a decimal integer string. Set and kept in step with `data-habits`. |
 | `#preview canvas` | The rendered page 1 of the current valid layout. |
 
 **Settled** means `#preview-section` has `aria-busy="false"`. The suite waits up to 5 seconds for that state (clarification, 2026-10-06). It fails the scenario with the step name if the state is not reached.
