@@ -59,7 +59,8 @@
 - [X] T017 [US1] In `typst/tracker.typ`, draw a blank 40 mm label area to the left of each habit row (FR-005)
 - [X] T018 [US1] In `typst/tracker.typ`, print a small day number on days 5, 10, 15, and so on in each habit row, as printed text outside the dots (FR-015)
 - [X] T019 [US1] In `web/src/main.ts`, wire the download button to the PDF output of the latest valid compile in `typst-engine.ts`, so the PDF matches the options on screen even if a preview update is still running (spec Edge Cases: download during preview update). This task also keeps the newest valid compile (the tracking that T023 builds on). It stays disabled while options are invalid or `overflowing` is true (FR-009, FR-013, SC-005)
-- [ ] T020 [US1] Run `pnpm margins` on the default case in `tests/comparison/cases.json` and record the result (Principle III)
+- [X] T020 [US1] Run `pnpm margins` on the default case in `tests/comparison/cases.json` and record the result (Principle III)
+  - Result: default-a4 PASS (content box 920x2699+118+119, margin 118 px); default-letter PASS (same box). Run on Node 24.
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
 
@@ -76,6 +77,7 @@
 - [X] T023 [US2] In `web/src/main.ts`, tag each compile request with an increasing id and display only the newest result, so a slow earlier compile can't overwrite a newer preview, using the newest-valid tracking from T019 (Edge Cases: stale preview)
 - [X] T024 [US2] In `web/src/main.ts`, show the overflow warning on screen when `overflowing` is true (FR-013, SC-006)
 - [X] T025 [US2] Create `tests/perf/timing.test.ts` that compiles the fitting page with the most dots (A4, layout `calendars`, 9 habits, 360 days, 24 per row, 2 mm dots; 3,240 dots) ten times through `web/src/typst-engine.ts` and fails if the median compile time is above 0.2 s (SC-002). Expose it as `pnpm perf` (T001). Record the measured time in the review.
+  - Result: median compile 57.0 ms over ten runs (`pnpm perf`, passed). Compile only; PDF.js drawing is not timed.
 
 **Checkpoint**: User Stories 1 and 2 both work on their own.
 
@@ -93,7 +95,8 @@
 - [X] T029 [US3] In `typst/tracker.typ`, print the every-fifth-day numbers in layouts `columns` and `calendars` too (FR-015)
 - [X] T030 [US3] In `web/index.html` and `web/src/main.ts`, add controls for layout, dot size, dot spacing, and paper size, wired into `TrackerOptions` (FR-003, FR-007, FR-011). The per-row control is added earlier, in T006.
 - [X] T031 [US3] Add cases for layouts `columns` and `calendars`, including overflow cases, to `tests/comparison/cases.json`
-- [ ] T032 [US3] Run `pnpm margins` on every case in `tests/comparison/cases.json` and record the results in the review (Principle III)
+- [X] T032 [US3] Run `pnpm margins` on every case in `tests/comparison/cases.json` and record the results in the review (Principle III)
+  - Result: 12 cases in cases.json. PASS on 7 fitting cases: default-a4, default-letter, rows-minimums, rows-31-small-dots, columns-small, calendars-default, calendars-one-per-row. Skipped as overflow on 5: rows-max-habits-and-days, rows-too-wide, columns-too-tall, columns-too-wide, calendars-too-tall. Exit 0 on Node 24.
 
 **Checkpoint**: All user stories work on their own.
 
@@ -103,8 +106,10 @@
 
 **Purpose**: Final checks across all stories
 
-- [ ] T033 Run the scenarios in `specs/001-printable-habit-grid/quickstart.md` (1 to 7) and record the outcome of each
-- [ ] T034 Print the default PDF at 100% scale on home paper, once on A4 and once on US Letter, and confirm no dots or labels are clipped and all content is inside the 10 mm margin on both (SC-004, Principle III)
+- [X] T033 Run the scenarios in `specs/001-printable-habit-grid/quickstart.md` (1 to 7) and record the outcome of each
+  - Result: all seven scenarios passed by hand, reported by the reviewer. Scenario 7 is the print check, so its result overlaps T034; see T034.
+- [X] T034 Print the default PDF at 100% scale on home paper, once on A4 and once on US Letter, and confirm no dots or labels are clipped and all content is inside the 10 mm margin on both (SC-004, Principle III)
+  - Result: printed at 100% on A4 and on US Letter; no dots or labels clipped, all content inside the 10 mm margin on both. Confirmed by the reviewer.
 - [X] T035 [P] Update `specs/001-printable-habit-grid/spec.md` User Story 1 scenarios so they state they assume layout `rows`, the default per-row count, and wrapping of dots within each habit (A1)
 
 ---
