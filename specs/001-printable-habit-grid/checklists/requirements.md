@@ -31,6 +31,6 @@
 
 ## Notes
 
-- All items pass on the first iteration. No clarification questions were needed: paper size (A4 default, Letter available), per-habit day count, and label handling were resolved as documented assumptions.
+- All items pass on the first iteration. The spec records 11 clarification answers from session 2026-10-05 (spec.md, Clarifications), which resolved the per-habit day count, the overflow rules, the layouts, and the label handling. Paper size (A4 default, Letter available) remains a documented assumption.
 - Planning decisions deliberately left open: exact default values and maximum limits (habits, days, dots per row), and how the shared Typst layout is wired into the web page.
 - Ready for `/speckit-clarify` (optional) or `/speckit-plan`.

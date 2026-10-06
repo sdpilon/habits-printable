@@ -19,3 +19,6 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+
+# Cross-project registry entry (read by ~/.claude/bldoc.toml, not by this repo)
+entry-description.md

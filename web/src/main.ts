@@ -12,8 +12,9 @@ const download = document.querySelector<HTMLButtonElement>('#download')!;
 
 // Newest request wins (T023): a slow earlier compile can't overwrite a newer preview.
 let latestRequest = 0;
-// The newest valid compile; the download always uses it (T019).
+// The newest valid compile and the request that produced it; the download and preview use it (T019, T036).
 let latestValid: Compiled | null = null;
+let latestValidRequest = 0;
 let renderQueue: Promise<void> = Promise.resolve();
 
 function readForm(): RawOptions {
@@ -44,23 +45,34 @@ async function update(): Promise<void> {
   const request = ++latestRequest;
   const result = validate(readForm());
   showErrors(result.ok ? {} : result.errors);
+  // Any change disables download until the newest compile finishes, so the PDF always matches the form (T037).
+  download.disabled = true;
 
   if (!result.ok) {
     // Keep the last valid preview on screen (FR-012); download stays disabled.
-    download.disabled = true;
     warning.hidden = true;
     return;
   }
 
   const compiled = await compileTracker(result.options);
-  if (request !== latestRequest) return;
+  // An older valid compile never replaces a newer one (T023).
+  if (request < latestValidRequest) return;
 
+  latestValidRequest = request;
   latestValid = compiled;
-  warning.hidden = !compiled.overflowing;
-  download.disabled = compiled.overflowing;
-  // Renders are queued so an older render can never finish after a newer one (T023).
+  // Warning and download follow the newest input only; a later invalid input owns them (FR-012).
+  if (request === latestRequest) {
+    warning.hidden = !compiled.overflowing;
+    download.disabled = compiled.overflowing;
+  }
+  // Renders are queued so an older render can never finish after a newer one (T023). A valid layout
+  // is still drawn when a later input is invalid, so the preview never lags the last valid options (T036).
+  // A failed render is logged and skipped, so it cannot stop later renders from running (US2/AC3, T038).
   renderQueue = renderQueue.then(() => {
-    if (request === latestRequest) return renderPreview(preview, compiled.pdf);
+    if (request !== latestValidRequest) return;
+    return renderPreview(preview, compiled.pdf).catch((error: unknown) => {
+      console.error('Preview render failed; the previous preview stays on screen.', error);
+    });
   });
   await renderQueue;
 }

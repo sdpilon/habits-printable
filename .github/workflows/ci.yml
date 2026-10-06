@@ -6,18 +6,15 @@ on:
 
 jobs:
   check:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install native tools
-        run: brew bundle --file=Brewfile
+      - uses: actions/checkout@v7
 
       - name: Install pnpm (version from packageManager)
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
@@ -34,5 +31,5 @@ jobs:
       - name: Timing check
         run: pnpm perf
 
-      - name: Preview-vs-PDF comparison
-        run: pnpm compare
+      - name: Margin check
+        run: pnpm margins

@@ -1,14 +1,15 @@
-// SC-002: preview updates within 0.2 s. Times the largest page that fits (20 habits, 31 days, calendars), median of ten runs.
+// SC-002: preview updates within 0.2 s. Times the fitting page with the most dots (A4, 9 habits, 360 days,
+// calendars, 24 per row, 2 mm dots: 3,240 dots), median of ten compiles. Rendering with PDF.js is not timed.
 import { describe, expect, it } from 'vitest';
 import { compileTracker } from '../../web/src/typst-engine.ts';
 
 const largestFit = {
   layout: 'calendars' as const,
-  habits: 20,
-  days: 31,
-  perRow: 7,
-  dotDiameterMm: 4,
-  dotSpacingMm: 1.5,
+  habits: 9,
+  days: 360,
+  perRow: 24,
+  dotDiameterMm: 2,
+  dotSpacingMm: 0.5,
   paper: 'a4' as const,
 };
 

@@ -18,13 +18,13 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 **Storage**: N/A. Options live in page state only; nothing is saved.
 
-**Testing**: Vitest for option validation, the fit model against the engine's page count, and the timing check. A margin check rasterizes each PDF and confirms content sits inside the 10 mm margin (Principle III), run in a dev container.
+**Testing**: Vitest for option validation, the fit model against the engine's page count, and the timing check. A margin check rasterizes each PDF and confirms content sits inside the 10 mm margin (Principle III), run with `pnpm margins` on Node 24.
 
 **Target Platform**: Desktop and laptop browsers (modern Chromium, Firefox, Safari). Mobile is out of scope per spec.
 
 **Project Type**: Static web application (client-side only).
 
-**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured on a mid-range laptop with the largest page that fits: 20 habits, 31 days, layout `calendars`, 7 per row (the case timed by T025).
+**Performance Goals**: Preview updates within 0.2 s of a valid option change (SC-002), measured as the compile only (PDF.js drawing is not timed) for the fitting page with the most dots: A4, layout `calendars`, 9 habits, 360 days, 24 per row, 2 mm dots (3,240 dots; the case timed by T025).
 
 **Constraints**: All layout in one Typst file (Principle I). PDF exported at 100% scale with no tool-side scaling (constitution Technical Constraints). Dot diameter 2 to 5 mm; row label area 40 mm in layout (1) only (header sizes in data-model.md); per-row max 31; habits max 20; days max 365 (spec clarifications).
 
@@ -37,7 +37,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 | Principle | Check | Status |
 |-----------|-------|--------|
 | I. Single Layout Source | Grid drawn only in `typst/tracker.typ`. The page holds form controls and passes values to Typst; it has no grid drawing code. | PASS |
-| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. The constitution's wording still describes a comparison; see the open amendment question. | PASS (by construction; amendment pending) |
+| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. | PASS (by construction; amended in 1.1.0) |
 | III. Hand-Fillable Output | Dots are empty circles drawn with stroke only; default size is 4 mm, within the 2–5 mm range. Margins are kept inside the page (Typst page margins). | PASS |
 | IV. Responsive Options | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid PDF on screen until a valid value arrives. | PASS |
 | V. Scope Discipline | No accounts, storage, or analytics. Three layouts are required by the spec (user-specified), so their complexity is justified; it's the only added configurability. | PASS (justified below) |

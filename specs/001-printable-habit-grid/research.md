@@ -38,7 +38,7 @@ No NEEDS CLARIFICATION markers remained in the spec after `/speckit-clarify`, so
 
 - **Decision**: The preview draws the same PDF file as the download, using PDF.js on a canvas. The SVG pipeline and the pixel comparison were removed.
 - **Rationale**: Two renderings of one layout can never match exactly. Measured in Chromium, PDF.js renders the default page in 17 ms and the largest fitting page in 17 ms, both well under 0.2 s. A single file makes Principle II true by construction.
-- **Margin check**: each fitting case's PDF is rasterized at 300 dpi with Ghostscript (through ImageMagick), and printed content must sit inside 10 mm on every side (`tests/comparison/margins.ts`).
+- **Margin check**: each fitting case's PDF is rasterized at 300 dpi with PDF.js onto a Skia canvas (`@napi-rs/canvas`), and printed content must sit inside 10 mm on every side (`tests/comparison/margins.ts`).
 - **Alternatives considered**: a pixel comparison of SVG against PDF (tested with two renderer stacks, neither reached zero differences); geometry comparison of SVG and PDF (large effort and needs a tolerance).
 
 ## 7. Tooling
