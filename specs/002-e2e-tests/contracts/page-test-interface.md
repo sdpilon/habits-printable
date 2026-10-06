@@ -30,6 +30,8 @@ The form is found by `#options`. Inputs are found by `name`, not position.
 | Element | Meaning |
 |---------|---------|
 | `#preview-section` | **New (test-visible)**. The preview section. Its `aria-busy` attribute is `"true"` from the moment an option change is accepted until the newest render has finished, then `"false"`. |
+| `#preview-section[data-habits]` | **New (test-visible)**. The habit count of the layout currently shown, as a decimal integer string. Set when a valid layout renders. Removed when the options are invalid or the layout does not fit, so it never reports a stale count (Principle IV). |
+| `#preview-section[data-days]` | **New (test-visible)**. The day count of the layout currently shown, as a decimal integer string. Set and removed together with `data-habits`. |
 | `#preview canvas` | The rendered page 1 of the current valid layout. |
 
 **Settled** means `#preview-section` has `aria-busy="false"`. The suite waits up to 5 seconds for that state (clarification, 2026-10-06). It fails the scenario with the step name if the state is not reached.
@@ -42,4 +44,4 @@ The form is found by `#options`. Inputs are found by `name`, not position.
 ## Stability promises
 
 - These names and values stay as they are. A new name or value must be added here first.
-- `aria-busy` is the only attribute added to the page for the suite. It must not change layout, the preview, or the download (FR-011).
+- `aria-busy`, `data-habits`, and `data-days` are the only attributes added to the page for the suite. They must not change layout, the preview, or the download (FR-011).
