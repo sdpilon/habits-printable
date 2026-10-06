@@ -92,7 +92,7 @@ package.json                  # CHANGED: "e2e" script; @playwright/test devDepen
 .gitignore                    # CHANGED: Playwright output directories
 ```
 
-**Structure Decision**: One Playwright project under `tests/e2e/` next to the existing test folders. The suite imports only `web/src/typst-compile.ts` (for `countPdfPages`, which has no build-time imports), so the PDF check reuses the product's own page counter. The only product-code changes are three test-only attributes on the preview section (`aria-busy`, `data-habits`, `data-days`), set in `update()`.
+**Structure Decision**: One Playwright project under `tests/e2e/` next to the existing test folders. The suite imports only `web/src/typst-compile.ts` (for `countPdfPages`). That module imports the Typst compiler when it loads. It loads in Node 24, so the test runner can import it, at the cost of loading the compiler at test startup. The PDF check reuses the product's own page counter. The only product-code changes are three test-only attributes on the preview section (`aria-busy`, `data-habits`, `data-days`), set in `update()`.
 
 ## Complexity Tracking
 

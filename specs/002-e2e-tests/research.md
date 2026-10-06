@@ -41,7 +41,7 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 ## 4. Checking the downloaded PDF
 
 **Decision**: Save the download (`download.path()`) and check it with two small helpers in `tests/e2e/support/pdf.ts`:
-- Page count: reuse `countPdfPages` from `web/src/typst-compile.ts`. It has no build-time imports, so Playwright's Node runner can import it.
+- Page count: reuse `countPdfPages` from `web/src/typst-compile.ts`. That module imports the Typst compiler when it loads. It loads in Node 24, so Playwright's runner can import it, at the cost of loading the compiler at test startup.
 - Page size: read the first page's `/MediaBox` with a regular expression. US Letter is 612 × 792 points.
 
 **Rationale**: No new dependency. The count matches what the product itself uses to block overflow (FR-013), so the test and the product agree.
