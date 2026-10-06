@@ -37,7 +37,7 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 | Principle | Check | Status |
 |-----------|-------|--------|
 | I. Single Layout Source | Grid drawn only in `typst/tracker.typ`. The page holds form controls and passes values to Typst; it has no grid drawing code. | PASS |
-| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. The constitution's wording still describes a comparison; see the open amendment question. | PASS (by construction; amendment pending) |
+| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. | PASS (by construction; amended in 1.1.0) |
 | III. Hand-Fillable Output | Dots are empty circles drawn with stroke only; default size is 4 mm, within the 2–5 mm range. Margins are kept inside the page (Typst page margins). | PASS |
 | IV. Responsive Options | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid PDF on screen until a valid value arrives. | PASS |
 | V. Scope Discipline | No accounts, storage, or analytics. Three layouts are required by the spec (user-specified), so their complexity is justified; it's the only added configurability. | PASS (justified below) |
