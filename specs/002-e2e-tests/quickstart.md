@@ -15,7 +15,7 @@ pnpm install
 pnpm e2e
 ```
 
-`pnpm e2e` builds the production page, serves it locally on a fixed port, and runs every scenario. It exits with a non-zero status if any scenario fails.
+`pnpm e2e` builds the production page into a folder for this run, serves it on a free local port, and runs every scenario. It always builds fresh, so it never tests an older build. It exits with a non-zero status if any scenario fails.
 
 Open the HTML report after a run. Each run writes to its own folder, named by its run ID. Set `E2E_RUN_ID` to choose the name, or let it default to a timestamp and process ID:
 
@@ -54,15 +54,15 @@ Every scenario starts from the defaults below. Reset the form to them first, the
 ### User Story 2: preview and input
 
 3. **Each option updates the preview.** For each option below, change only that option and expect: the preview settles within 5 seconds, the preview canvas changes, and download stays enabled. Habits and days also check their count attributes.
-   - Habits 5 → 6 (`data-habits` = `6`)
+   - Habits 5 → 4 (`data-habits` = `4`). Habits 6 overflows at the default days, so the check uses 4
    - Days 31 → 14 (`data-days` = `14`)
-   - Per row 7 → 5
+   - Per row 7 → 10. Per row 5 overflows at the default days, so the check uses 10
    - Dot diameter 4 → 3
    - Dot spacing 1.5 → 2
    - Layout → `columns`
 
    Each option is its own test, so a broken option fails only its own scenario.
-4. **Invalid habit count, each kind.** For each of empty, `0`, `-1`, `abc`, and `21`: expect a message in `#messages`, the field flagged `aria-invalid="true"`, and download disabled. Run once per kind.
+4. **Invalid habit count, each kind.** For each of empty, `0`, `-1`, non-numeric (typed as `1e`, which the browser flags as bad input), and `21`: expect a message in `#messages`, the field flagged `aria-invalid="true"`, and download disabled. Run once per kind.
 5. **Recovery.** After an invalid value, enter `5`. Expect the message to clear and download to be enabled again.
 
 ### User Story 3: overflow block
@@ -70,7 +70,7 @@ Every scenario starts from the defaults below. Reset the form to them first, the
 6. **Overflow, rows.** Habits 20, days 365, per row 1. Expect `#warning` visible, download disabled, and the counts to read `20` and `365` (the overflowing layout is still drawn).
 7. **Overflow, columns.** Layout `columns`, days 365 (habits at the default 5). Expect the same warning and blocked download, with counts `5` and `365`.
 8. **Overflow, calendars.** Layout `calendars`, habits 20, days 365, per row 1. Expect the same warning, blocked download, and counts `20` and `365`.
-9. **Fix an overflow.** From scenario 6, habits 20 → 5. Expect the warning to clear, download to be enabled, and `data-habits` to read `5`.
+9. **Fix an overflow.** Set habits 20 at the default days (31) and per row (7). Expect the warning to show. Then habits 20 → 5. Expect the warning to clear, download to be enabled, and `data-habits` to read `5` and `data-days` to read `31`. Days 365 is not used here, because at 1 dot per row no habit count fits one page.
 
 ## Checks each scenario makes
 
@@ -90,5 +90,5 @@ Every scenario starts from the defaults below. Reset the form to them first, the
 ## Troubleshooting
 
 - **Browser not found**: check that `~/Library/Caches/ms-playwright/chromium-1243` exists. Playwright needs a Chromium binary, and a browser download needs a separate approval.
-- **Port already in use**: the config uses a fixed port with `--strictPort`. Stop the other process, or run with the existing server reused locally.
+- **Build fails**: the run stops before any scenario starts. The message says the page could not be built and so could not be reached. Fix the build error shown above it.
 - **Preview never settles**: check the browser console in the screenshot path under `test-results/<runId>/`; the suite waits 5 seconds and then reports the step.

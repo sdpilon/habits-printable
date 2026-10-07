@@ -8,7 +8,7 @@ const valid: RawOptions = {
   perRow: '7',
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
-  paper: 'a4',
+  paper: 'letter',
 };
 
 describe('validate', () => {
@@ -38,6 +38,12 @@ describe('validate', () => {
     }
   });
 
+  it('rejects A4, because US Letter is the only paper size', () => {
+    const result = validate({ ...valid, paper: 'a4' });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errors.paper).toBeTruthy();
+  });
+
   it('accepts the limit values', () => {
     const result = validate({ ...valid, habits: '20', days: '365', perRow: '31', dotDiameterMm: '2', dotSpacingMm: '0.5' });
     expect(result.ok).toBe(true);
@@ -53,7 +59,7 @@ describe('toTypstInputs', () => {
       perRow: '7',
       dotDiameterMm: '4',
       dotSpacingMm: '1.5',
-      paper: 'a4',
+      paper: 'letter',
     });
   });
 });

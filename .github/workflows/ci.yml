@@ -33,3 +33,16 @@ jobs:
 
       - name: Margin check
         run: pnpm margins
+
+      - name: End-to-end tests
+        run: pnpm e2e
+
+      - name: Upload e2e results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7

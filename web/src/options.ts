@@ -1,7 +1,8 @@
 // Option types, defaults, and validation (FR-012). Limits come from data-model.md and the spec.
 
 export type Layout = 'rows' | 'columns' | 'calendars';
-export type Paper = 'a4' | 'letter';
+// US Letter is the only paper size (constitution Technical Constraints).
+export type Paper = 'letter';
 
 export interface TrackerOptions {
   layout: Layout;
@@ -20,11 +21,11 @@ export const DEFAULTS: TrackerOptions = {
   perRow: 7,
   dotDiameterMm: 4,
   dotSpacingMm: 1.5,
-  paper: 'a4',
+  paper: 'letter',
 };
 
 export const LAYOUTS: readonly Layout[] = ['rows', 'columns', 'calendars'];
-export const PAPERS: readonly Paper[] = ['a4', 'letter'];
+export const PAPERS: readonly Paper[] = ['letter'];
 
 type NumericField = 'habits' | 'days' | 'perRow' | 'dotDiameterMm' | 'dotSpacingMm';
 
