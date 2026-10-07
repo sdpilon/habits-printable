@@ -17,9 +17,9 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 
 ## 2. Page under test: production build, served locally
 
-**Decision**: The `webServer` entry in `playwright.config.ts` runs `pnpm build` and then `vite preview` on a fixed port with `--strictPort`. Playwright reuses an already-running server locally (`reuseExistingServer: !process.env.CI`).
+**Decision**: The `webServer` entry in `playwright.config.ts` builds a fresh production bundle for each run, then runs `vite preview` on a free port chosen for that run, with `--strictPort`. The build runs through `tests/e2e/support/build-page.mjs` into `dist/e2e-<runId>`, which the global teardown removes at the end of the run. The server is never reused (`reuseExistingServer: false`), so a run can never test an older build. Two runs can therefore happen at the same time (spec Edge Cases).
 
-**Verified**: `pnpm build` completes on this machine with the existing dependencies (built in 375 ms, output in `dist/`, which is git-ignored). `vite.config.ts` sets `root: 'web'` and `build.outDir: '../dist'`, so `vite preview` serves the same output.
+**Verified**: `pnpm build` completes on this machine with the existing dependencies (built in 375 ms, output in `dist/`, which is git-ignored). `vite.config.ts` sets `root: 'web'` and `build.outDir: '../dist'`. The run passes `--outDir` explicitly, so `vite preview` serves the same output as the build. The first CI run on `ubuntu-latest` passed the build and the e2e step with `channel: 'chrome'` (run 37555321864).
 
 **Alternatives considered**:
 - *Development server*: the spec changed to the production build on 2026-10-06, since that is what people receive. Rejected.

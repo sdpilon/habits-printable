@@ -186,3 +186,7 @@ Task: "Create tests/e2e/support/page.ts with openPage, resetDefaults, setOption,
 - [X] T036 Check that the overflowing columns layout creates no side-by-side columns (US3 AC2). Either add an assertion to the columns overflow test in `tests/e2e/overflow.spec.ts` that the page-1 drawing has one column of habits (for example from the PDF text positions), or record in the spec that this cannot be checked from the page. Currently the test has only a comment saying it is not asserted (partial)
 - [X] T037 Align US1 AC2 with what the test checks. `spec.md` says "visible habit count and day count", but `tests/e2e/download.spec.ts` checks the `data-habits` and `data-days` attributes of the layout last drawn. Either change the spec to "drawn" or add a check that the grid is visibly shown per US1 AC2 (partial)
 - [X] T038 Add a task documenting the per-run build cleanup in `tests/e2e/support/global-teardown.ts`, which is in the code but not in `tasks.md`, or remove it if it is not wanted (unrequested)
+
+## Phase 8: Convergence
+
+- [X] T039 Update `specs/002-e2e-tests/research.md` §2 to match the implemented server setup: a free port per run (not a fixed port), a fresh build into `dist/e2e-<runId>` through `tests/e2e/support/build-page.mjs`, and no server reuse. Also replace the open check about `pnpm build` on CI with the result of the first CI run (passed on `ubuntu-latest`) per research.md §2 and the implemented `playwright.config.ts` (partial)
