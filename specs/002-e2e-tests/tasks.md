@@ -94,7 +94,7 @@
 - [X] T022 [P] Verify the `/MediaBox` regular expression against Typst output for the default layout, as research.md §4 requires. Adjust `tests/e2e/support/pdf.ts` if the first page's box is written differently
 - [X] T023 Run `pnpm e2e` locally from a clean state and confirm every scenario in quickstart.md passes, and that a single run finishes within 3 minutes (SC-001)
 - [X] T024 Run `pnpm e2e` twice at the same time on one machine. Confirm each run writes to its own `test-results/<runId>` and `playwright-report/<runId>`, and that the second run does not read the first run's PDF (spec Edge Cases). The two local runs share one static server on the fixed port, which is expected
-- [ ] T025 Confirm on the first CI run that `pnpm build` and the Chrome channel work on `ubuntu-latest` (research.md §2 and §5). If the runner has no Chrome, stop and raise it before adding a browser download
+- [X] T025 Confirm on the first CI run that `pnpm build` and the Chrome channel work on `ubuntu-latest` (research.md §2 and §5). If the runner has no Chrome, stop and raise it before adding a browser download
 - [X] T026 Run quickstart.md validation: follow the written setup steps on a clean checkout and confirm no step is missing
 - [X] T027 In a scratch copy or `git worktree` (not the real tree), break the invalid-habit message and run `pnpm e2e`. Confirm only the matching scenario fails and the report names its failing step (SC-003)
 - [X] T028 Run `pnpm e2e` 10 times in a row on an unchanged tree. Record that all 10 runs pass (SC-004)
