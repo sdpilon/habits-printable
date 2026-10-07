@@ -194,3 +194,7 @@ Task: "Create tests/e2e/support/page.ts with openPage, resetDefaults, setOption,
 ## Phase 9: Convergence
 
 - [X] T040 Update the open-check wording in `specs/002-e2e-tests/research.md` to the results already observed: §1 (the Chromium "not yet verified in a CI run" note; the first CI run passed the Chrome channel), §4 (the `/MediaBox` check passes in the download test), and §5 (the CI Chrome channel verified on `ubuntu-latest`, run 37555321864). Remove the "verify on the first CI run" wording and the conditional fallback, per research.md §1, §4 and §5 (partial)
+
+## Phase 10: Convergence
+
+- [X] T041 Replace "Measure it on the first run" in `specs/002-e2e-tests/research.md` §6 with the measured time of the e2e step from the first CI run (run 37555321864), and state it against the 3-minute target (SC-001). Measure the step from the run's job log, not the whole job, per research.md §6 (partial)

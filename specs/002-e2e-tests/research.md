@@ -73,7 +73,7 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 - *A separate workflow*: adds a second setup block for the same checkout and install. Rejected for now.
 - *A manually triggered workflow*: the clarification chose every-PR CI. Rejected.
 
-**Risk**: the suite adds time to every PR run. Measure it on the first run; SC-001 sets a 3-minute target for a developer's run, which is the local measure.
+**Risk**: the suite adds time to every PR run. The first CI run (37555321864) took 55 seconds for the e2e step on `ubuntu-latest`, including the production build. That is well inside the 3-minute target in SC-001, which is also the local measure for a developer's run.
 
 ## 7. Where the test files live
 
