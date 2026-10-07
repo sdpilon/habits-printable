@@ -5,6 +5,12 @@ __pycache__/
 # Spec Kit extension catalog cache (machine-local)
 .specify/extensions/.cache/
 
+# Machine-specific findings for the run-project skill (not portable across machines)
+# .SKILL.local.md (tracked) is the empty template; SKILL.local.md is the real, per-machine file
+.claude/skills/run-project/SKILL.local.md
+# Symlink to the confirmed Chromium binary for this machine (see driver.mjs's `launch` command)
+.claude/skills/run-project/.chromium-bin
+
 # Node / web build
 node_modules/
 dist/
