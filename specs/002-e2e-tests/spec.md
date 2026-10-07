@@ -12,7 +12,7 @@
 
 ### Session 2026-10-06
 
-- Q: Should the download checks also run on US Letter paper, not only the default A4? → A: Drop A4. The suite tests only US Letter, because that is the only paper size the operator uses. The A4 default stays a product requirement (constitution Technical Constraints) but is not covered by these tests.
+- Q: Should the download checks also run on US Letter paper, not only the default A4? → A: Drop A4. The suite tests only US Letter, because that is the only paper size the operator uses. The constitution (Technical Constraints) allows US Letter only, so A4 is not offered by the product and is not covered by these tests.
 - Q: How long should the suite wait for the preview to finish updating before it treats the wait as a failure? → A: 5 seconds.
 - Q: Should the end-to-end suite run in the existing CI workflow on every pull request, or stay local for now? → A: Add it to the existing CI workflow so it runs on every pull request. The CI runner is Linux.
 - Q: When the suite fails in CI, how long should the failure screenshots stay available to download? → A: 7 days.

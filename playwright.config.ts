@@ -29,6 +29,8 @@ export default defineConfig({
   outputDir: `test-results/${runId}`,
   forbidOnly: !!process.env.CI,
   retries: 0,
+  // Removes this run's build folder once the run ends, so folders don't pile up under dist/.
+  globalTeardown: './tests/e2e/support/global-teardown.ts',
   reporter: [
     ['list'],
     ['html', { outputFolder: `playwright-report/${runId}`, open: 'never' }],

@@ -81,4 +81,4 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 
 ## 8. Paper size in the form
 
-The page still defaults the paper selector to A4 (`web/index.html`), and the 001 specification and plan still describe A4 as the default. The constitution now requires US Letter only. The suite sets paper to `letter` explicitly in every scenario, so it doesn't depend on the default. The default change belongs to the propagation follow-up from the constitution change, which is outside this feature.
+The constitution requires US Letter only, and A4 must not be offered. The paper selector offers US Letter alone, and its default is `letter` (`web/index.html`, `web/src/options.ts`). The suite also sets paper to `letter` explicitly in every scenario. The 001 specification and plan still describe A4 as the default; they are historical artifacts and were not changed.
