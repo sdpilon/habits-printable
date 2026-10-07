@@ -43,7 +43,7 @@ test.describe('US3: overflow blocking', () => {
 
     await test.step('check warning, blocked download, and drawn counts', async () => {
       await expectOverflowBlocked(page);
-      // Habits stays at the default 5. Whether the drawn columns sit side by side (US3 AC2) is not asserted here.
+      // Habits stays at the default 5. Side-by-side columns are a layout property covered by the unit and margin tests (spec US3 AC2).
       expect(await readPreviewCounts(page)).toEqual({ habits: '5', days: '365' });
     });
   });

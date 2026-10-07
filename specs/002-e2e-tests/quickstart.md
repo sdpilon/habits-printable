@@ -30,7 +30,7 @@ pnpm exec playwright show-report playwright-report/<runId>
 | HTML report | `playwright-report/<runId>/` | Until you delete it locally; 7 days in CI (artifact) |
 | Failure screenshots, traces, and the downloaded PDF copy | `test-results/<runId>/` | Until you delete it locally; 7 days in CI (artifact) |
 
-Both folders are git-ignored. Two runs on one machine write to different folders, so one run cannot read another run's PDF.
+Both folders are git-ignored. Each run also builds into `dist/e2e-<runId>`, which `tests/e2e/support/global-teardown.ts` removes when the run ends. Two runs on one machine write to different folders, so one run cannot read another run's PDF.
 
 ## Scenarios
 

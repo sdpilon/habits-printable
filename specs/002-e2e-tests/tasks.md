@@ -180,3 +180,9 @@ Task: "Create tests/e2e/support/page.ts with openPage, resetDefaults, setOption,
 - [X] T033 Align the scenario values in `quickstart.md` (scenarios 2, 3, 7 and 9) with what the suite now checks: habits 5→4, dots per row 7→10, and the overflow fix reduced at days 31 instead of 365. Then complete open T026 per quickstart.md (partial)
 - [X] T034 Assert `input.validity.badInput` is `true` in the non-numeric invalid-habit test in `tests/e2e/preview-and-input.spec.ts`, so the test checks the browser state it claims to check per FR-005 and T014 (partial)
 - [X] T035 Make a failed build or server start report that the page could not be reached, not only Playwright's generic webServer message, per spec Edge Cases on a local build that cannot be built or served (partial)
+
+## Phase 7: Convergence
+
+- [X] T036 Check that the overflowing columns layout creates no side-by-side columns (US3 AC2). Either add an assertion to the columns overflow test in `tests/e2e/overflow.spec.ts` that the page-1 drawing has one column of habits (for example from the PDF text positions), or record in the spec that this cannot be checked from the page. Currently the test has only a comment saying it is not asserted (partial)
+- [X] T037 Align US1 AC2 with what the test checks. `spec.md` says "visible habit count and day count", but `tests/e2e/download.spec.ts` checks the `data-habits` and `data-days` attributes of the layout last drawn. Either change the spec to "drawn" or add a check that the grid is visibly shown per US1 AC2 (partial)
+- [X] T038 Add a task documenting the per-run build cleanup in `tests/e2e/support/global-teardown.ts`, which is in the code but not in `tasks.md`, or remove it if it is not wanted (unrequested)

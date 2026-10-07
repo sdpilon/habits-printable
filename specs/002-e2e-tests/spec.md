@@ -38,7 +38,7 @@ A developer changes the page, the layout code, or the options, and runs one comm
 **Acceptance Scenarios**:
 
 1. **Given** the page is open with default options, **When** the test waits for the preview and presses download, **Then** a PDF file is saved whose page size is US Letter and whose page count is one.
-2. **Given** the page is open, **When** the test sets a non-default habit count, days count, and layout, **Then** the preview shows a grid whose visible habit count and day count match the chosen values.
+2. **Given** the page is open, **When** the test sets a non-default habit count, days count, and layout, **Then** the preview shows a grid whose drawn habit count and day count match the chosen values (read from the count attributes on the preview section, see contracts/page-test-interface.md).
 3. **Given** a successful run, **When** the test finishes, **Then** the report lists each scenario as passed, with no scenario skipped without a stated reason.
 
 ---
@@ -70,7 +70,7 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 **Acceptance Scenarios**:
 
 1. **Given** an option combination that overflows one page in layout (1), **When** the test selects it, **Then** an overflow warning appears and download is unavailable.
-2. **Given** the same kind of overflow in layout (2), **When** the test selects it, **Then** the same warning and blocked download appear, and no side-by-side columns are created.
+2. **Given** the same kind of overflow in layout (2), **When** the test selects it, **Then** the same warning and blocked download appear. That no side-by-side columns are drawn is a layout property covered by the unit and margin tests (see Assumptions), not by this suite.
 3. **Given** an overflowing combination, **When** the test reduces the habit count until the tracker fits, **Then** the warning clears and download becomes available.
 
 ---
