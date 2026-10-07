@@ -190,3 +190,7 @@ Task: "Create tests/e2e/support/page.ts with openPage, resetDefaults, setOption,
 ## Phase 8: Convergence
 
 - [X] T039 Update `specs/002-e2e-tests/research.md` §2 to match the implemented server setup: a free port per run (not a fixed port), a fresh build into `dist/e2e-<runId>` through `tests/e2e/support/build-page.mjs`, and no server reuse. Also replace the open check about `pnpm build` on CI with the result of the first CI run (passed on `ubuntu-latest`) per research.md §2 and the implemented `playwright.config.ts` (partial)
+
+## Phase 9: Convergence
+
+- [X] T040 Update the open-check wording in `specs/002-e2e-tests/research.md` to the results already observed: §1 (the Chromium "not yet verified in a CI run" note; the first CI run passed the Chrome channel), §4 (the `/MediaBox` check passes in the download test), and §5 (the CI Chrome channel verified on `ubuntu-latest`, run 37555321864). Remove the "verify on the first CI run" wording and the conditional fallback, per research.md §1, §4 and §5 (partial)

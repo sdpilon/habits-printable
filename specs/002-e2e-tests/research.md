@@ -13,7 +13,7 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 - *Cypress*: good UI, but downloads and multi-tab control are weaker, and it adds a separate runtime. Rejected.
 - *Puppeteer with a custom runner*: would rebuild retries, reporting, and screenshots by hand. Rejected.
 
-**Install status**: `@playwright/test` 1.63.0 is installed (approved as an npm package). The browser is not an npm package, so it is not downloaded. Locally, the suite launches the Chromium already in `~/Library/Caches/ms-playwright/chromium-1243` through `executablePath`. This was checked with a headless launch that opened a page. CI uses the Google Chrome that GitHub's Ubuntu runner provides (`channel: 'chrome'`), which is not yet verified in a CI run.
+**Install status**: `@playwright/test` 1.63.0 is installed (approved as an npm package). The browser is not an npm package, so it is not downloaded. Locally, the suite launches the Playwright-bundled Chromium (revision 1243), which is already cached in `~/Library/Caches/ms-playwright`, with no `executablePath`. The suite passes on this machine. CI uses the Google Chrome that GitHub's Ubuntu runner provides (`channel: 'chrome'`), and the first CI run passed on `ubuntu-latest` (run 37555321864).
 
 ## 2. Page under test: production build, served locally
 
@@ -25,7 +25,7 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 - *Development server*: the spec changed to the production build on 2026-10-06, since that is what people receive. Rejected.
 - *Hosted or staging URL*: forbidden by FR-009. Rejected.
 
-**Open check (tasks phase)**: `pnpm build` is not run in the current CI workflow. The first CI run with the suite will confirm it works on the Linux runner.
+**CI check (done)**: the first CI run on `ubuntu-latest` passed the build and the e2e step (run 37555321864).
 
 ## 3. How the suite knows a preview has settled
 
@@ -50,14 +50,14 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 - *pdf.js in Node*: already a dependency, but the PDF.js Node build path is not verified here, and the page count is already available. Rejected for now.
 - *A PDF parsing library*: a new dependency for two values. Rejected.
 
-**Open check (tasks phase)**: confirm `/MediaBox` appears once per page in Typst's output, so the regular expression reads the page size correctly. A test case with the default options will confirm it.
+**Check (done)**: the `/MediaBox` regular expression reads the page size correctly on Typst's output. The default-options download test confirms it (612 × 792 points, one page).
 
 ## 5. Failure artifacts and CI
 
 **Decision**:
 - Playwright config: `screenshot: 'only-on-failure'`, `trace: 'retain-on-failure'`, and the HTML report in `playwright-report/` (git-ignored).
 - CI: a step after the e2e run uploads `test-results/` and `playwright-report/` with `if: failure()` and `retention-days: 7`. This meets FR-014 and the 7-day clarification.
-- CI browser: `channel: 'chrome'` on the Ubuntu runner's preinstalled Google Chrome. No browser download step. Verify on the first CI run; if the runner lacks Chrome, the fallback is an npm-packaged Chromium, which needs a new approval.
+- CI browser: `channel: 'chrome'` on the Ubuntu runner's preinstalled Google Chrome. No browser download step. Verified on the first CI run (`ubuntu-latest` has the Chrome channel).
 
 **Alternatives considered**:
 - *Retain 30 or 90 days*: rejected by the clarification (7 days).
