@@ -8,10 +8,12 @@
     "build": "vite build",
     "test": "vitest run tests/unit",
     "margins": "node tests/comparison/margins.ts",
-    "perf": "vitest run tests/perf"
+    "perf": "vitest run tests/perf",
+    "e2e": "playwright test"
   },
   "devDependencies": {
     "@napi-rs/canvas": "1.0.10",
+    "@playwright/test": "^1.63.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
     "vitest": "^5.0.3"

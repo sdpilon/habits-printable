@@ -8,7 +8,7 @@ hooks:
     - extension: git
       command: speckit.git.initialize
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Execute speckit.git.initialize?
       description: Initialize Git repository before constitution setup
@@ -17,7 +17,7 @@ hooks:
     - extension: git
       command: speckit.git.feature
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Execute speckit.git.feature?
       description: Create feature branch before specification
@@ -26,7 +26,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before clarification?
       description: Auto-commit before spec clarification
@@ -35,7 +35,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before planning?
       description: Auto-commit before implementation planning
@@ -44,7 +44,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before task generation?
       description: Auto-commit before task generation
@@ -53,7 +53,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before implementation?
       description: Auto-commit before implementation
@@ -62,7 +62,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before checklist?
       description: Auto-commit before checklist generation
@@ -71,7 +71,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before analysis?
       description: Auto-commit before analysis
@@ -80,7 +80,7 @@ hooks:
     - extension: git
       command: speckit.git.commit
       enabled: true
-      optional: false
+      optional: true
       priority: 10
       prompt: Commit outstanding changes before issue sync?
       description: Auto-commit before tasks-to-issues conversion

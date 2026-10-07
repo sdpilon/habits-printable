@@ -9,6 +9,7 @@ const preview = document.querySelector<HTMLDivElement>('#preview')!;
 const warning = document.querySelector<HTMLParagraphElement>('#warning')!;
 const messages = document.querySelector<HTMLUListElement>('#messages')!;
 const download = document.querySelector<HTMLButtonElement>('#download')!;
+const previewSection = document.querySelector<HTMLElement>('#preview-section')!;
 
 // Newest request wins (T023): a slow earlier compile can't overwrite a newer preview.
 let latestRequest = 0;
@@ -16,6 +17,8 @@ let latestRequest = 0;
 let latestValid: Compiled | null = null;
 let latestValidRequest = 0;
 let renderQueue: Promise<void> = Promise.resolve();
+// Valid updates still in flight; aria-busy stays "true" until this returns to zero (T005).
+let pendingUpdates = 0;
 
 function readForm(): RawOptions {
   const value = (name: Field) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
@@ -54,27 +57,40 @@ async function update(): Promise<void> {
     return;
   }
 
-  const compiled = await compileTracker(result.options);
-  // An older valid compile never replaces a newer one (T023).
-  if (request < latestValidRequest) return;
+  pendingUpdates++;
+  previewSection.setAttribute('aria-busy', 'true');
+  try {
+    const compiled = await compileTracker(result.options);
+    // An older valid compile never replaces a newer one (T023).
+    if (request < latestValidRequest) return;
 
-  latestValidRequest = request;
-  latestValid = compiled;
-  // Warning and download follow the newest input only; a later invalid input owns them (FR-012).
-  if (request === latestRequest) {
-    warning.hidden = !compiled.overflowing;
-    download.disabled = compiled.overflowing;
-  }
-  // Renders are queued so an older render can never finish after a newer one (T023). A valid layout
-  // is still drawn when a later input is invalid, so the preview never lags the last valid options (T036).
-  // A failed render is logged and skipped, so it cannot stop later renders from running (US2/AC3, T038).
-  renderQueue = renderQueue.then(() => {
-    if (request !== latestValidRequest) return;
-    return renderPreview(preview, compiled.pdf).catch((error: unknown) => {
-      console.error('Preview render failed; the previous preview stays on screen.', error);
+    latestValidRequest = request;
+    latestValid = compiled;
+    // Warning and download follow the newest input only; a later invalid input owns them (FR-012).
+    if (request === latestRequest) {
+      warning.hidden = !compiled.overflowing;
+      download.disabled = compiled.overflowing;
+    }
+    // Renders are queued so an older render can never finish after a newer one (T023). A valid layout
+    // is still drawn when a later input is invalid, so the preview never lags the last valid options (T036).
+    // A failed render is logged and skipped, so it cannot stop later renders from running (US2/AC3, T038).
+    // The count attributes are set only after a render succeeds, so they describe the layout on the canvas.
+    renderQueue = renderQueue.then(() => {
+      if (request !== latestValidRequest) return;
+      return renderPreview(preview, compiled.pdf)
+        .then(() => {
+          previewSection.dataset.habits = String(result.options.habits);
+          previewSection.dataset.days = String(result.options.days);
+        })
+        .catch((error: unknown) => {
+          console.error('Preview render failed; the previous preview stays on screen.', error);
+        });
     });
-  });
-  await renderQueue;
+    await renderQueue;
+  } finally {
+    pendingUpdates--;
+    if (pendingUpdates === 0) previewSection.setAttribute('aria-busy', 'false');
+  }
 }
 
 download.addEventListener('click', () => {

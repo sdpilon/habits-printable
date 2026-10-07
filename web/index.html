@@ -27,8 +27,7 @@
 
         <label>Paper
           <select name="paper">
-            <option value="a4" selected>A4</option>
-            <option value="letter">US Letter</option>
+            <option value="letter" selected>US Letter</option>
           </select>
         </label>
 
@@ -36,7 +35,7 @@
         <button id="download" type="button" disabled>Download PDF</button>
       </form>
 
-      <section aria-label="Preview">
+      <section id="preview-section" aria-label="Preview" aria-busy="false">
         <p id="warning" hidden>The grid is too large for one page. Reduce habits, days, or dots per row to enable download.</p>
         <div id="preview"></div>
       </section>

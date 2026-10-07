@@ -12,7 +12,6 @@
 #let per-row = int-in("perRow", 7)
 #let dot-d = num-in("dotDiameterMm", 4) * 1mm
 #let dot-gap = num-in("dotSpacingMm", 1.5) * 1mm
-#let letter = inp("paper", "a4") == "letter"
 
 // Planning-default constants (data-model.md, Fit rules).
 #let margin = 10mm
@@ -25,11 +24,12 @@
 
 #let pitch = dot-d + dot-gap
 #let line-h = pitch + num-h
-#let page-w = if letter { 215.9mm } else { 210mm }
-#let page-h = if letter { 279.4mm } else { 297mm }
+// US Letter only (constitution Technical Constraints).
+#let page-w = 215.9mm
+#let page-h = 279.4mm
 #let usable-w = page-w - 2 * margin
 
-#set page(paper: if letter { "us-letter" } else { "a4" }, margin: margin)
+#set page(paper: "us-letter", margin: margin)
 #set text(size: 8pt)
 
 #let dot = circle(radius: dot-d / 2, stroke: 0.5pt + black)
