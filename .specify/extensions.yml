@@ -166,3 +166,12 @@ hooks:
       prompt: Commit after syncing issues?
       description: Auto-commit after tasks-to-issues conversion
       condition: null
+  after_converge:
+    - extension: git
+      command: speckit.git.commit
+      enabled: true
+      optional: false
+      priority: 10
+      prompt: Commit convergence tasks?
+      description: Auto-commit after convergence
+      condition: null
