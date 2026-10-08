@@ -96,11 +96,23 @@ body-read abort produces the error above. An `ArrayBuffer` return value
 instead takes the glue's plain `WebAssembly.instantiate(bytes, imports)`
 branch, decoupling the network fetch from compilation.
 
-**Caveat**: not verified against a real flaky mobile connection — if the
-network itself aborts the download outright (not just the streaming-compile
-path specifically), `response.arrayBuffer()` could still throw, just with a
-different error. This at least would confirm whether it's a genuine network
-issue rather than something `instantiateStreaming`-specific.
+**Verified without a real device**: `tests/e2e/wasm-load-resilience.spec.ts`
+intercepts the WASM request and fulfills it with a truncated body (original
+`Content-Length` kept, so the browser detects the body ended early — the
+same shape of failure as a connection dropping mid-download). Confirmed this
+test fails against the pre-fix code with a real
+`WebAssembly.instantiateStreaming(): section ... extends past end of the
+module` error, and passes against the fix. This proves the fix does what it
+claims — a genuinely interrupted download no longer reaches
+`instantiateStreaming` at all — without needing to force a real flaky mobile
+connection.
+
+**Caveat that remains**: the original bug's exact trigger (resource
+exhaustion/throttling after repeated loads in one tab/session, per
+[[mobile-wasm-compile-abort]]) is still unconfirmed and wasn't
+independently reproduced this session — only the *mechanism* (what happens
+when the download is interrupted) is now verified, not the *root cause* of
+why mobile browsers interrupted it in the first place.
 
 ## Diagnostic overlay (kept permanently, `web/src/debug-overlay.ts`)
 
@@ -145,8 +157,10 @@ still valid), see [`quickstart.md`](quickstart.md).
   render start {"previewW":382,"previewH":141,...}
   render ok {"canvas":true}
   ```
-- Symptom 2's fix is unverified on a real flaky mobile connection (see
-  caveat above) — no device reproduction was available this session.
+- **Symptom 2's fix mechanism verified** via `tests/e2e/wasm-load-resilience.spec.ts`
+  (confirmed to fail against the pre-fix code, pass against the fix — see
+  caveat above for what this does and doesn't prove). `pnpm e2e` — 23/23
+  e2e tests pass, including this one.
 
 ## Files changed
 
@@ -157,7 +171,10 @@ still valid), see [`quickstart.md`](quickstart.md).
 - `web/src/preview.ts` — installs the polyfill on the main thread; points
   `workerSrc` at the new wrapper.
 - `vite.config.ts` — `worker: { format: 'es' }`.
-- `web/src/debug-overlay.ts` (new) — the `DEV`-gated diagnostic overlay.
+- `web/src/debug-overlay.ts` (new) — the `DEV` + `?debug`-gated diagnostic
+  overlay.
 - `web/src/main.ts` — wires in the overlay's `debugLog(...)` calls.
 - `web/src/pdfjs-worker.d.ts` (new) — ambient module declaration CI's
   `tsc --noEmit` needed for `pdf-worker-entry.ts`'s dynamic import.
+- `tests/e2e/wasm-load-resilience.spec.ts` (new) — verifies Symptom 2's fix
+  mechanism (see Verification above).
