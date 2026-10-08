@@ -121,6 +121,9 @@ diagnosis.
 
 ## Verification
 
+For hand-run checks (including ones reused from 001/002's quickstarts where
+still valid), see [`quickstart.md`](quickstart.md).
+
 - `pnpm build` — clean, no errors.
 - `pnpm test` — 32/32 unit tests pass.
 - Headless Chromium smoke tests (via `.claude/skills/run-project` and a
