@@ -28,10 +28,10 @@ renders the page at native size (so the user has to scroll to see the bottom) an
 does not preserve the page's true proportions. Fixing both — full visibility and
 correct proportions — is what makes the preview trustworthy.
 
-**Independent Test**: Load the app at a typical desktop window size, leave the
-default options in place, and confirm the entire generated page is visible in the
-preview without scrolling the browser window, and that its proportions match the
-actual generated page (not stretched or squashed).
+**Independent Test**: Load the app at a typical desktop window size (1280×800 or
+larger), leave the default options in place, and confirm the entire generated page
+is visible in the preview without scrolling the browser window, and that its
+proportions match the actual generated page (not stretched or squashed).
 
 **Acceptance Scenarios**:
 
@@ -157,7 +157,7 @@ correct in all three.
   scrolling of the browser window required, with no extra action from the user.
 - **SC-005**: Users can identify the overall shape and content of the generated
   page (labels, dot grid, row/column structure) in any fit mode without zooming
-  in, at common desktop window sizes.
+  in, at a standard desktop browser window size (1280×800 or larger).
 - **SC-006**: Users can switch between all three fit modes and see the preview
   update accordingly in under 1 second.
 

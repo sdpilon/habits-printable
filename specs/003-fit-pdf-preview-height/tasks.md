@@ -160,22 +160,34 @@ option while in either mode and confirm the mode doesn't reset.
   canvas's rendered width match `#preview`'s width (within 1px) with no window
   scroll; (AC3) after selecting "fit-height" or "fit-width" and then changing an
   option, the select's value is unchanged and the preview still re-fits with no
-  window scroll (depends on: T010, T012).
+  window scroll; (AC4) after selecting "fit-height" or "fit-width" and then
+  resizing the Playwright viewport, the select's value is unchanged and the
+  preview still re-fits with no window scroll (FR-008, FR-010, SC-004) (depends
+  on: T008, T010, T012).
+- [ ] T014 [US2] Add a timing assertion to `tests/e2e/preview-fit.spec.ts`: record
+  the timestamp before dispatching the `fitMode` select's `input` event and after
+  the re-fit settles (`readWindowScrollable()` stable / no further canvas change),
+  and assert the elapsed time is under 1 second (SC-006) (depends on: T013).
+- [ ] T015 [US2] Add a narrow-viewport e2e test to `tests/e2e/preview-fit.spec.ts`:
+  set the Playwright viewport to the app's narrow breakpoint (`max-width: 720px`,
+  e.g. 600×800), and for each of the three fit modes confirm
+  `readWindowScrollable()` is `true` and the canvas's aspect ratio still matches
+  the PDF page (FR-011) (depends on: T013).
 
 **Checkpoint**: Both user stories work independently — `pnpm e2e -g "preview-fit"`
-covers all three fit modes end-to-end.
+covers all three fit modes end-to-end, including narrow-viewport and timing.
 
 ---
 
 ## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T014 [P] Run `pnpm margins` to confirm the exported PDF's printable-margin
+- [ ] T016 [P] Run `pnpm margins` to confirm the exported PDF's printable-margin
   check is unaffected (constitution Principle II — this feature never touches PDF
   generation, only on-screen display).
-- [ ] T015 Run `pnpm test && pnpm e2e` for the full suite and confirm everything
+- [ ] T017 Run `pnpm test && pnpm e2e` for the full suite and confirm everything
   is green, including the pre-existing (unrelated) `tests/unit/fit-model.ts`/
   `fit.test.ts` and `tests/e2e/preview-and-input.spec.ts` suites (no regressions).
-- [ ] T016 Walk through `specs/003-fit-pdf-preview-height/quickstart.md` scenarios
+- [ ] T018 Walk through `specs/003-fit-pdf-preview-height/quickstart.md` scenarios
   1–7 manually via the `run-project` skill's driver and record the result in the
   PR/review (constitution Development Workflow: "the result MUST be recorded in
   the review").
@@ -203,7 +215,10 @@ covers all three fit modes end-to-end.
 - US1: T007 (helpers) before T008 (spec using them); T009 depends on T008's
   findings.
 - US2: T010 and T011 are independent of each other ([P]); T012 depends on both
-  T006 and T011; T013 depends on T010 and T012.
+  T006 and T011; T013 depends on T008, T010, and T012; T014 (timing) and T015
+  (narrow-viewport) both depend on T013 and can run in either order, or in
+  parallel with each other once T013 lands (different assertions in the same
+  file, but no data dependency between them).
 
 ### Parallel Opportunities
 
@@ -213,7 +228,7 @@ covers all three fit modes end-to-end.
   depends on T008 existing — so in practice US2's implementation tasks (T012,
   T013) should follow US1's Phase 3 checkpoint even though they're not blocked by
   US1's own acceptance criteria.
-- T014 (Polish) has no dependency on T015/T016 and can run in parallel with them.
+- T016 (Polish) has no dependency on T017/T018 and can run in parallel with them.
 
 ---
 
@@ -251,7 +266,7 @@ Task: "Write failing unit tests in tests/unit/preview-fit.test.ts"
 
 - `tests/unit/fit-model.ts`/`fit.test.ts` and `tests/e2e/preview-and-input.spec.ts`
   are pre-existing and unrelated (grid-fits-one-page prediction, not preview
-  scaling) — do not modify them; T015 only confirms they still pass.
+  scaling) — do not modify them; T017 only confirms they still pass.
 - Commit after each task or logical group, consistent with this repo's existing
   commit granularity on earlier specs.
 - Verify T003's tests actually fail before starting T004 (TDD).

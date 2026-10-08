@@ -15,7 +15,8 @@ pnpm install
 Automated driving uses this project's `run-project` skill
 (`.claude/skills/run-project/driver.mjs`) — see that skill for first-run Chromium
 setup. All commands below assume the REPL is already running with
-`server-start` and `launch` done.
+`server-start` and `launch` done. Scenarios assume a browser window of at least
+1280×800 (SC-005).
 
 ## Scenario 1 — Default load shows the whole page, no window scroll (US1, SC-001)
 
@@ -75,18 +76,14 @@ Expect: both `true`.
 
 ## Scenario 6 — Narrow-viewport breakpoint still fits (FR-011)
 
-```text
-eval window.resizeTo ? null : null
-```
-
-Playwright-level viewport resize (not available via the driver's `eval`) — covered
-by the Playwright e2e suite (`tests/e2e/`), not the manual driver flow. Run:
+Playwright-level viewport resize isn't available via the driver's `eval` — this is
+covered by `tests/e2e/preview-fit.spec.ts`'s narrow-viewport test (T015). Run:
 
 ```bash
-pnpm e2e
+pnpm e2e -g "preview-fit"
 ```
 
-and confirm the narrow-viewport fit-mode test(s) pass.
+and confirm it passes, including the narrow-viewport case.
 
 ## Scenario 7 — Full automated check
 
