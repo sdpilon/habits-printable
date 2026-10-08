@@ -102,18 +102,22 @@ path specifically), `response.arrayBuffer()` could still throw, just with a
 different error. This at least would confirm whether it's a genuine network
 issue rather than something `instantiateStreaming`-specific.
 
-## Diagnostic overlay (kept on this branch only — must not reach `main`)
+## Diagnostic overlay (kept permanently, `web/src/debug-overlay.ts`)
 
-`web/src/main.ts` had a temporary on-screen `<pre>` overlay added during this
-investigation (`debugLog(...)`, a `window.onerror`/`unhandledrejection`
-listener, and inline calls around the compile/render steps) — this is how
-Symptom 1's error was actually captured on-device, since IronFox has no
-working remote-debugging path and `console.error` alone is invisible without
-devtools. It's being kept, committed as its own separate commit on this
-branch, specifically so it doesn't have to be rebuilt from scratch next time
-a mobile-only bug needs on-device diagnosis. It is **not** part of what gets
-merged to `main` — see the commit log on this branch for the exact commit to
-cherry-pick back out when needed again.
+An on-screen `<pre>` overlay (`debugLog(...)`, a
+`window.onerror`/`unhandledrejection` listener, and inline calls around the
+compile/render steps in `main.ts`) was added during this investigation — this
+is how Symptom 1's error was actually captured on-device, since IronFox has
+no working remote-debugging path and `console.error` alone is invisible
+without devtools.
+
+It's kept as a standing tool rather than thrown away or branch-isolated,
+gated on `import.meta.env.DEV`: Vite replaces that with a literal `false` in
+production builds, so `pnpm build`'s output contains zero trace of it
+(confirmed: grepped the built bundle for the overlay's marker strings after
+building — no matches). It's safe in `main`, active under `pnpm dev`, and
+needs no cherry-picking to reuse next time a mobile-only bug needs on-device
+diagnosis.
 
 ## Verification
 
@@ -143,5 +147,7 @@ cherry-pick back out when needed again.
 - `web/src/preview.ts` — installs the polyfill on the main thread; points
   `workerSrc` at the new wrapper.
 - `vite.config.ts` — `worker: { format: 'es' }`.
-- `web/src/main.ts` — temporary diagnostic overlay (separate commit, not for
-  `main`).
+- `web/src/debug-overlay.ts` (new) — the `DEV`-gated diagnostic overlay.
+- `web/src/main.ts` — wires in the overlay's `debugLog(...)` calls.
+- `web/src/pdfjs-worker.d.ts` (new) — ambient module declaration CI's
+  `tsc --noEmit` needed for `pdf-worker-entry.ts`'s dynamic import.
