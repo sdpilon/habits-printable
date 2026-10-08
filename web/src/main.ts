@@ -2,7 +2,7 @@
 import './typst-init.ts';
 import { validate, type Field, type RawOptions } from './options.ts';
 import { compileTracker, type Compiled } from './typst-engine.ts';
-import { renderPreview } from './preview.ts';
+import { loadPreviewDocument, renderPreview, type PreviewDocument } from './preview.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
@@ -19,6 +19,31 @@ let latestValidRequest = 0;
 let renderQueue: Promise<void> = Promise.resolve();
 // Valid updates still in flight; aria-busy stays "true" until this returns to zero (T005).
 let pendingUpdates = 0;
+// The PDF.js document for latestValid, parsed once per compile and reused across every re-fit (resize) —
+// re-parsing per re-fit raced the PDF.js worker on slow mobile connections.
+let latestDoc: PreviewDocument | null = null;
+
+// Re-draws the last compiled PDF at the current container size, without recompiling or re-parsing — used
+// on resize (below). Reads `latestDoc` lazily inside the queued step so a redraw queued before a newer
+// compile finishes still ends up drawing whatever is truly latest (FR-003).
+function reRenderLatest(): void {
+  if (!latestDoc) return;
+  pendingUpdates++;
+  previewSection.setAttribute('aria-busy', 'true');
+  renderQueue = renderQueue
+    .then(() => (latestDoc ? renderPreview(latestDoc, preview) : undefined))
+    .catch((error: unknown) => {
+      console.error('Preview render failed; the previous preview stays on screen.', error);
+    })
+    .finally(() => {
+      pendingUpdates--;
+      if (pendingUpdates === 0) previewSection.setAttribute('aria-busy', 'false');
+    });
+}
+
+// #preview's own box (not #preview-section) already reflects whatever space is left after the
+// (possibly hidden) #warning banner, since it's sized via CSS flex, not computed here (research.md §2).
+new ResizeObserver(() => reRenderLatest()).observe(preview);
 
 function readForm(): RawOptions {
   const value = (name: Field) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
@@ -75,17 +100,25 @@ async function update(): Promise<void> {
     // is still drawn when a later input is invalid, so the preview never lags the last valid options (T036).
     // A failed render is logged and skipped, so it cannot stop later renders from running (US2/AC3, T038).
     // The count attributes are set only after a render succeeds, so they describe the layout on the canvas.
-    renderQueue = renderQueue.then(() => {
-      if (request !== latestValidRequest) return;
-      return renderPreview(preview, compiled.pdf)
-        .then(() => {
-          previewSection.dataset.habits = String(result.options.habits);
-          previewSection.dataset.days = String(result.options.days);
-        })
-        .catch((error: unknown) => {
-          console.error('Preview render failed; the previous preview stays on screen.', error);
-        });
-    });
+    renderQueue = renderQueue
+      .then(async () => {
+        if (request !== latestValidRequest) return;
+        const doc = await loadPreviewDocument(compiled.pdf);
+        if (request !== latestValidRequest) {
+          // A newer compile already won while this one was parsing; discard this document unused.
+          await doc.destroy();
+          return;
+        }
+        const previousDoc = latestDoc;
+        latestDoc = doc;
+        if (previousDoc) await previousDoc.destroy();
+        await renderPreview(doc, preview);
+        previewSection.dataset.habits = String(result.options.habits);
+        previewSection.dataset.days = String(result.options.days);
+      })
+      .catch((error: unknown) => {
+        console.error('Preview render failed; the previous preview stays on screen.', error);
+      });
     await renderQueue;
   } finally {
     pendingUpdates--;
