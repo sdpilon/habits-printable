@@ -3,6 +3,7 @@ import './typst-init.ts';
 import { validate, type Field, type RawOptions } from './options.ts';
 import { compileTracker, type Compiled } from './typst-engine.ts';
 import { renderPreview } from './preview.ts';
+import type { FitMode } from './preview-fit.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
@@ -10,6 +11,7 @@ const warning = document.querySelector<HTMLParagraphElement>('#warning')!;
 const messages = document.querySelector<HTMLUListElement>('#messages')!;
 const download = document.querySelector<HTMLButtonElement>('#download')!;
 const previewSection = document.querySelector<HTMLElement>('#preview-section')!;
+const fitModeSelect = document.querySelector<HTMLSelectElement>('select[name="fitMode"]')!;
 
 // Newest request wins (T023): a slow earlier compile can't overwrite a newer preview.
 let latestRequest = 0;
@@ -19,6 +21,30 @@ let latestValidRequest = 0;
 let renderQueue: Promise<void> = Promise.resolve();
 // Valid updates still in flight; aria-busy stays "true" until this returns to zero (T005).
 let pendingUpdates = 0;
+// In-memory only; resets to "page" on reload (FR-006, spec Assumptions).
+let fitMode: FitMode = fitModeSelect.value as FitMode;
+
+// Re-draws the last compiled PDF at the current fit mode, without recompiling — used on resize (below)
+// and, later, on a fit-mode switch (T012). Reads `latestValid` lazily inside the queued step so a
+// redraw queued before a newer compile finishes still ends up drawing whatever is truly latest (FR-009).
+function reRenderLatest(): void {
+  if (!latestValid) return;
+  pendingUpdates++;
+  previewSection.setAttribute('aria-busy', 'true');
+  renderQueue = renderQueue
+    .then(() => (latestValid ? renderPreview(preview, latestValid.pdf, fitMode) : undefined))
+    .catch((error: unknown) => {
+      console.error('Preview render failed; the previous preview stays on screen.', error);
+    })
+    .finally(() => {
+      pendingUpdates--;
+      if (pendingUpdates === 0) previewSection.setAttribute('aria-busy', 'false');
+    });
+}
+
+// #preview's own box (not #preview-section) already reflects whatever space is left after the
+// (possibly hidden) #warning banner, since it's sized via CSS flex, not computed here (research.md §2).
+new ResizeObserver(() => reRenderLatest()).observe(preview);
 
 function readForm(): RawOptions {
   const value = (name: Field) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
@@ -77,7 +103,7 @@ async function update(): Promise<void> {
     // The count attributes are set only after a render succeeds, so they describe the layout on the canvas.
     renderQueue = renderQueue.then(() => {
       if (request !== latestValidRequest) return;
-      return renderPreview(preview, compiled.pdf)
+      return renderPreview(preview, compiled.pdf, fitMode)
         .then(() => {
           previewSection.dataset.habits = String(result.options.habits);
           previewSection.dataset.days = String(result.options.days);
@@ -105,6 +131,11 @@ download.addEventListener('click', () => {
 
 form.addEventListener('input', () => {
   void update();
+});
+
+fitModeSelect.addEventListener('input', () => {
+  fitMode = fitModeSelect.value as FitMode;
+  reRenderLatest();
 });
 
 void update();

@@ -15,8 +15,11 @@ body {
 }
 
 main {
+  box-sizing: border-box;
+  height: 100svh;
   display: grid;
   grid-template-columns: minmax(16rem, 20rem) 1fr;
+  grid-template-rows: minmax(0, 1fr);
   gap: 2rem;
   padding: 2rem;
   align-items: start;
@@ -74,14 +77,25 @@ button:disabled {
   margin: 0 0 1rem;
 }
 
+#preview-section {
+  align-self: stretch;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 #preview {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #preview canvas {
   display: block;
-  max-width: 100%;
-  height: auto;
+  flex-shrink: 0;
   background: var(--bg);
   box-shadow: 0 0 0 1px var(--line);
 }
@@ -89,6 +103,7 @@ button:disabled {
 @media (max-width: 720px) {
   main {
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
     padding: 1rem;
   }
 }

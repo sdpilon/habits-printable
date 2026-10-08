@@ -36,6 +36,13 @@
       </form>
 
       <section id="preview-section" aria-label="Preview" aria-busy="false">
+        <label>Fit
+          <select name="fitMode">
+            <option value="page" selected>Fit page</option>
+            <option value="height">Fit height</option>
+            <option value="width">Fit width</option>
+          </select>
+        </label>
         <p id="warning" hidden>The grid is too large for one page. Reduce habits, days, or dots per row to enable download.</p>
         <div id="preview"></div>
       </section>

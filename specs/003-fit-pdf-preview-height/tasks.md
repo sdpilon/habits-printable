@@ -34,7 +34,7 @@ Single-project web app — all paths are under `web/src/`, `web/index.html`, and
 
 **Purpose**: Confirm no new project setup is needed before touching code.
 
-- [ ] T001 Confirm no new dependencies are required (research.md "Primary
+- [X] T001 Confirm no new dependencies are required (research.md "Primary
   Dependencies": none new) — `package.json`/`pnpm-lock.yaml` must remain
   unchanged by this feature; run `pnpm install` to confirm the lockfile is
   already satisfied.
@@ -49,12 +49,12 @@ Nothing in User Story 1 or 2 works without this phase.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 [P] Add a viewport-bounded layout shell in `web/src/style.css`:
+- [X] T002 [P] Add a viewport-bounded layout shell in `web/src/style.css`:
   `html`/`body`/`main` sized to `100svh`; `#preview-section` becomes
   `display: flex; flex-direction: column; min-height: 0`; `#preview` becomes
   `flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;`
   while keeping the existing `#preview { overflow: auto; }` (research.md §2–§3, §5).
-- [ ] T003 [P] Write failing unit tests in `tests/unit/preview-fit.test.ts` for a
+- [X] T003 [P] Write failing unit tests in `tests/unit/preview-fit.test.ts` for a
   `computePreviewScale(page, container, mode)` function that does not exist yet,
   asserting all 5 invariants from `contracts/preview-fit.md`: (1) aspect ratio
   `displayWidth / displayHeight === page.width / page.height` in all three modes;
@@ -62,14 +62,14 @@ Nothing in User Story 1 or 2 works without this phase.
   mode always matches `container.height` exactly; (4) `"width"` mode always
   matches `container.width` exactly; (5) the function is pure (plain object
   inputs/outputs, no DOM).
-- [ ] T004 Implement `computePreviewScale` in `web/src/preview-fit.ts` per
+- [X] T004 Implement `computePreviewScale` in `web/src/preview-fit.ts` per
   `contracts/preview-fit.md`'s formulas — `"page"`:
   `scale = min(container.width / page.width, container.height / page.height)`;
   `"height"`: `scale = container.height / page.height`; `"width"`:
   `scale = container.width / page.width`; always
   `displayWidth = page.width * scale`, `displayHeight = page.height * scale` — to
   make T003's tests pass (depends on: T003).
-- [ ] T005 Update `renderPreview` in `web/src/preview.ts` to accept a `mode:
+- [X] T005 Update `renderPreview` in `web/src/preview.ts` to accept a `mode:
   FitMode` and `container: { width: number; height: number }` parameter, use
   `computePreviewScale` (T004) instead of the current width-only scale, and set
   `canvas.width`/`canvas.height` (device-pixel-ratio-aware pixel buffer) and
@@ -77,7 +77,7 @@ Nothing in User Story 1 or 2 works without this phase.
   `displayHeight` — set both style dimensions before the canvas is attached via
   `container.replaceChildren(canvas)`, so no unfit/distorted frame is ever visible
   (spec Edge Cases: "no flash of unfit size") (depends on: T004).
-- [ ] T006 In `web/src/main.ts`, add a `ResizeObserver` on `#preview` that stores
+- [X] T006 In `web/src/main.ts`, add a `ResizeObserver` on `#preview` that stores
   the latest `{ width, height }` from `contentRect`, and a module-level
   `fitMode: FitMode` variable initialized to `"page"` (FR-006); call the updated
   `renderPreview` (T005) with the current `fitMode` and latest observed size on
@@ -104,20 +104,20 @@ browser window; confirm it re-fits again.
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Add `readWindowScrollable()` (returns
+- [X] T007 [P] [US1] Add `readWindowFits()` (returns
   `document.documentElement.scrollHeight <= window.innerHeight`) and
   `readCanvasAspectRatio()` (reads `#preview canvas`'s `getBoundingClientRect()`
   width/height ratio) helpers to `tests/e2e/support/page.ts`, alongside the
   existing `readCanvasHash`/`waitForSettled` helpers.
-- [ ] T008 [US1] Create `tests/e2e/preview-fit.spec.ts` with three tests using
-  T007's helpers: (AC1) default load — `readWindowScrollable()` is `true` and
+- [X] T008 [US1] Create `tests/e2e/preview-fit.spec.ts` with three tests using
+  T007's helpers: (AC1) default load — `readWindowFits()` is `true` and
   `readCanvasAspectRatio()` matches the PDF page's own ratio; (AC2) after changing
   `habits`, both checks still hold; (AC3) after resizing the Playwright viewport,
   both checks still hold (depends on: T007).
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Run T008 against the Foundational implementation (T002–T006);
+- [X] T009 [US1] Run T008 against the Foundational implementation (T002–T006);
   fix any gap found (e.g., the warning banner's height not being picked up before
   the first render, or a resize observer callback firing before the container has
   a real size) directly in `web/src/main.ts` / `web/src/preview.ts` (depends on:
@@ -140,21 +140,21 @@ option while in either mode and confirm the mode doesn't reset.
 
 ### Tests for User Story 2
 
-- [ ] T010 [P] [US2] Add `setFitMode(page, mode)` helper to
+- [X] T010 [P] [US2] Add `setFitMode(page, mode)` helper to
   `tests/e2e/support/page.ts` (selects `select[name="fitMode"]`'s value and waits
   for settle).
 
 ### Implementation for User Story 2
 
-- [ ] T011 [P] [US2] Add a `<select name="fitMode">` control to
+- [X] T011 [P] [US2] Add a `<select name="fitMode">` control to
   `web/index.html` inside `#preview-section` (above `#preview`), with options
   `"Fit page"` (value `page`, selected by default), `"Fit height"` (value
   `height`), `"Fit width"` (value `width`) (FR-001, FR-006).
-- [ ] T012 [US2] In `web/src/main.ts`, listen for the `fitMode` select's `input`
+- [X] T012 [US2] In `web/src/main.ts`, listen for the `fitMode` select's `input`
   event, update the module-level `fitMode` variable (from T006), and immediately
   re-render the last compiled PDF (`latestValid`) with the new mode — no
   recompile needed (FR-007) (depends on: T006, T011).
-- [ ] T013 [US2] Extend `tests/e2e/preview-fit.spec.ts` (T008) with: (AC1)
+- [X] T013 [US2] Extend `tests/e2e/preview-fit.spec.ts` (T008) with: (AC1)
   selecting "fit-height" makes the canvas's rendered height match `#preview`'s
   height (within 1px) with no window scroll; (AC2) selecting "fit-width" makes the
   canvas's rendered width match `#preview`'s width (within 1px) with no window
@@ -164,14 +164,14 @@ option while in either mode and confirm the mode doesn't reset.
   resizing the Playwright viewport, the select's value is unchanged and the
   preview still re-fits with no window scroll (FR-008, FR-010, SC-004) (depends
   on: T008, T010, T012).
-- [ ] T014 [US2] Add a timing assertion to `tests/e2e/preview-fit.spec.ts`: record
+- [X] T014 [US2] Add a timing assertion to `tests/e2e/preview-fit.spec.ts`: record
   the timestamp before dispatching the `fitMode` select's `input` event and after
-  the re-fit settles (`readWindowScrollable()` stable / no further canvas change),
+  the re-fit settles (`readWindowFits()` stable / no further canvas change),
   and assert the elapsed time is under 1 second (SC-006) (depends on: T013).
-- [ ] T015 [US2] Add a narrow-viewport e2e test to `tests/e2e/preview-fit.spec.ts`:
+- [X] T015 [US2] Add a narrow-viewport e2e test to `tests/e2e/preview-fit.spec.ts`:
   set the Playwright viewport to the app's narrow breakpoint (`max-width: 720px`,
   e.g. 600×800), and for each of the three fit modes confirm
-  `readWindowScrollable()` is `true` and the canvas's aspect ratio still matches
+  `readWindowFits()` is `true` and the canvas's aspect ratio still matches
   the PDF page (FR-011) (depends on: T013).
 
 **Checkpoint**: Both user stories work independently — `pnpm e2e -g "preview-fit"`
@@ -181,13 +181,13 @@ covers all three fit modes end-to-end, including narrow-viewport and timing.
 
 ## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T016 [P] Run `pnpm margins` to confirm the exported PDF's printable-margin
+- [X] T016 [P] Run `pnpm margins` to confirm the exported PDF's printable-margin
   check is unaffected (constitution Principle II — this feature never touches PDF
   generation, only on-screen display).
-- [ ] T017 Run `pnpm test && pnpm e2e` for the full suite and confirm everything
+- [X] T017 Run `pnpm test && pnpm e2e` for the full suite and confirm everything
   is green, including the pre-existing (unrelated) `tests/unit/fit-model.ts`/
   `fit.test.ts` and `tests/e2e/preview-and-input.spec.ts` suites (no regressions).
-- [ ] T018 Walk through `specs/003-fit-pdf-preview-height/quickstart.md` scenarios
+- [X] T018 Walk through `specs/003-fit-pdf-preview-height/quickstart.md` scenarios
   1–7 manually via the `run-project` skill's driver and record the result in the
   PR/review (constitution Development Workflow: "the result MUST be recorded in
   the review").

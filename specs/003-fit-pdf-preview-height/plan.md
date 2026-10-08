@@ -107,7 +107,7 @@ tests/
 │   └── fit.test.ts              # unchanged (unrelated: page-overflow prediction)
 └── e2e/
     ├── preview-and-input.spec.ts   # extend or add a sibling spec for fit-mode behavior
-    └── support/page.ts              # add helpers: setFitMode, readWindowScrollable, readCanvasAspectRatio
+    └── support/page.ts              # add helpers: setFitMode, readWindowFits, readCanvasAspectRatio
 ```
 
 **Structure Decision**: Single-project web app — no backend/frontend split exists or

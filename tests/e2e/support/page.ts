@@ -76,3 +76,25 @@ export async function readCanvasHash(page: Page): Promise<string> {
   const dataUrl = await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL('image/png'));
   return createHash('sha256').update(dataUrl).digest('hex');
 }
+
+// True when the whole page fits without scrolling the browser window itself (FR-001/FR-003-005).
+// Named for the positive case ("it fits") rather than "isWindowScrollable", so `expect(...).toBe(true)`
+// at every call site reads as "no window scroll needed" instead of a double negative.
+export async function readWindowFits(page: Page): Promise<boolean> {
+  return page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight);
+}
+
+// The rendered canvas's own displayed width/height ratio (contracts/preview-fit.md invariant 1).
+export async function readCanvasAspectRatio(page: Page): Promise<number> {
+  const canvas = page.locator('#preview canvas').first();
+  await canvas.waitFor();
+  const box = await canvas.boundingBox();
+  if (!box) throw new Error('Preview canvas has no bounding box.');
+  return box.width / box.height;
+}
+
+// Selects the preview's fit mode and waits for the re-fit to settle.
+export async function setFitMode(page: Page, mode: 'page' | 'height' | 'width'): Promise<void> {
+  await page.locator('select[name="fitMode"]').selectOption(mode);
+  await waitForSettled(page);
+}
