@@ -11,6 +11,23 @@ const messages = document.querySelector<HTMLUListElement>('#messages')!;
 const download = document.querySelector<HTMLButtonElement>('#download')!;
 const previewSection = document.querySelector<HTMLElement>('#preview-section')!;
 
+// TEMPORARY on-screen diagnostic overlay for on-device mobile debugging (specs/005-mobile-preview-crashes).
+// Kept on this branch only — must not reach main (see bug-report.md "Diagnostic overlay").
+const debugOverlay = document.createElement('pre');
+debugOverlay.style.cssText =
+  'position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow:auto;margin:0;' +
+  'padding:4px;background:#000;color:#0f0;font-size:10px;line-height:1.3;white-space:pre-wrap;z-index:99999;';
+document.body.appendChild(debugOverlay);
+function debugLog(...parts: unknown[]): void {
+  const line = parts
+    .map((p) => (p instanceof Error ? `${p.name}: ${p.message}\n${p.stack}` : typeof p === 'object' ? JSON.stringify(p) : String(p)))
+    .join(' ');
+  debugOverlay.textContent += `[${new Date().toISOString().slice(11, 23)}] ${line}\n`;
+}
+window.addEventListener('error', (e) => debugLog('window error:', e.message, e.error));
+window.addEventListener('unhandledrejection', (e) => debugLog('unhandledrejection:', e.reason));
+debugLog('boot', { ua: navigator.userAgent, dpr: window.devicePixelRatio, innerW: window.innerWidth, innerH: window.innerHeight });
+
 // Newest request wins (T023): a slow earlier compile can't overwrite a newer preview.
 let latestRequest = 0;
 // The newest valid compile and the request that produced it; the download and preview use it (T019, T036).
@@ -85,7 +102,9 @@ async function update(): Promise<void> {
   pendingUpdates++;
   previewSection.setAttribute('aria-busy', 'true');
   try {
+    debugLog('compile start', request);
     const compiled = await compileTracker(result.options);
+    debugLog('compile ok', { pages: compiled.pageCount, bytes: compiled.pdf.length });
     // An older valid compile never replaces a newer one (T023).
     if (request < latestValidRequest) return;
 
@@ -112,12 +131,20 @@ async function update(): Promise<void> {
         const previousDoc = latestDoc;
         latestDoc = doc;
         if (previousDoc) await previousDoc.destroy();
+        debugLog('render start', {
+          previewW: preview.clientWidth,
+          previewH: preview.clientHeight,
+          sectionW: previewSection.clientWidth,
+          sectionH: previewSection.clientHeight,
+        });
         await renderPreview(doc, preview);
+        debugLog('render ok', { canvas: !!preview.querySelector('canvas') });
         previewSection.dataset.habits = String(result.options.habits);
         previewSection.dataset.days = String(result.options.days);
       })
       .catch((error: unknown) => {
         console.error('Preview render failed; the previous preview stays on screen.', error);
+        debugLog('render FAILED', error);
       });
     await renderQueue;
   } finally {
