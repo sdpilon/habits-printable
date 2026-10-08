@@ -1,8 +1,10 @@
 // Draws the downloaded PDF into the preview with PDF.js, so the preview shows the exact file.
 import * as pdfjs from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+import workerUrl from './pdf-worker-entry.ts?worker&url';
 import { computePreviewScale } from './preview-fit.ts';
+import { installMapUpsertPolyfill } from './map-upsert-polyfill.ts';
 
+installMapUpsertPolyfill();
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export interface PreviewDocument {

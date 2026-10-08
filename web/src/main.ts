@@ -3,6 +3,7 @@ import './typst-init.ts';
 import { validate, type Field, type RawOptions } from './options.ts';
 import { compileTracker, type Compiled } from './typst-engine.ts';
 import { loadPreviewDocument, renderPreview, type PreviewDocument } from './preview.ts';
+import { debugLog } from './debug-overlay.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
@@ -85,7 +86,9 @@ async function update(): Promise<void> {
   pendingUpdates++;
   previewSection.setAttribute('aria-busy', 'true');
   try {
+    debugLog('compile start', request);
     const compiled = await compileTracker(result.options);
+    debugLog('compile ok', { pages: compiled.pageCount, bytes: compiled.pdf.length });
     // An older valid compile never replaces a newer one (T023).
     if (request < latestValidRequest) return;
 
@@ -112,12 +115,20 @@ async function update(): Promise<void> {
         const previousDoc = latestDoc;
         latestDoc = doc;
         if (previousDoc) await previousDoc.destroy();
+        debugLog('render start', {
+          previewW: preview.clientWidth,
+          previewH: preview.clientHeight,
+          sectionW: previewSection.clientWidth,
+          sectionH: previewSection.clientHeight,
+        });
         await renderPreview(doc, preview);
+        debugLog('render ok', { canvas: !!preview.querySelector('canvas') });
         previewSection.dataset.habits = String(result.options.habits);
         previewSection.dataset.days = String(result.options.days);
       })
       .catch((error: unknown) => {
         console.error('Preview render failed; the previous preview stays on screen.', error);
+        debugLog('render FAILED', error);
       });
     await renderQueue;
   } finally {
