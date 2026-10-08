@@ -142,6 +142,13 @@ pnpm dev
 Opens nothing by itself — prints a `http://localhost:5173/` URL to
 open in a real browser. Useless headless; `Ctrl-C` to stop.
 
+For starting a server on the user's behalf that stays up in the background
+and is reachable from their own other devices (not this driver's own
+ephemeral, localhost-only, Playwright-managed server below) — a request
+like "start the dev server for me" — use the `serve-for-me` skill instead.
+The two server lifecycles are independent: this skill's `server-stop` does
+not know about anything `serve-for-me` started, and vice versa.
+
 ## Test
 
 ```bash
