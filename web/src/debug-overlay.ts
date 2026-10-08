@@ -1,14 +1,21 @@
 // On-screen diagnostic overlay for on-device mobile debugging — useful any time a mobile-only bug needs
 // on-device diagnosis without working remote-debugging access (how the IronFox crash in
-// specs/005-mobile-preview-crashes was actually found). Gated on import.meta.env.DEV so `pnpm build`'s
-// production output never contains it: Vite replaces that with a literal `false` for production builds,
-// so esbuild dead-code-eliminates every branch below — it's not just inactive, it's absent from the bundle.
+// specs/005-mobile-preview-crashes was actually found).
 //
+// Two layers keep this off by default:
+// - import.meta.env.DEV: Vite replaces this with a literal `false` for production builds, so esbuild
+//   dead-code-eliminates every branch below in `pnpm build` output — it's not just inactive there, it's
+//   absent from the bundle, regardless of the runtime flag below.
+// - The `debug` URL param: even under `pnpm dev`, the overlay should only show up when actively debugging,
+//   not on every normal dev-server load. Visit `?debug` (e.g. `http://<host>:5173/?debug`) to turn it on
+//   for that page load.
+const enabled = import.meta.env.DEV && new URLSearchParams(location.search).has('debug');
+
 // pointer-events:none so the overlay can never intercept clicks on the page underneath it — without this,
 // it silently broke the e2e download test (#download sits partly behind the overlay's bottom strip) when
-// this was still unconditionally active in dev (and would have again, had it reached prod unguarded).
+// this was still unconditionally active in dev.
 let debugOverlay: HTMLPreElement | null = null;
-if (import.meta.env.DEV) {
+if (enabled) {
   debugOverlay = document.createElement('pre');
   debugOverlay.style.cssText =
     'position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow:auto;margin:0;pointer-events:none;' +
@@ -24,7 +31,7 @@ export function debugLog(...parts: unknown[]): void {
   debugOverlay.textContent += `[${new Date().toISOString().slice(11, 23)}] ${line}\n`;
 }
 
-if (import.meta.env.DEV) {
+if (enabled) {
   window.addEventListener('error', (e) => debugLog('window error:', e.message, e.error));
   window.addEventListener('unhandledrejection', (e) => debugLog('unhandledrejection:', e.reason));
   debugLog('boot', { ua: navigator.userAgent, dpr: window.devicePixelRatio, innerW: window.innerWidth, innerH: window.innerHeight });

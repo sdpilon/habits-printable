@@ -43,12 +43,15 @@ the defaults above.
    change in `typst-init.ts` didn't change output). No changes. Click
    download. Expect a one-page US Letter PDF with 5 habits × 31 days,
    matching the preview exactly.
-5. **Dev-only overlay doesn't leak to production.** Build and serve the
-   production bundle (`pnpm build && pnpm exec vite preview`) and load it —
-   in *any* browser. Expect no diagnostic overlay strip at the bottom of the
-   screen. Then load the same page via `pnpm dev` and confirm the overlay
-   *is* present there, printing `boot`/`compile`/`render` lines as you
-   change options.
+5. **Dev-only overlay doesn't leak to production, and stays off unless asked
+   for.** Build and serve the production bundle
+   (`pnpm build && pnpm exec vite preview`) and load it — in *any* browser,
+   with and without `?debug` appended. Expect no diagnostic overlay strip at
+   the bottom of the screen either way (the production bundle contains no
+   overlay code at all, so the param does nothing there). Then load the page
+   via `pnpm dev`: the bare URL should show no overlay; appending `?debug`
+   should show it, printing `boot`/`compile`/`render` lines as you change
+   options.
 
 ## Regression checks (reused from 001/002, still valid as-is)
 

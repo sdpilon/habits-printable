@@ -112,12 +112,19 @@ no working remote-debugging path and `console.error` alone is invisible
 without devtools.
 
 It's kept as a standing tool rather than thrown away or branch-isolated,
-gated on `import.meta.env.DEV`: Vite replaces that with a literal `false` in
-production builds, so `pnpm build`'s output contains zero trace of it
-(confirmed: grepped the built bundle for the overlay's marker strings after
-building — no matches). It's safe in `main`, active under `pnpm dev`, and
-needs no cherry-picking to reuse next time a mobile-only bug needs on-device
-diagnosis.
+guarded by two independent layers:
+
+- `import.meta.env.DEV`: Vite replaces this with a literal `false` in
+  production builds, so `pnpm build`'s output contains zero trace of it
+  (confirmed: grepped the built bundle for the overlay's marker strings
+  after building — no matches), regardless of the runtime flag below.
+- A `?debug` URL param, checked at runtime: even under `pnpm dev`, the
+  overlay should only show up when actively debugging, not on every normal
+  dev-server page load. Visit `http://<host>:5173/?debug` to turn it on for
+  that load; the bare URL stays overlay-free.
+
+It's safe in `main`, opt-in under `pnpm dev`, and needs no cherry-picking to
+reuse next time a mobile-only bug needs on-device diagnosis.
 
 ## Verification
 
