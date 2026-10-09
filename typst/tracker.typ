@@ -44,25 +44,18 @@
 #let writing-line(w) = line(length: w, stroke: 0.4pt + gray)
 
 // One dot cell. A day that is a multiple of 5 gets its number above the dot. Top to bottom:
-// num-gap-above (space from the previous line's dot), the number's own slot, num-gap-below (space
-// to this line's dot), then the dot itself, top-aligned within its own pitch-tall slot so any
-// leftover dot-spacing slack falls below the dot — i.e. into the *next* line's gap-above, which only
-// widens that gap further rather than narrowing this line's gap-below (FR-004).
-#let dot-cell(day) = {
-  let number = box(width: pitch, height: num-text-h)[
-    #if calc.rem(day, 5) == 0 {
-      place(top + center, text(size: num-text-size)[#day])
-    }
-  ]
-  stack(
-    dir: ttb,
-    spacing: 0pt,
-    box(width: pitch, height: num-gap-above),
-    number,
-    box(width: pitch, height: num-gap-below),
-    box(width: pitch, height: pitch)[#place(top + center, dot)],
-  )
-}
+// num-gap-above (space from the previous line's dot), the number, num-gap-below (space to this
+// line's dot), then the dot itself, top-aligned within its own pitch-tall slot so any leftover
+// dot-spacing slack falls below the dot — i.e. into the *next* line's gap-above, which only widens
+// that gap further rather than narrowing this line's gap-below (FR-004). Single box with absolute
+// `dy` offsets (not a nested stack) to keep per-dot layout cost flat — this runs for every dot on
+// the page, so extra nodes here are the dominant cost in tests/perf's compile-time budget.
+#let dot-cell(day) = box(width: pitch, height: line-h)[
+  #if calc.rem(day, 5) == 0 {
+    place(top + center, dy: num-gap-above, text(size: num-text-size)[#day])
+  }
+  #place(top + center, dy: num-gap-above + num-text-h + num-gap-below, dot)
+]
 
 // Dots for days first through last, in order on one line.
 #let dot-line(first, last) = stack(

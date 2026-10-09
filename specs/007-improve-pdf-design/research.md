@@ -67,6 +67,18 @@ the compiled output rather than re-litigated in the spec).
   dot small (`NUM_GAP_BELOW`), with `NUM_GAP_ABOVE > NUM_GAP_BELOW` so the number reads as grouped
   with its own row. Shipped constants: `NUM_GAP_ABOVE = 1mm`, `NUM_GAP_BELOW = 0.4mm` (verified
   against the actual compiled output during implementation, not assumed — see §4).
+- **Performance regression found via CI, and the fix**: an initial implementation built
+  `dot-cell`'s four vertically-stacked pieces (gap-above spacer, number, gap-below spacer, dot) as a
+  nested `stack()` of 4 boxes, replacing the original's 1 box + 2 `place()` calls. This runs once per
+  dot — 3,240 times in `tests/perf`'s stress case — and roughly doubled CI's measured compile time
+  (157ms → 320ms against the 200ms budget in `tests/perf/timing.test.ts`, SC-002 of
+  001-printable-habit-grid), even though it passed locally (faster hardware masked the regression).
+  Rewritten as a single `box` using `place(..., dy: ...)` absolute offsets instead of a nested stack
+  — same node count as the original, same visual result (confirmed unchanged against
+  `tests/unit/fit.test.ts` and a visual re-check), compile time back down to local-baseline levels.
+  Lesson: per-dot functions are the hot path for this template's performance budget — prefer
+  `place(dy: ...)` over nested containers there, and don't trust a local perf pass alone when CI
+  hardware is slower and the budget has historically had only ~40ms of headroom.
 - **Combined overflow found during implementation, and the fix**: the initial planning values
   (`NUM_GAP_ABOVE = 2mm`, `NUM_GAP_BELOW = 0.8mm`, `LABEL_H = 6mm`) visually confirmed the fix
   correctly (§4), but combined with §2's new per-habit `LABEL_H` cost in `rows`, they pushed the

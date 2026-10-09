@@ -189,7 +189,10 @@ own dots is visibly smaller than its gap to the row above.
       reuse of the same shape) and `calendars`. If the rendered day-number glyph height differs
       materially from the ~1.8mm planning estimate (data-model.md `NUM_TEXT_H`), adjust
       `num-gap-below` so `num-gap-above > num-gap-below` still holds, and update the constant's
-      value in `data-model.md`.
+      value in `data-model.md`. **Note**: the first implementation built this with a nested
+      `stack()` of 4 boxes, which roughly doubled CI's `tests/perf` compile time (157ms → 320ms,
+      over the 200ms budget) since it runs per-dot; rewritten as a single `box` with `place(...,
+dy: ...)` absolute offsets (same node count as the pre-007 original) — see research.md §3.
 - [x] T017 [US3] As a temporary local debug aid only (research.md §4, not shipped), comment out the
       `calc.rem(day, 5) == 0` guard in `dot-cell` in `typst/tracker.typ` to number every dot,
       visually confirm each number now reads as grouped with its own row rather than the row above,

@@ -11,6 +11,7 @@ const largestFit = {
   dotDiameterMm: 2,
   dotSpacingMm: 0.5,
   paper: 'letter' as const,
+  title: '',
 };
 
 describe('preview timing', () => {
