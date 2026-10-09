@@ -73,7 +73,9 @@ the PDF and confirm the title matches; clear the field and confirm the header di
       `title: raw.title.slice(0, 200)` with no error path — per data-model.md, "the 200-character
       cap is a defensive input limit, not the rendering rule" and per contracts/page-interface.md,
       title has "no dedicated error message state." Add `title: options.title` to `toTypstInputs()`.
-      Default value (used by `DEFAULTS`) is `''`.
+      Default value (used by `DEFAULTS`) is `''`. Note: `title` is required like every other
+      `TrackerOptions` field (always present, default `''`), not optional — see T006a for
+      backfilling existing fixtures that predate this field.
 - [ ] T003 [P] [US1] In `web/index.html`, add a new labeled text input inside `#options`:
       `<label>Title <input name="title" type="text" maxlength="200" /></label>` (contracts/page-interface.md:
       "a plain single-line text input, no `min`/`max`/`step`... prevented by an HTML `maxlength="200"`
@@ -93,6 +95,15 @@ the PDF and confirm the title matches; clear the field and confirm the header di
       from the header is already caught by the existing page-count-based overflow detection,
       consistent with 001's research.md §2 decision not to duplicate fit logic outside Typst
       (Principle I).
+- [ ] T006a [US1] Backfill `title: ''` onto every existing fixture that predates this field, so the
+      suite still compiles and runs correctly once `title` becomes a required `TrackerOptions`/
+      `RawOptions` field (T002): the `valid` object in `tests/unit/options.test.ts:4-12`, and each of
+      the 11 existing cases in `tests/comparison/cases.json` (`default-letter`, `rows-minimums`,
+      `rows-max-habits-and-days`, `rows-too-wide`, `rows-31-small-dots`, `columns-small`,
+      `columns-too-tall`, `columns-too-wide`, `calendars-default`, `calendars-too-tall`,
+      `calendars-one-per-row`). Without this, `pnpm typecheck`/`pnpm test` fail to compile, and
+      `toTypstInputs()` would otherwise pass `title: undefined` into Typst for every pre-existing
+      comparison/fit case.
 - [ ] T007 [P] [US1] In `tests/unit/fit-model.ts`, add the same `headerH` computation and subtract it
       from `area.h` before each layout's height comparison in `predictFits`, mirroring T006 exactly
       (data-model.md Fit rules). `TrackerOptions` there will pick up the `title` field from T002's
@@ -249,9 +260,10 @@ for consistent treatment; confirm legibility when printed without color.
 ### Within Each User Story
 
 - US1: `options.ts` type change (T002) before `main.ts`'s `readForm()` (T004); the Typst header
-  (T005) before the fit-check subtraction that depends on it (T006); test updates (T007–T009) can
-  proceed in parallel with T005/T006 once T002's type change lands; e2e (T010) and the full-suite
-  run (T011) come last.
+  (T005) before the fit-check subtraction that depends on it (T006); the existing-fixture backfill
+  (T006a) before T007–T009's new title-specific test cases; test updates (T007–T009) can proceed in
+  parallel with T005/T006 once T002's type change lands; e2e (T010) and the full-suite run (T011)
+  come last.
 - US2: the `row-habit` rewrite (T012) before the margin re-verification (T014); the fit-model update
   (T013) can proceed in parallel with T012 since the target formula is already fully specified in
   data-model.md.

@@ -3,7 +3,7 @@
   "title": "TrackerOptions",
   "description": "Input dictionary passed from the web page to typst/tracker.typ. Extends specs/001-printable-habit-grid/contracts/tracker-options.schema.json with one new optional `title` property; every other property is unchanged.",
   "type": "object",
-  "required": ["layout", "habits", "days", "perRow", "dotDiameterMm", "dotSpacingMm", "paper"],
+  "required": ["layout", "habits", "days", "perRow", "dotDiameterMm", "dotSpacingMm", "paper", "title"],
   "additionalProperties": false,
   "properties": {
     "layout": { "type": "string", "enum": ["rows", "columns", "calendars"] },

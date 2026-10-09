@@ -26,6 +26,7 @@ and the e2e suite's content assertions cover directly.
 
 **Verification**: `tests/e2e/preview-and-input.spec.ts` is extended to cover typing into `#options
 [name="title"]` and seeing it reflected in the preview. The "every fifth day" numbering rule lives
-only in `typst/tracker.typ` (`calc.rem(day, 5) == 0`, two call sites) — no existing test hard-codes
-it, so FR-004's change to "every day" needs no test-expectation updates beyond the fit-model and
+only in `typst/tracker.typ` (`calc.rem(day, 5) == 0`, two call sites) and is unchanged by this
+feature — FR-004 only changes the spacing around each number, not the numbering density — so no
+existing test hard-codes it and none needs a density-related update, beyond the fit-model and
 margin-check regression passes already covered by data-model.md's Fit rules.
