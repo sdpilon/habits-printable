@@ -24,19 +24,19 @@ Record the project's existing compile-time performance metric (`median compile: 
 
 **Project Type**: Addition to an existing single-project web app's CI/tooling — no new app, no new runtime component shipped to users.
 
-**Performance Goals**: N/A as a feature of its own — it *tracks* the project's existing 0.2s compile budget (SC-002), it does not add a new performance target.
+**Performance Goals**: N/A as a feature of its own — it _tracks_ the project's existing 0.2s compile budget (SC-002), it does not add a new performance target.
 
-**Constraints**: Must not alter the pass/fail outcome of the existing `pnpm perf` budget check (FR-006); must not fail CI for pull requests from forks lacking write access (FR-005); the backfill script must run and push its seeded data once, before the live CI step first runs for real, to avoid a duplicate/conflicting entry for the same commit (see spec Edge Cases). Concurrent runs on *different* commits are handled by the action's own fetch-and-retry behavior on push conflicts (see `research.md`), not something this plan needs to build.
+**Constraints**: Must not alter the pass/fail outcome of the existing `pnpm perf` budget check (FR-006); must not fail CI for pull requests from forks lacking write access (FR-005); the backfill script must run and push its seeded data once, before the live CI step first runs for real, to avoid a duplicate/conflicting entry for the same commit (see spec Edge Cases). Concurrent runs on _different_ commits are handled by the action's own fetch-and-retry behavior on push conflicts (see `research.md`), not something this plan needs to build.
 
 **Scale/Scope**: ~53 pre-existing CI runs to backfill (all from the last few days — no log-retention gap); one new record per qualifying CI run indefinitely afterward.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-Not applicable. This repo's constitution (Principles I–V) governs the printable-habit-grid *product* — layout, rendering, print fidelity, and product scope discipline (Principle V names accounts, tracking, and analytics *features of the app* as out-of-scope examples). This feature touches none of that: it's CI/dev-ops tooling for the project's own build pipeline, doesn't render or export anything, and ships nothing to the app's users. No principle applies; no gate to fail. **PASS.**
+Not applicable. This repo's constitution (Principles I–V) governs the printable-habit-grid _product_ — layout, rendering, print fidelity, and product scope discipline (Principle V names accounts, tracking, and analytics _features of the app_ as out-of-scope examples). This feature touches none of that: it's CI/dev-ops tooling for the project's own build pipeline, doesn't render or export anything, and ships nothing to the app's users. No principle applies; no gate to fail. **PASS.**
 
-*Post-Phase-1 re-check*: `data-model.md` and `quickstart.md` introduce no new entities, behavior, or dependencies touching the product itself (layout/rendering/print output) — still **PASS**, unchanged.
+_Post-Phase-1 re-check_: `data-model.md` and `quickstart.md` introduce no new entities, behavior, or dependencies touching the product itself (layout/rendering/print output) — still **PASS**, unchanged.
 
 ## Project Structure
 

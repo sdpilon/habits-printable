@@ -1,5 +1,4 @@
 ---
-
 description: "Task list for CI Performance History Tracking"
 ---
 
@@ -25,7 +24,7 @@ description: "Task list for CI Performance History Tracking"
 
 **Purpose**: Resolve the one open implementation-time decision flagged in `research.md` before any code change depends on it.
 
-- [X] T001 Look up the current latest stable release tag of `benchmark-action/github-action-benchmark` at https://github.com/benchmark-action/github-action-benchmark/releases (research.md's placeholder value, `v1.20.7`, was current only as of the research date and must be reconfirmed, not reused blindly). Record the confirmed tag in `specs/008-perf-history-tracking/research.md`'s "pin the action to a specific release" decision.
+- [x] T001 Look up the current latest stable release tag of `benchmark-action/github-action-benchmark` at https://github.com/benchmark-action/github-action-benchmark/releases (research.md's placeholder value, `v1.20.7`, was current only as of the research date and must be reconfirmed, not reused blindly). Record the confirmed tag in `specs/008-perf-history-tracking/research.md`'s "pin the action to a specific release" decision.
 
 ---
 
@@ -43,10 +42,10 @@ No blocking foundational work beyond Setup — User Story 1 (backfill + dashboar
 
 ### Implementation for User Story 1
 
-- [X] T002 [P] [US1] Write `scripts/backfill-perf-history.ts`: enumerate every historical CI run via `gh run list --workflow=ci.yml --limit 200 --json databaseId,headSha,headBranch,createdAt,conclusion`; for each, extract the `median compile: X ms` value from the "Timing check" step via `gh run view <id> --log` (skip runs with no usable value per spec Edge Cases — don't fabricate one); pull each `headSha`'s commit author/message/timestamp from local `git log` rather than re-fetching per run; assemble entries in the `window.BENCHMARK_DATA` schema recorded in `specs/008-perf-history-tracking/data-model.md` (one entry per record, keyed under the metric name `"Typst compile (largest fitting page, median of 10)"`, `tool: "customSmallerIsBetter"`), and set each entry's `extra` field to `"branch: <headBranch>"` using the `headBranch` value already fetched from `gh run list`. (Deliberately not wired into `package.json` `scripts` — this is a true one-shot tool, run once via `node scripts/backfill-perf-history.ts` (Node 24 runs `.ts` directly, same as `margins.ts`), not a recurring command like `margins`/`perf`.)
-- [X] T003 [US1] Run `scripts/backfill-perf-history.ts`, create a fresh `gh-pages` branch from its output, and push it once — per `plan.md`'s Constraints, this MUST happen before the live CI step (Phase 4) first runs for real on `main`, to avoid a duplicate/conflicting entry for a commit both paths would otherwise cover. Depends on T002.
-- [X] T004 [US1] Enable GitHub Pages for this repo: `gh api -X POST repos/{owner}/{repo}/pages -f "build_type=legacy" -f "source[branch]=gh-pages" -f "source[path]=/"` (per `research.md`; requires the `gh-pages` branch from T003 to already exist). Note the chosen `benchmark-data-dir-path` (default `dev/bench/`) for use in T005 and T010's verification — the dashboard is served at `<pages html_url><benchmark-data-dir-path>/`, not at the Pages root. Depends on T003.
-- [X] T005 [US1] Verify `quickstart.md` Scenario 1: confirm the `gh-pages` branch's data file has one entry per historical CI run that had a usable value (cross-check the count against `gh run list --workflow=ci.yml --limit 200 --json databaseId | jq length` minus runs that failed before the Timing check step), entries are chronologically ordered, and the published Pages URL with the benchmark-data-dir-path suffix appended (per T004) renders the chart — not the bare `html_url` root. Depends on T004.
+- [x] T002 [P] [US1] Write `scripts/backfill-perf-history.ts`: enumerate every historical CI run via `gh run list --workflow=ci.yml --limit 200 --json databaseId,headSha,headBranch,createdAt,conclusion`; for each, extract the `median compile: X ms` value from the "Timing check" step via `gh run view <id> --log` (skip runs with no usable value per spec Edge Cases — don't fabricate one); pull each `headSha`'s commit author/message/timestamp from local `git log` rather than re-fetching per run; assemble entries in the `window.BENCHMARK_DATA` schema recorded in `specs/008-perf-history-tracking/data-model.md` (one entry per record, keyed under the metric name `"Typst compile (largest fitting page, median of 10)"`, `tool: "customSmallerIsBetter"`), and set each entry's `extra` field to `"branch: <headBranch>"` using the `headBranch` value already fetched from `gh run list`. (Deliberately not wired into `package.json` `scripts` — this is a true one-shot tool, run once via `node scripts/backfill-perf-history.ts` (Node 24 runs `.ts` directly, same as `margins.ts`), not a recurring command like `margins`/`perf`.)
+- [x] T003 [US1] Run `scripts/backfill-perf-history.ts`, create a fresh `gh-pages` branch from its output, and push it once — per `plan.md`'s Constraints, this MUST happen before the live CI step (Phase 4) first runs for real on `main`, to avoid a duplicate/conflicting entry for a commit both paths would otherwise cover. Depends on T002.
+- [x] T004 [US1] Enable GitHub Pages for this repo: `gh api -X POST repos/{owner}/{repo}/pages -f "build_type=legacy" -f "source[branch]=gh-pages" -f "source[path]=/"` (per `research.md`; requires the `gh-pages` branch from T003 to already exist). Note the chosen `benchmark-data-dir-path` (default `dev/bench/`) for use in T005 and T010's verification — the dashboard is served at `<pages html_url><benchmark-data-dir-path>/`, not at the Pages root. Depends on T003.
+- [x] T005 [US1] Verify `quickstart.md` Scenario 1: confirm the `gh-pages` branch's data file has one entry per historical CI run that had a usable value (cross-check the count against `gh run list --workflow=ci.yml --limit 200 --json databaseId | jq length` minus runs that failed before the Timing check step), entries are chronologically ordered, and the published Pages URL with the benchmark-data-dir-path suffix appended (per T004) renders the chart — not the bare `html_url` root. Depends on T004.
 
 **Checkpoint**: User Story 1 is fully functional and demoable on its own — the dashboard shows the complete historical trend even though no live CI run has recorded anything yet.
 
@@ -60,10 +59,10 @@ No blocking foundational work beyond Setup — User Story 1 (backfill + dashboar
 
 ### Implementation for User Story 2
 
-- [X] T006 [P] [US2] Modify `tests/perf/timing.test.ts` to additionally write its median value to a result JSON file in the shape `[{"name": "Typst compile (largest fitting page, median of 10)", "unit": "ms", "value": <median>, "extra": "branch: ${GITHUB_REF_NAME}"}]` (the `customSmallerIsBetter` format from `research.md`, with `extra` carrying the branch via GitHub Actions' built-in `GITHUB_REF_NAME` env var), alongside the existing `console.log`/`expect(median).toBeLessThanOrEqual(200)` — neither the assertion nor the console output changes.
-- [X] T007 [P] [US2] Add `permissions: contents: write` scoped to the `check` job in `.github/workflows/ci.yml` (the repo's default workflow permission is read-only, confirmed via `gh api repos/{owner}/{repo}/actions/permissions/workflow`; this is required for the new step in T008 to push to `gh-pages`).
-- [X] T008 [US2] Add a new step in `.github/workflows/ci.yml`, immediately after the existing "Timing check" step, invoking `benchmark-action/github-action-benchmark@<tag confirmed in T001>` with `tool: customSmallerIsBetter`, the JSON file written in T006, `gh-pages-branch: gh-pages`, `auto-push: true`. Depends on T001, T006, T007.
-- [X] T009 [US2] Guard the step added in T008 with `if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name != 'pull_request'` so a pull request from a fork skips publishing (no write access) instead of failing CI (spec FR-005 / Edge Cases). Depends on T008.
+- [x] T006 [P] [US2] Modify `tests/perf/timing.test.ts` to additionally write its median value to a result JSON file in the shape `[{"name": "Typst compile (largest fitting page, median of 10)", "unit": "ms", "value": <median>, "extra": "branch: ${GITHUB_REF_NAME}"}]` (the `customSmallerIsBetter` format from `research.md`, with `extra` carrying the branch via GitHub Actions' built-in `GITHUB_REF_NAME` env var), alongside the existing `console.log`/`expect(median).toBeLessThanOrEqual(200)` — neither the assertion nor the console output changes.
+- [x] T007 [P] [US2] Add `permissions: contents: write` scoped to the `check` job in `.github/workflows/ci.yml` (the repo's default workflow permission is read-only, confirmed via `gh api repos/{owner}/{repo}/actions/permissions/workflow`; this is required for the new step in T008 to push to `gh-pages`).
+- [x] T008 [US2] Add a new step in `.github/workflows/ci.yml`, immediately after the existing "Timing check" step, invoking `benchmark-action/github-action-benchmark@<tag confirmed in T001>` with `tool: customSmallerIsBetter`, the JSON file written in T006, `gh-pages-branch: gh-pages`, `auto-push: true`. Depends on T001, T006, T007.
+- [x] T009 [US2] Guard the step added in T008 with `if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name != 'pull_request'` so a pull request from a fork skips publishing (no write access) instead of failing CI (spec FR-005 / Edge Cases). Depends on T008.
 - [ ] T010 [US2] Verify `quickstart.md` Scenarios 2-5: a live run appends exactly one new entry and the dashboard updates; the existing "Timing check" pass/fail outcome is unchanged; a simulated fork-PR run skips the publish step without failing the job; local `pnpm perf` behavior (console output, assertion, no network/gh-pages write) is unchanged. Depends on T009.
 
 **Checkpoint**: Both user stories are complete — the dashboard has full historical depth (US1) and keeps growing by exactly one point per qualifying CI run on any branch (US2), with no new CI failure mode for external contributors.
@@ -98,7 +97,7 @@ No blocking foundational work beyond Setup — User Story 1 (backfill + dashboar
 
 ### Parallel Opportunities
 
-- T002 [US1] and T006/T007 [US2] can all be worked on in parallel (different files, no shared dependency) — but see the sequencing note above for when US2's *live* step may actually ship.
+- T002 [US1] and T006/T007 [US2] can all be worked on in parallel (different files, no shared dependency) — but see the sequencing note above for when US2's _live_ step may actually ship.
 - T006 and T007 within US2 can run in parallel.
 
 ---

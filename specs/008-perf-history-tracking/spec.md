@@ -8,7 +8,7 @@
 
 **Input**: User description: "After every CI run, record the measured compile-time performance metric into a single accumulating history, backfilled with the project's existing CI run history, and feed a visualization dashboard from that data." (see `docs/superpowers/specs/2026-10-09-perf-history-tracking-design.md` for the brainstormed technical approach)
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - See the compile-time trend over the project's full history (Priority: P1)
 
@@ -46,7 +46,7 @@ As the maintainer working on a feature branch, I want performance data recorded 
 - What happens when two CI runs on different branches finish at nearly the same time and both try to record a result? Both results must still end up represented in the history — neither silently overwrites or discards the other.
 - What happens when a run comes from a fork PR lacking write access? No history entry is recorded for that run, but the run's own pass/fail outcome (the existing budget check) is unaffected.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -63,7 +63,7 @@ As the maintainer working on a feature branch, I want performance data recorded 
 - **Performance Record**: a single historical measurement — attributes include which commit and branch produced it, when it was recorded, and the compile-time value measured. One record is produced per CI run that successfully measures the metric.
 - **Performance History**: the full, ordered collection of Performance Records, spanning from the earliest recoverable CI run to the present, growing by exactly one record per qualifying CI run.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

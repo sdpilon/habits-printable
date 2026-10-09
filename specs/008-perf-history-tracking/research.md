@@ -106,7 +106,7 @@ not reused from the earlier placeholder value below.
 
 **Rationale**: Web research during planning found `v1.20.7` as a
 recent release, but action tags move; pin to whatever the current
-latest stable release tag is *at implementation time* (check
+latest stable release tag is _at implementation time_ (check
 https://github.com/benchmark-action/github-action-benchmark/releases
 directly), not a value hardcoded here that may already be stale.
 
@@ -125,7 +125,7 @@ This value must be identical among all benchmarks") is the key under
 not just metadata. If the live CI step's `name` input doesn't exactly
 match the string the backfill script used as its `entries` key
 (`"Typst compile (largest fitting page, median of 10)"`), live runs
-would silently create a *second*, disconnected chart section instead
+would silently create a _second_, disconnected chart section instead
 of appending to the backfilled one. The CI workflow step sets
 `name: 'Typst compile (largest fitting page, median of 10)'` for
 exactly this reason — it's not an arbitrary label, it's a hard

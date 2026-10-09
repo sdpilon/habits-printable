@@ -10,8 +10,8 @@ the previous one unless noted; only the changes needed are listed.
   branch being validated).
 - `gh` CLI authenticated against this repo (`gh auth status`).
 - GitHub Pages enabled for this repo (see `research.md`'s `gh api
-  .../pages` call) — confirm with `gh api repos/{owner}/{repo} --jq
-  .has_pages` returning `true`.
+.../pages` call) — confirm with `gh api repos/{owner}/{repo} --jq
+.has_pages` returning `true`.
 
 ## Scenario 1: Backfilled history is complete and ordered
 
@@ -23,7 +23,7 @@ the previous one unless noted; only the changes needed are listed.
    array keyed by the metric name, and that array has one entry per
    historical CI run that had a measurable `median compile: X ms`
    value (cross-check count against `gh run list --workflow=ci.yml
-   --limit 200 --json databaseId | jq length` minus any runs that
+--limit 200 --json databaseId | jq length` minus any runs that
    failed before the Timing check step).
 4. **Expect**: entries are in chronological order by commit timestamp,
    oldest first.
@@ -54,8 +54,8 @@ the previous one unless noted; only the changes needed are listed.
 
 1. Simulate by temporarily editing the guard condition locally, or by
    reasoning through it: a workflow run where `github.event_name ==
-   'pull_request'` and `github.event.pull_request.head.repo.full_name
-   != github.repository`.
+'pull_request'` and `github.event.pull_request.head.repo.full_name
+!= github.repository`.
 2. **Expect**: the benchmark-publish step is skipped (not failed), and
    the job's overall pass/fail is determined solely by the existing
    steps (lint, typecheck, unit tests, timing, margins, e2e) as today.

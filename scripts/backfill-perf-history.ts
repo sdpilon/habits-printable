@@ -86,7 +86,14 @@ function commitInfoFromApi(repoFullName: string, sha: string): CommitInfo | null
 }
 
 function main() {
-  const repoFullName = gh(['repo', 'view', '--json', 'nameWithOwner', '-q', '.nameWithOwner']).trim();
+  const repoFullName = gh([
+    'repo',
+    'view',
+    '--json',
+    'nameWithOwner',
+    '-q',
+    '.nameWithOwner',
+  ]).trim();
   const repoUrl = `https://github.com/${repoFullName}`;
 
   const runsRaw = gh([
