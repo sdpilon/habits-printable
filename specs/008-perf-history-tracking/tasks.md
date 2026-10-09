@@ -63,7 +63,7 @@ No blocking foundational work beyond Setup — User Story 1 (backfill + dashboar
 - [x] T007 [P] [US2] Add `permissions: contents: write` scoped to the `check` job in `.github/workflows/ci.yml` (the repo's default workflow permission is read-only, confirmed via `gh api repos/{owner}/{repo}/actions/permissions/workflow`; this is required for the new step in T008 to push to `gh-pages`).
 - [x] T008 [US2] Add a new step in `.github/workflows/ci.yml`, immediately after the existing "Timing check" step, invoking `benchmark-action/github-action-benchmark@<tag confirmed in T001>` with `tool: customSmallerIsBetter`, the JSON file written in T006, `gh-pages-branch: gh-pages`, `auto-push: true`. Depends on T001, T006, T007.
 - [x] T009 [US2] Guard the step added in T008 with `if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name != 'pull_request'` so a pull request from a fork skips publishing (no write access) instead of failing CI (spec FR-005 / Edge Cases). Depends on T008.
-- [ ] T010 [US2] Verify `quickstart.md` Scenarios 2-5: a live run appends exactly one new entry and the dashboard updates; the existing "Timing check" pass/fail outcome is unchanged; a simulated fork-PR run skips the publish step without failing the job; local `pnpm perf` behavior (console output, assertion, no network/gh-pages write) is unchanged. Depends on T009.
+- [X] T010 [US2] Verify `quickstart.md` Scenarios 2-5: a live run appends exactly one new entry and the dashboard updates; the existing "Timing check" pass/fail outcome is unchanged; a simulated fork-PR run skips the publish step without failing the job; local `pnpm perf` behavior (console output, assertion, no network/gh-pages write) is unchanged. Depends on T009.
 
 **Checkpoint**: Both user stories are complete — the dashboard has full historical depth (US1) and keeps growing by exactly one point per qualifying CI run on any branch (US2), with no new CI failure mode for external contributors.
 
@@ -71,7 +71,7 @@ No blocking foundational work beyond Setup — User Story 1 (backfill + dashboar
 
 ## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T011 Run `quickstart.md` end-to-end once, in order (Scenario 1 through 5), to confirm the full sequencing constraint held in practice — i.e. that T003's backfill push actually preceded T008's live step's first real run on `main`, with no duplicate or conflicting entry for any one commit (spec SC-004).
+- [X] T011 Run `quickstart.md` end-to-end once, in order (Scenario 1 through 5), to confirm the full sequencing constraint held in practice — i.e. that T003's backfill push actually preceded T008's live step's first real run on `main`, with no duplicate or conflicting entry for any one commit (spec SC-004).
 
 ---
 
@@ -138,4 +138,4 @@ Task: "Add permissions: contents: write to .github/workflows/ci.yml (T007)"
 
 ## Phase 6: Convergence
 
-- [ ] T012 [HIGH] Commit the trailing-semicolon fix in `scripts/backfill-perf-history.ts`'s `writeFileSync` call (must write `` `window.BENCHMARK_DATA = ${JSON.stringify(data, null, 2)}` `` with no trailing `;`) per FR-002, SC-004 (contradicts) — the committed version still has the bug that caused a live CI run to silently discard all 51 backfilled entries down to 1 on `gh-pages`; the fix exists only as an uncommitted local diff.
+- [x] T012 [HIGH] Commit the trailing-semicolon fix in `scripts/backfill-perf-history.ts`'s `writeFileSync` call (must write `` `window.BENCHMARK_DATA = ${JSON.stringify(data, null, 2)}` `` with no trailing `;`) per FR-002, SC-004 (contradicts) — the committed version still has the bug that caused a live CI run to silently discard all 51 backfilled entries down to 1 on `gh-pages`; the fix exists only as an uncommitted local diff.
