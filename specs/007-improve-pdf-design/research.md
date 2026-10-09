@@ -39,37 +39,53 @@ the compiled output rather than re-litigated in the spec).
   reusing the constant keeps the typography/spacing consistent (FR-006) by construction instead of
   by manual matching.
 
-## 3. Numbering every dot: legibility at the smallest supported pitch
+## 3. The actual defect, and why density was the wrong fix
 
-- **Decision**: Keep the existing day-number text size (5pt) and simply remove the "only every
-  fifth day" condition everywhere, so every dot's cell prints its own day number.
-- **Rationale**: The narrowest pitch the project supports is `dotDiameterMm (2mm) + dotSpacingMm
-  (0.5mm) = 2.5mm`. At 5pt, typical proportional-digit advance widths run roughly 0.5–0.6em per
-  character; even the widest day number in range ("365", 3 digits) is on the order of 1.5–1.8em ≈
-  2.6–3.2pt ≈ 0.9–1.1mm per digit, comfortably under the 2.5mm cell width for the common case and
-  within a small, implementation-time-verifiable margin for the extreme. This is re-verified
-  against the actual compiled output (not assumed) via the margin check and a visual check at the
-  minimum-pitch/max-per-row case during implementation, per the spec's edge case on this exact
-  combination.
-- **Alternatives considered**: Shrinking the day-number font further to guarantee headroom.
-  Rejected as a default — it would make every other (more common, larger-pitch) case's numbers
-  needlessly smaller; only reach for this if implementation-time verification shows the 5pt size
-  doesn't fit at the extreme.
+- **Finding**: Numbering every dot (an earlier candidate fix) does not solve the mispairing defect.
+  The root cause is asymmetric spacing, not missing numbers: today, `dot-cell(day)` places a day
+  number at the *top* of its own `line-h` box and its dot at the *bottom* of the same box, and
+  successive boxes are stacked with `spacing: 0pt`. That means a number sits immediately adjacent
+  (touching) to the *previous* line's dots — which stop right at the bottom edge of the box right
+  before it — while being separated from its *own* dot below by nearly the full box height. This
+  asymmetry exists on every numbered line regardless of whether every day or only every fifth day
+  carries a number, so increasing density alone changes nothing about which row a number visually
+  reads as belonging to.
+- **Decision**: Fix the spacing directly: insert a real gap between the *previous* line's dots and
+  this line's number (`NUM_GAP_ABOVE`), and keep the gap between this line's number and *its own*
+  dot small (`NUM_GAP_BELOW`), with `NUM_GAP_ABOVE > NUM_GAP_BELOW` so the number reads as grouped
+  with its own row. Planning defaults: `NUM_GAP_ABOVE = 2mm`, `NUM_GAP_BELOW = 0.8mm` (verified
+  against the actual compiled output during implementation, not assumed — see §4).
+- **Rejected alternatives**:
+  - *Place the number and dot at the same coordinates* (user-raised). Rejected: the number would
+    collide with or sit on top of the empty circle, hurting both the number's legibility and the
+    circle's hand-fillable emptiness (Principle III) — typesetting software can overlay text on a
+    shape, but doing so here fights the shape's purpose rather than serving it.
+  - *Draw visible grid-cell borders around each day cell* (user-raised). Rejected for this spec:
+    it would fix the pairing by replacing proximity with explicit visual containment, but it adds a
+    page-wide structural element (a border/gridline on every cell) that is a materially bigger
+    aesthetic change than the rest of this spec's typography/spacing polish calls for. Worth
+    reconsidering later if the spacing fix alone doesn't read clearly enough at implementation time,
+    but not adopted as the default approach.
+  - *Number every dot* (the spec's originally-recorded, now-superseded answer). Rejected as the
+    shipped fix for the reason above — kept only as an implementation-time visual-verification aid
+    (see §4), not as a geometry or content change.
 
-## 4. "Nearest dot is correct" is true by construction, not a separate check
+## 4. Verifying the fix: temporary every-dot numbering as a debug aid
 
-- **Decision**: No new verification code is needed for FR-005 ("every day number's nearest dot is
-  the dot it labels"). The existing `dot-cell(day)` already draws one day's number and that same
-  day's dot inside one shared cell; as long as every cell keeps doing this (just without the
-  `day % 5 == 0` guard), each number's nearest dot is, by construction, the dot in its own cell.
-- **Rationale**: Avoids adding a geometry-checking test (e.g. nearest-neighbor distance
-  calculations) for a property the existing per-cell structure already guarantees. Verification is
-  a visual/e2e check (every cell shows exactly one number and one dot), not a new computed check.
-- **Alternatives considered**: A dedicated automated "numbering correctness" test that measures
-  label-to-dot distances on the rasterized page. Rejected as unnecessary complexity (Principle V) —
-  the structural guarantee from keeping day-number and dot in the same cell is strictly stronger
-  than a distance-threshold test could verify, and is enforced by the one piece of code that
-  assembles each cell.
+- **Decision**: During implementation, it is fine to temporarily remove the `day % 5 == 0` guard
+  (numbering every dot) purely as a way to make the above/below gap difference trivial to eyeball
+  while tuning `NUM_GAP_ABOVE`/`NUM_GAP_BELOW`, then restore the every-fifth-day guard before
+  shipping. The final, shipped behavior keeps every-fifth-day numbering (FR-004); only the spacing
+  constants change.
+- **Rationale**: This gives a fast, concrete way to confirm "is this number closer to its own row"
+  without needing a new automated geometry test. It was the original motivation for the "number
+  every dot" idea — unambiguous, quick visual verification — just applied as a development
+  technique rather than shipped behavior.
+- **Alternatives considered**: A dedicated automated test that measures number-to-dot pixel
+  distances on the rasterized PDF and asserts the above-gap exceeds the below-gap. Rejected as
+  unnecessary complexity (Principle V) for this spec — the existing margin check plus a manual
+  visual check (quickstart.md) is proportionate to a spacing/typography fix; this could be
+  revisited if the manual check proves unreliable in practice.
 
 ## 5. Typography / line-weight polish
 

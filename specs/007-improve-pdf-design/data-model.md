@@ -27,11 +27,13 @@ over wrapped dot lines) — see research.md §2. They remain two different layou
 always stacks one block per habit down the page, while `calendars` wraps multiple blocks per page
 row.
 
-## DayDot — numbering change
+## DayDot — spacing change
 
-A single empty circle, unchanged in shape/size. **Day-number labels now appear on every day**
-(changed from "days 5, 10, 15, …"), printed text directly associated with its own dot — drawn
-inside the same cell, so the number's nearest dot is that dot by construction (research.md §4).
+A single empty circle, unchanged in shape/size. Day-number labels still appear on every fifth day
+(unchanged from 001), but the gap structure around each number changes: the gap between a number
+and the row of dots *above* it (`NUM_GAP_ABOVE`) is now larger than the gap between that number and
+its *own* row of dots below it (`NUM_GAP_BELOW`), so each number reads as grouped with its own row
+(research.md §3). Today's layout has this reversed (effectively zero gap above, a wide gap below).
 
 ## PageHeader (new)
 
@@ -45,7 +47,8 @@ layout or habit count (spec Key Entities, Assumptions).
 ## Relationships (change)
 
 - `TrackerOptions` → optional `PageHeader` (when `title` is non-empty) → one layout → `habits` ×
-  `days` `DayDot`s (now all individually numbered), grouped into `HabitRow`s.
+  `days` `DayDot`s (every fifth one still carrying a number, now correctly spaced), grouped into
+  `HabitRow`s.
 - The Typst template takes the extended `TrackerOptions` as its input dictionary (see
   `contracts/tracker-options.schema.json`).
 
@@ -59,6 +62,15 @@ Shared constants, extending `specs/001-printable-habit-grid/data-model.md`'s lis
   by `calendars`.
 - `row-label-w = 40mm` (removed): no longer used by any layout now that `rows` stacks its label
   above the dots instead of beside them.
+- `NUM_H = 3mm` (removed) → replaced by two constants that together total slightly more height per
+  line, so the gap above a number can exceed the gap below it (research.md §3):
+  - `NUM_GAP_ABOVE = 2mm`: space between the previous line's dots and this line's number.
+  - `NUM_GAP_BELOW = 0.8mm`: space between this line's number and its own dot (kept deliberately
+    smaller than `NUM_GAP_ABOVE`, which is the entire point of the fix).
+  - `NUM_TEXT_H ≈ 1.8mm`: planning estimate for the day-number glyph height at the existing 5pt
+    size; verified against the real compiled output, not assumed, during implementation.
+  - `lineH = pitch + NUM_GAP_ABOVE + NUM_TEXT_H + NUM_GAP_BELOW` (replaces `pitch + NUM_H`; a modest
+    ~1.6mm taller per line than before — re-verified against the margin check per case).
 
 `tests/unit/fit.test.ts` (updated) fails if the formulas below disagree with Typst's actual page
 count, exactly as in 001.
@@ -79,14 +91,14 @@ per page row instead of wrapped:
   height input).
 - Fits when block width ≤ usable width and total height ≤ (usable height − headerH).
 
-**Layout `columns` (unchanged geometry)**: numbering every dot instead of every fifth adds no new
-width, since the existing `NUM_W = 6mm` number column was already sized for the widest possible day
-number (365, 3 digits) regardless of how often a number appears.
+**Layout `columns` (unchanged geometry)**: day numbers sit beside their row, not above it, so this
+layout never had the spacing defect and its `NUM_W = 6mm` number column is untouched.
 
 - Fits when total width ≤ usable width and total height ≤ (usable height − headerH).
 
-**Layout `calendars` (unchanged geometry)**: per-dot numbering is a content change within the
-existing `lineH = pitch + NUM_H` band, not a size change.
+**Layout `calendars` (changed, same formula shape as `rows`)**: uses the same new
+`lineH = pitch + NUM_GAP_ABOVE + NUM_TEXT_H + NUM_GAP_BELOW` as `rows` (replacing
+`pitch + NUM_H`), since both layouts stack dot lines with a number band above each.
 
 - Fits when block width ≤ usable width and total height ≤ (usable height − headerH).
 

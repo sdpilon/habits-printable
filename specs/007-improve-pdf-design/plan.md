@@ -10,18 +10,23 @@ Four visual changes to the single Typst template that already draws every layout
 freeform page title, rendered as a header above the grid when non-empty; (2) in the one-row-per-habit
 layout, move each habit's blank name-label from a fixed-width column beside the dots to a thin strip
 above them — the same shape the mini-calendar layout's block already uses, so the two layouts become
-structurally the same per-habit block, differing only in how blocks are arranged on the page; (3)
-number every dot in every layout instead of only every fifth day, which removes the "which row does
-this number belong to" ambiguity by construction (each number is drawn inside the same cell as its
-own dot); (4) consistent typography/line-weight polish applied uniformly across all three layouts.
-All four changes live entirely in `typst/tracker.typ` (Principle I); the only web-page change is one
-new optional text field (`title`) that flows through exactly like every existing option.
+structurally the same per-habit block, differing only in how blocks are arranged on the page; (3) fix
+the day-number-to-row spacing so a number's gap to its *own* row of dots is smaller than its gap to
+the row *above* it — the reverse of today's layout, which is why a number can currently read as
+belonging to the wrong row. Day numbering itself stays at every fifth day (today's convention); only
+the spacing changes. (4) consistent typography/line-weight polish applied uniformly across all three
+layouts. All four changes live entirely in `typst/tracker.typ` (Principle I); the only web-page
+change is one new optional text field (`title`) that flows through exactly like every existing
+option.
 
 Technical approach: no new dependencies or architecture. The existing fit model
-(`tests/unit/fit-model.ts`) is updated to mirror the new rows-layout geometry and the optional
-header's height, the existing `tracker-options.schema.json` contract gains one optional `title`
-property, and the existing margin check (`tests/comparison/margins.ts`) is the regression gate that
-proves the redesign doesn't break Principle III.
+(`tests/unit/fit-model.ts`) is updated to mirror the new rows-layout geometry, the optional header's
+height, and the new asymmetric line-spacing constants, the existing `tracker-options.schema.json`
+contract gains one optional `title` property, and the existing margin check
+(`tests/comparison/margins.ts`) is the regression gate that proves the redesign doesn't break
+Principle III. Temporarily numbering every dot (instead of every fifth) is a recommended
+implementation-time technique for visually verifying the spacing fix — not a shipped behavior, so it
+does not appear in any FR or data-model constant.
 
 ## Technical Context
 
@@ -36,13 +41,12 @@ needed to add it.
 **Storage**: N/A. The title behaves like every other option: held in page state only, never persisted.
 
 **Testing**: Vitest (`tests/unit`) for option validation (extended for the new `title` field) and the
-fit model against the engine's page count (updated for the new rows-layout geometry and the optional
-header); `tests/comparison/margins.ts` (PDF margin check, re-run as the primary regression gate for
-Principle III since this feature changes dot/label/header geometry); `tests/perf` (compile-time
-budget, re-run as a regression guard since every dot now carries a day number instead of only every
-fifth); Playwright (`tests/e2e`) extended for the new title field's live-preview behavior. No
-existing e2e spec hard-codes "every fifth day" numbering (it lives only in `typst/tracker.typ`), so
-no e2e expectation changes are needed for that part of the feature.
+fit model against the engine's page count (updated for the new rows-layout geometry, the optional
+header, and the taller per-line spacing from the asymmetric-gap fix); `tests/comparison/margins.ts`
+(PDF margin check, re-run as the primary regression gate for Principle III since this feature changes
+dot/label/header/line geometry); `tests/perf` (compile-time budget, re-run as a regression guard);
+Playwright (`tests/e2e`) extended for the new title field's live-preview behavior. Day numbering
+stays at every fifth day, so no e2e expectation about numbering density changes.
 
 **Target Platform**: Desktop and laptop browsers (modern Chromium, Firefox, Safari), matching the
 existing project scope. No change to platform support.
@@ -50,8 +54,9 @@ existing project scope. No change to platform support.
 **Project Type**: Static web application (client-side only). No new project or package.
 
 **Performance Goals**: No new budget. The existing `tests/perf` compile-time check (SC-002 of
-001-printable-habit-grid) must continue to pass — numbering every dot instead of every fifth adds
-text glyphs to compile, so this is re-verified, not assumed, during implementation.
+001-printable-habit-grid) must continue to pass. Day-number content/count is unchanged (still every
+fifth day); only the layout's spacing constants and the optional header change page height
+slightly, so this is re-verified, not assumed, during implementation.
 
 **Constraints**:
 
@@ -61,9 +66,9 @@ text glyphs to compile, so this is re-verified, not assumed, during implementati
   rendered through the same compile path as every other option (FR-009).
 - `tests/comparison/margins.ts` MUST continue to pass for every case in `tests/comparison/cases.json`
   after the geometry changes (Principle III, SC-005).
-- Day numbers MUST stay legible and non-overlapping at the smallest supported dot size (2 mm) and
-  largest supported per-row count (31), now that every dot (not just every fifth) carries a number
-  (spec Edge Cases).
+- The gap between a day number and its own row of dots MUST be visibly smaller than the gap to the
+  row of dots above it (FR-004), and this MUST hold at the smallest supported dot size (2 mm) and
+  largest supported per-row count (31) (spec Edge Cases).
 - Title text that doesn't fit the printable width on one line MUST be clipped there rather than
   wrapped or auto-shrunk (spec Assumptions) — a rendering rule (clip at a fixed box width), not a
   character-count limit.
@@ -78,7 +83,7 @@ data-model.md for the defensive length cap chosen during planning.
 
 | Principle                                 | Check                                                                                                                                                                                                     | Status |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| I. Single Layout Source                   | The title header, the rows-layout label repositioning, the per-dot numbering, and the typography polish are all implemented only in `typst/tracker.typ`. The page adds one new form field and passes its value through — no drawing logic on the page side. | PASS   |
+| I. Single Layout Source                   | The title header, the rows-layout label repositioning, the day-number spacing fix, and the typography polish are all implemented only in `typst/tracker.typ`. The page adds one new form field and passes its value through — no drawing logic on the page side. | PASS   |
 | II. Preview Equals Print                   | The title and every other design change render through the same compiled PDF the preview draws (FR-009). No separate preview-only path is introduced.                                                   | PASS (by construction) |
 | III. Hand-Fillable Output                  | Dot shape/size range is unchanged. The redesign MUST keep all content inside the printable margin — re-verified by `tests/comparison/margins.ts` against updated `cases.json` before this gate is re-checked post-design. | PASS, pending Phase 1 margin re-verification |
 | IV. Responsive Options                     | The title field updates the live preview immediately, exactly like every existing option (FR-001); no new persistence or save step.                                                                     | PASS   |
@@ -89,17 +94,16 @@ data-model.md for the defensive length cap chosen during planning.
 | Technical: explicit limits                 | Existing limits (habits/days/perRow/dot size) are untouched; the new title field's only new constant is a defensive character cap, documented in data-model.md, not a spec-level option limit.          | PASS   |
 | Workflow: spec checklist                   | 16/16 items pass (`checklists/requirements.md`).                                                                                                                                                          | PASS   |
 
-**Post-Phase 1 re-check**: data-model.md's Fit rules confirm the header/label/numbering geometry
+**Post-Phase 1 re-check**: data-model.md's Fit rules confirm the header/label/line-spacing geometry
 changes have concrete, bounded formulas (not open-ended); `contracts/tracker-options.schema.json`
 and `contracts/page-interface.md` confirm the new `title` field extends the existing contracts
-without breaking any current selector, name, or range; research.md §3–§4 confirm the per-dot
-numbering change needs no new geometry (Principle III risk is about legibility at the margin, to be
-re-verified against the actual compiled output during implementation, not a new test category).
-All Technical/Workflow constraints and Principles I, II, IV, V still PASS outright; Principle III
+without breaking any current selector, name, or range; research.md §3 confirms the asymmetric-gap
+fix adds a modest, bounded amount of height per line (not an open-ended change). All
+Technical/Workflow constraints and Principles I, II, IV, V still PASS outright; Principle III
 remains PASS pending the implementation-time margin-check run against the extended
 `tests/comparison/cases.json` — no violation is anticipated, but this is the one gate this feature
-could plausibly fail if the legibility estimate in research.md §3 turns out wrong at the extreme
-case, so it is called out explicitly rather than marked PASS before that evidence exists.
+could plausibly fail if the chosen gap constants turn out to push a case past one page, so it is
+called out explicitly rather than marked PASS before that evidence exists.
 
 ## Project Structure
 
@@ -126,7 +130,7 @@ tasks.md is created by `/speckit-tasks`, not by this plan.
 ```text
 typst/
 └── tracker.typ          # Every visual change: title header, rows-layout label repositioning,
-                          # per-dot numbering, typography/line-weight polish (Principle I)
+                          # day-number spacing fix, typography/line-weight polish (Principle I)
 
 web/
 ├── index.html           # Add one new text input: name="title"
@@ -138,14 +142,14 @@ web/
 tests/
 ├── unit/
 │   ├── options.test.ts   # New cases: title present/blank, over the defensive length cap
-│   └── fit.test.ts        # fit-model.ts geometry updated: rows-layout width/height, optional header
+│   └── fit.test.ts        # fit-model.ts geometry updated: rows-layout width/height, optional header,
+│                           # taller per-line spacing from the asymmetric-gap fix
 ├── comparison/
 │   ├── margins.ts         # Unaffected code; re-run as the regression gate for the geometry changes
 │   └── cases.json         # Extended with a title-present case and the redesigned rows-layout cases
-├── e2e/                   # preview-and-input.spec.ts: new title field behavior (no existing spec
-│                           # hard-codes "every fifth day" numbering, per contracts/page-interface.md)
+├── e2e/                   # preview-and-input.spec.ts: new title field behavior
 └── perf/
-    └── timing.test.ts      # Re-run as a regression guard (more glyphs per page now)
+    └── timing.test.ts      # Re-run as a regression guard
 ```
 
 **Structure Decision**: No new project, package, or dependency. Every visual change lands in the

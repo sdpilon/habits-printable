@@ -64,25 +64,30 @@ is listed.
    `tests/comparison/cases.json`). Expect the same fit/overflow behavior as before this feature —
    confirm by running `pnpm run margins`.
 
-### User Story 3: every dot numbered
+### User Story 3: day numbers grouped with their own row
 
-9. **Every dot, every layout.** For each layout (`rows`, `columns`, `calendars`) at the defaults,
-   look at the dots. Expect every single dot to have its own day number next to or above it — not
-   just days 5, 10, 15, … (FR-004).
-10. **No mismatch.** Pick any printed number at random and find the dot nearest to it. Expect that
-    dot to be the exact day the number names, with no dot left unlabeled and no number left without
-    a dot (FR-005, SC-003).
-11. **Smallest dots, most per row.** Set dot diameter to 2 mm, dot spacing to 0.5 mm, per row to 31
-    (`rows-31-small-dots` in `tests/comparison/cases.json`). Expect every number to stay legible
-    and non-overlapping even at this extreme (spec Edge Cases, research.md §3).
+9. **Gap direction.** For each layout that numbers days above a line of dots (`rows`, `calendars`)
+   at the defaults, look at any numbered line (day 5, 10, 15, …). Expect the gap between the
+   number and its own row of dots below it to be visibly smaller than the gap between that number
+   and the row of dots above it — the reverse of today's spacing (FR-004).
+10. **No mismatch.** Read any numbered line and confirm the number reads as belonging to the dots
+    directly below it, not the row above. Optional: temporarily number every dot locally while
+    checking this, then confirm the shipped build still only numbers every fifth day
+    (research.md §4).
+11. **Columns layout unaffected.** In the habits-as-columns layout, confirm day numbers still sit
+    beside their row exactly as before — this layout never had the defect, so nothing changes here
+    (FR-005).
+12. **Smallest dots, most per row.** Set dot diameter to 2 mm, dot spacing to 0.5 mm, per row to 31
+    (`rows-31-small-dots` in `tests/comparison/cases.json`). Expect the enlarged above-gap to still
+    keep every line legible and non-overlapping at this extreme (spec Edge Cases).
 
 ### User Story 4: consistent polish
 
-12. **Side by side.** Generate one tracker per layout with the same habit/day counts. Expect the
+13. **Side by side.** Generate one tracker per layout with the same habit/day counts. Expect the
     same line weights, label styling, and spacing conventions across all three — no layout looking
     rougher or more "finished" than the others (SC-004).
-13. **Black and white.** Print (or print-preview) any layout without color. Expect every design
-    change — title, repositioned label, per-dot numbers — to stay fully legible (FR-007).
+14. **Black and white.** Print (or print-preview) any layout without color. Expect every design
+    change — title, repositioned label, regrouped day numbers — to stay fully legible (FR-007).
 
 ## Margin check (Principle III)
 
@@ -91,8 +96,8 @@ pnpm margins
 ```
 
 Re-run against `tests/comparison/cases.json` (extended with a title-present case for this feature)
-to confirm the title header, the repositioned rows-layout label, and the denser day numbering all
-still keep printed content inside the 10 mm margin on every case.
+to confirm the title header, the repositioned rows-layout label, and the taller per-line spacing
+from the day-number gap fix all still keep printed content inside the 10 mm margin on every case.
 
 ## Expected outcome
 
@@ -100,5 +105,5 @@ still keep printed content inside the 10 mm margin on every case.
 - A title, when set, appears identically in the preview and the download; when blank, the page is
   unchanged from before this feature (SC-001).
 - The rows layout's habit blocks are no wider than their dot grid (SC-002).
-- Every dot on every layout has exactly one correctly-matched day number (SC-003).
+- Every day number's gap to its own row is smaller than its gap to the row above it (SC-003).
 - All three layouts look like one consistent design (SC-004).
