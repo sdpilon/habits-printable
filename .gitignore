@@ -33,3 +33,10 @@ entry-description.md
 
 # Brainstorming-skill scratch design docs (superseded by specs/ once speckit-specify runs)
 docs/superpowers/
+
+# scripts/backfill-perf-history.ts's local scratch output (consumed once by T003 to build
+# the gh-pages branch; not meant to be committed on the main branch itself)
+backfill-output/
+
+# tests/perf/timing.test.ts's result file, consumed by CI's benchmark-publish step
+perf-result.json

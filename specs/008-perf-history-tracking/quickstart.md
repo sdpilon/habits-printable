@@ -15,8 +15,9 @@ the previous one unless noted; only the changes needed are listed.
 
 ## Scenario 1: Backfilled history is complete and ordered
 
-1. Run the backfill script once: `pnpm tsx scripts/backfill-perf-history.ts`
-   (or however it's invoked per its own implementation).
+1. Run the backfill script once: `node scripts/backfill-perf-history.ts`
+   (writes `backfill-output/data.js` locally; see tasks.md T003 for
+   turning that into the pushed `gh-pages` branch).
 2. `git fetch origin gh-pages && git show origin/gh-pages:dev/bench/data.js | head -50`
 3. **Expect**: the file exists, contains an `entries` map with one
    array keyed by the metric name, and that array has one entry per

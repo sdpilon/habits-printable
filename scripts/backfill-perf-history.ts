@@ -37,8 +37,8 @@ interface Entry {
     message: string;
     timestamp: string;
     url: string;
-    author: { name: string };
-    committer: { name: string };
+    author: { username: string };
+    committer: { username: string };
   };
   date: number;
   tool: string;
@@ -130,8 +130,13 @@ function main() {
         message: info.message,
         timestamp: info.timestamp,
         url: `${repoUrl}/commit/${info.id}`,
-        author: { name: info.authorName },
-        committer: { name: info.authorName },
+        // The dashboard template's tooltip reads `committer.username` (not
+        // `.name`) — confirmed against the pinned action's own
+        // default_index_html.js. We only have the commit author's display
+        // name available locally/via the commits API, not a verified GitHub
+        // handle, so it's used as a reasonable stand-in here.
+        author: { username: info.authorName },
+        committer: { username: info.authorName },
       },
       date: new Date(info.timestamp).getTime(),
       tool: 'customSmallerIsBetter',

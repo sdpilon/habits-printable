@@ -64,7 +64,10 @@ window.BENCHMARK_DATA = {
   entries: {
     "<benchmark suite name, as configured in the workflow step>": [
       {
-        commit: { id, message, timestamp, url, author: {...}, committer: {...} },
+        commit: {
+          id, message, timestamp, url,
+          author: { username }, committer: { username }
+        },
         date: <epoch-ms>,
         tool: "customSmallerIsBetter",
         benches: [{ name, unit, value, range?, extra? }]
@@ -75,21 +78,33 @@ window.BENCHMARK_DATA = {
 }
 ```
 
-**Rationale**: Confirmed via the action's own output structure (web
-research of its documentation and example diffs from projects using
-it, e.g. git-bug's `dev/bench/data.js`). The backfill script must
-produce entries in this exact shape so the live action can append to
-them afterward without needing a migration.
+**Rationale**: Confirmed by fetching the pinned version's actual
+`dist/src/default_index_html.js` from the action's repo (not just
+docs/examples) — its tooltip rendering reads `commit.committer.username`
+(not `.name`) and `commit.message`/`commit.timestamp` directly, and a
+bench's `extra` field is rendered verbatim in the tooltip (confirms the
+branch-attribution approach above actually surfaces in the UI). The
+backfill script must produce entries in this exact shape so the live
+action can append to them afterward without needing a migration.
 
-**Action for implementation**: Before writing the backfill script,
-run the live action once on a throwaway/dry-run basis (or inspect its
-source at the pinned version) to confirm the exact field names and
-nesting haven't changed, rather than relying solely on this research —
-an action-version mismatch here would silently corrupt the dashboard.
+**Action for implementation — confirmed, not just planned**: fetched
+`dist/src/default_index_html.js` at the pinned tag directly (via the
+GitHub API's git blobs endpoint, since the repo's `contents` API
+404s on nested paths under `dist/` for this repo for unclear reasons —
+`git/trees`/`git/blobs` work fine). This is also the file that must be
+seeded (as `index.html`, verbatim, no templating needed — it reads
+everything from `window.BENCHMARK_DATA` at runtime) alongside the
+backfilled `data.js`, since nothing else will generate it until the
+live CI step (User Story 2) runs for the first time — without it,
+Story 1's dashboard has no page to render, only raw JSON.
 
 ## Decision: pin the action to a specific release, verified at implementation time
 
-**Rationale**: Web research (as of this writing) found `v1.20.7` as a
+**Confirmed at implementation time (T001, 2026-10-09)**: `v1.22.2` —
+verified via `https://api.github.com/repos/benchmark-action/github-action-benchmark/releases/latest`,
+not reused from the earlier placeholder value below.
+
+**Rationale**: Web research during planning found `v1.20.7` as a
 recent release, but action tags move; pin to whatever the current
 latest stable release tag is *at implementation time* (check
 https://github.com/benchmark-action/github-action-benchmark/releases
@@ -101,6 +116,21 @@ without review); pinning to a commit SHA — viable, more secure, but
 loses the human-readable version in the workflow file. Default to a
 pinned version tag unless the user has a stronger preference at
 implementation time.
+
+## Decision: the action's `name` input must match the backfill's entries key exactly
+
+Confirmed via `action.yml`: the `name` input ("Name of the benchmark.
+This value must be identical among all benchmarks") is the key under
+`entries` in the gh-pages data file — it's the chart-section grouping,
+not just metadata. If the live CI step's `name` input doesn't exactly
+match the string the backfill script used as its `entries` key
+(`"Typst compile (largest fitting page, median of 10)"`), live runs
+would silently create a *second*, disconnected chart section instead
+of appending to the backfilled one. The CI workflow step sets
+`name: 'Typst compile (largest fitting page, median of 10)'` for
+exactly this reason — it's not an arbitrary label, it's a hard
+coordination point between `scripts/backfill-perf-history.ts` and
+`.github/workflows/ci.yml`.
 
 ## Decision: enabling GitHub Pages via `gh api`
 
@@ -133,3 +163,17 @@ step). No need to drop to raw REST calls.
 **Alternatives considered**: GitHub Actions REST API directly via
 `gh api` — more verbose for no benefit, since `gh run` already gives
 structured JSON and log access.
+
+## Decision: concurrent CI runs on different branches don't lose data
+
+Two CI runs finishing near-simultaneously (e.g. two PRs) both attempt
+to push an updated data file to `gh-pages`. `benchmark-action/github-action-benchmark`
+handles this itself — on push rejection it fetches the latest
+`gh-pages` state and retries, merging its own new entry on top rather
+than overwriting. No additional locking/retry logic needs to be built
+for this.
+
+**Rationale**: this is the action's documented/known behavior for
+concurrent writes; confirmed as the basis for choosing this action
+over a hand-rolled recorder (see the first Decision in this file)
+rather than something we need to implement ourselves.

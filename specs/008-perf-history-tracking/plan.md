@@ -26,7 +26,7 @@ Record the project's existing compile-time performance metric (`median compile: 
 
 **Performance Goals**: N/A as a feature of its own — it *tracks* the project's existing 0.2s compile budget (SC-002), it does not add a new performance target.
 
-**Constraints**: Must not alter the pass/fail outcome of the existing `pnpm perf` budget check (FR-006); must not fail CI for pull requests from forks lacking write access (FR-005); the backfill script must run and push its seeded data once, before the live CI step first runs for real, to avoid a duplicate/conflicting entry for the same commit (see spec Edge Cases).
+**Constraints**: Must not alter the pass/fail outcome of the existing `pnpm perf` budget check (FR-006); must not fail CI for pull requests from forks lacking write access (FR-005); the backfill script must run and push its seeded data once, before the live CI step first runs for real, to avoid a duplicate/conflicting entry for the same commit (see spec Edge Cases). Concurrent runs on *different* commits are handled by the action's own fetch-and-retry behavior on push conflicts (see `research.md`), not something this plan needs to build.
 
 **Scale/Scope**: ~53 pre-existing CI runs to backfill (all from the last few days — no log-retention gap); one new record per qualifying CI run indefinitely afterward.
 
