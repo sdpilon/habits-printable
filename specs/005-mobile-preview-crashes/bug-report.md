@@ -63,7 +63,7 @@ the browser ships the real one) in **both** realms that need it:
   `pdf.worker.mjs`, since the polyfill also needs to exist inside the
   worker's own separate global realm (a Worker doesn't inherit the main
   thread's `Map.prototype`). The wrapper installs the polyfill, then
-  **dynamically** `import()`s the real `pdf.worker.mjs` — a *static* import
+  **dynamically** `import()`s the real `pdf.worker.mjs` — a _static_ import
   would evaluate the dependency's top-level code before the importer's own
   statements regardless of source order, which would run the real worker
   code before the polyfill was in place.
@@ -110,8 +110,8 @@ connection.
 **Caveat that remains**: the original bug's exact trigger (resource
 exhaustion/throttling after repeated loads in one tab/session, per
 [[mobile-wasm-compile-abort]]) is still unconfirmed and wasn't
-independently reproduced this session — only the *mechanism* (what happens
-when the download is interrupted) is now verified, not the *root cause* of
+independently reproduced this session — only the _mechanism_ (what happens
+when the download is interrupted) is now verified, not the _root cause_ of
 why mobile browsers interrupted it in the first place.
 
 ## Diagnostic overlay (kept permanently, `web/src/debug-overlay.ts`)

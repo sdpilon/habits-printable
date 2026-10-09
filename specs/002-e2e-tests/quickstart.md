@@ -25,10 +25,10 @@ pnpm exec playwright show-report playwright-report/<runId>
 
 ## Where results go
 
-| Output | Location | Kept |
-|--------|----------|------|
-| HTML report | `playwright-report/<runId>/` | Until you delete it locally; 7 days in CI (artifact) |
-| Failure screenshots, traces, and the downloaded PDF copy | `test-results/<runId>/` | Until you delete it locally; 7 days in CI (artifact) |
+| Output                                                   | Location                     | Kept                                                 |
+| -------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| HTML report                                              | `playwright-report/<runId>/` | Until you delete it locally; 7 days in CI (artifact) |
+| Failure screenshots, traces, and the downloaded PDF copy | `test-results/<runId>/`      | Until you delete it locally; 7 days in CI (artifact) |
 
 Both folders are git-ignored. Each run also builds into `dist/e2e-<runId>`, which `tests/e2e/support/global-teardown.ts` removes when the run ends. Two runs on one machine write to different folders, so one run cannot read another run's PDF.
 
@@ -36,15 +36,15 @@ Both folders are git-ignored. Each run also builds into `dist/e2e-<runId>`, whic
 
 Every scenario starts from the defaults below. Reset the form to them first, then change only the listed options. Paper is always US Letter, and the form offers no other paper size, so paper is not a scenario option.
 
-| Setting | Default |
-|---------|---------|
-| Layout | one row per habit (`rows`) |
-| Habits | 5 |
-| Days | 31 |
-| Per row | 7 |
-| Dot diameter | 4 mm |
-| Dot spacing | 1.5 mm |
-| Paper | US Letter (set explicitly; see research.md §8) |
+| Setting      | Default                                        |
+| ------------ | ---------------------------------------------- |
+| Layout       | one row per habit (`rows`)                     |
+| Habits       | 5                                              |
+| Days         | 31                                             |
+| Per row      | 7                                              |
+| Dot diameter | 4 mm                                           |
+| Dot spacing  | 1.5 mm                                         |
+| Paper        | US Letter (set explicitly; see research.md §8) |
 
 ### User Story 1: download path
 
@@ -62,6 +62,7 @@ Every scenario starts from the defaults below. Reset the form to them first, the
    - Layout → `columns`
 
    Each option is its own test, so a broken option fails only its own scenario.
+
 4. **Invalid habit count, each kind.** For each of empty, `0`, `-1`, non-numeric (typed as `1e`, which the browser flags as bad input), and `21`: expect a message in `#messages`, the field flagged `aria-invalid="true"`, and download disabled. Run once per kind.
 5. **Recovery.** After an invalid value, enter `5`. Expect the message to clear and download to be enabled again.
 

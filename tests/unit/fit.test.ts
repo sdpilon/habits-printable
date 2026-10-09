@@ -13,8 +13,12 @@ const cases = JSON.parse(readFileSync(join(root, 'tests/comparison/cases.json'),
 };
 
 describe('fit model', () => {
-  it.each(cases.cases.map((c) => [c.name, c.options] as const))('%s agrees with the page count', async (_name, options) => {
-    const { pageCount } = await compileSource(source, options);
-    expect(predictFits(options)).toBe(pageCount === 1);
-  }, 30_000);
+  it.each(cases.cases.map((c) => [c.name, c.options] as const))(
+    '%s agrees with the page count',
+    async (_name, options) => {
+      const { pageCount } = await compileSource(source, options);
+      expect(predictFits(options)).toBe(pageCount === 1);
+    },
+    30_000,
+  );
 });

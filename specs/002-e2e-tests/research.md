@@ -9,9 +9,10 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 **Rationale**: It drives real downloads (`page.waitForEvent('download')`), gives screenshots and traces on failure, runs every test even after a failure by default (FR-013), has polling assertions for the 5-second settle rule, and runs the same way on macOS and Linux CI. The spec fixes one Chromium browser for version 1.
 
 **Alternatives considered**:
-- *Vitest with jsdom*: cannot run the WASM Typst compile or real downloads. Rejected.
-- *Cypress*: good UI, but downloads and multi-tab control are weaker, and it adds a separate runtime. Rejected.
-- *Puppeteer with a custom runner*: would rebuild retries, reporting, and screenshots by hand. Rejected.
+
+- _Vitest with jsdom_: cannot run the WASM Typst compile or real downloads. Rejected.
+- _Cypress_: good UI, but downloads and multi-tab control are weaker, and it adds a separate runtime. Rejected.
+- _Puppeteer with a custom runner_: would rebuild retries, reporting, and screenshots by hand. Rejected.
 
 **Install status**: `@playwright/test` 1.63.0 is installed (approved as an npm package). The browser is not an npm package, so it is not downloaded. Locally, the suite launches the Playwright-bundled Chromium (revision 1243), which is already cached in `~/Library/Caches/ms-playwright`, with no `executablePath`. The suite passes on this machine. CI uses the Google Chrome that GitHub's Ubuntu runner provides (`channel: 'chrome'`), and the first CI run passed on `ubuntu-latest` (run 37555321864).
 
@@ -22,8 +23,9 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 **Verified**: `pnpm build` completes on this machine with the existing dependencies (built in 375 ms, output in `dist/`, which is git-ignored). `vite.config.ts` sets `root: 'web'` and `build.outDir: '../dist'`. The run passes `--outDir` explicitly, so `vite preview` serves the same output as the build. The first CI run on `ubuntu-latest` passed the build and the e2e step with `channel: 'chrome'` (run 37555321864).
 
 **Alternatives considered**:
-- *Development server*: the spec changed to the production build on 2026-10-06, since that is what people receive. Rejected.
-- *Hosted or staging URL*: forbidden by FR-009. Rejected.
+
+- _Development server_: the spec changed to the production build on 2026-10-06, since that is what people receive. Rejected.
+- _Hosted or staging URL_: forbidden by FR-009. Rejected.
 
 **CI check (done)**: the first CI run on `ubuntu-latest` passed the build and the e2e step (run 37555321864).
 
@@ -34,34 +36,39 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 **Rationale**: The page has no existing signal for a finished preview. `aria-busy` is standard, not visible, and useful for assistive technology. The change does not alter layout, preview, or download behaviour (FR-011). The download button's `disabled` state can't be used alone, because it stays disabled for invalid input and overflow too.
 
 **Alternatives considered**:
-- *Wait for canvas pixels to change*: fragile and slow. Rejected.
-- *A fixed sleep*: breaks the 5-second rule and slows every scenario. Rejected.
-- *A global test hook (`window.__settled`)*: adds a test-only API to product code. Rejected in favour of a standard attribute.
+
+- _Wait for canvas pixels to change_: fragile and slow. Rejected.
+- _A fixed sleep_: breaks the 5-second rule and slows every scenario. Rejected.
+- _A global test hook (`window.__settled`)_: adds a test-only API to product code. Rejected in favour of a standard attribute.
 
 ## 4. Checking the downloaded PDF
 
 **Decision**: Save the download (`download.path()`) and check it with two small helpers in `tests/e2e/support/pdf.ts`:
+
 - Page count: reuse `countPdfPages` from `web/src/typst-compile.ts`. That module imports the Typst compiler when it loads. It loads in Node 24, so Playwright's runner can import it, at the cost of loading the compiler at test startup.
 - Page size: read the first page's `/MediaBox` with a regular expression. US Letter is 612 × 792 points.
 
 **Rationale**: No new dependency. The count matches what the product itself uses to block overflow (FR-013), so the test and the product agree.
 
 **Alternatives considered**:
-- *pdf.js in Node*: already a dependency, but the PDF.js Node build path is not verified here, and the page count is already available. Rejected for now.
-- *A PDF parsing library*: a new dependency for two values. Rejected.
+
+- _pdf.js in Node_: already a dependency, but the PDF.js Node build path is not verified here, and the page count is already available. Rejected for now.
+- _A PDF parsing library_: a new dependency for two values. Rejected.
 
 **Check (done)**: the `/MediaBox` regular expression reads the page size correctly on Typst's output. The default-options download test confirms it (612 × 792 points, one page).
 
 ## 5. Failure artifacts and CI
 
 **Decision**:
+
 - Playwright config: `screenshot: 'only-on-failure'`, `trace: 'retain-on-failure'`, and the HTML report in `playwright-report/` (git-ignored).
 - CI: a step after the e2e run uploads `test-results/` and `playwright-report/` with `if: failure()` and `retention-days: 7`. This meets FR-014 and the 7-day clarification.
 - CI browser: `channel: 'chrome'` on the Ubuntu runner's preinstalled Google Chrome. No browser download step. Verified on the first CI run (`ubuntu-latest` has the Chrome channel).
 
 **Alternatives considered**:
-- *Retain 30 or 90 days*: rejected by the clarification (7 days).
-- *Screenshots on every run*: more storage with no added benefit for failure review. Rejected.
+
+- _Retain 30 or 90 days_: rejected by the clarification (7 days).
+- _Screenshots on every run_: more storage with no added benefit for failure review. Rejected.
 
 ## 6. CI placement
 
@@ -70,8 +77,9 @@ Resolves the open technical choices from the spec and plan. Each decision lists 
 **Rationale**: The clarified answer is "run in the existing CI workflow on every pull request". One job keeps the setup shared.
 
 **Alternatives considered**:
-- *A separate workflow*: adds a second setup block for the same checkout and install. Rejected for now.
-- *A manually triggered workflow*: the clarification chose every-PR CI. Rejected.
+
+- _A separate workflow_: adds a second setup block for the same checkout and install. Rejected for now.
+- _A manually triggered workflow_: the clarification chose every-PR CI. Rejected.
 
 **Risk**: the suite adds time to every PR run. The first CI run (37555321864) took 55 seconds for the e2e step on `ubuntu-latest`, including the production build. That is well inside the 3-minute target in SC-001, which is also the local measure for a developer's run.
 

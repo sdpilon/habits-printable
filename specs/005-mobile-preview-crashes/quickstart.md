@@ -16,15 +16,15 @@ section — this is the hand-run checklist on top of that, pulled from
 
 Form defaults (unchanged by this fix):
 
-| Setting | Default |
-|---------|---------|
-| Layout | one row per habit |
-| Habits | 5 |
-| Days | 31 |
-| Per row | 7 |
-| Dot diameter | 4 mm |
-| Dot spacing | 1.5 mm |
-| Paper | US Letter (only option offered) |
+| Setting      | Default                         |
+| ------------ | ------------------------------- |
+| Layout       | one row per habit               |
+| Habits       | 5                               |
+| Days         | 31                              |
+| Per row      | 7                               |
+| Dot diameter | 4 mm                            |
+| Dot spacing  | 1.5 mm                          |
+| Paper        | US Letter (only option offered) |
 
 ## This fix's own checks
 
@@ -45,7 +45,7 @@ the defaults above.
    matching the preview exactly.
 5. **Dev-only overlay doesn't leak to production, and stays off unless asked
    for.** Build and serve the production bundle
-   (`pnpm build && pnpm exec vite preview`) and load it — in *any* browser,
+   (`pnpm build && pnpm exec vite preview`) and load it — in _any_ browser,
    with and without `?debug` appended. Expect no diagnostic overlay strip at
    the bottom of the screen either way (the production bundle contains no
    overlay code at all, so the param does nothing there). Then load the page

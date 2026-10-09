@@ -109,25 +109,25 @@ tmux capture-pane -t habits-grid -p
 
 ### Commands
 
-| command                    | what it does                                                                                                                        |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `server-start`             | runs `pnpm dev --port 5173 --strictPort` in the background, waits until it responds (override the port: `PORT`)                     |
-| `server-stop`              | kills the dev server's process group                                                                                                |
+| command                    | what it does                                                                                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `server-start`             | runs `pnpm dev --port 5173 --strictPort` in the background, waits until it responds (override the port: `PORT`)                                                                                                                      |
+| `server-stop`              | kills the dev server's process group                                                                                                                                                                                                 |
 | `launch [path]`            | with `path` given explicitly, launches headless and confirms/remembers it for next time; with no argument, launches the already-confirmed path if one is saved, otherwise reports cached candidates instead of launching — see above |
-| `goto [path]`              | navigates to `http://localhost:5173/<path>` (default `/`; port follows `PORT`, see `server-start`)                                  |
-| `ss [name]`                | screenshot -> `/tmp/habits-grid-shots/<name>.png`                                                                                   |
-| `fill <css-sel> <value>`   | clears then fills a text/number input                                                                                               |
-| `select <css-sel> <value>` | sets a `<select>`'s value                                                                                                           |
-| `click <css-sel>`          | clicks an element                                                                                                                   |
-| `wait <css-sel>`           | waits up to 10s for a selector                                                                                                      |
-| `wait-settled`             | waits up to 10s for `#preview-section[aria-busy="false"]` — the page's own "render finished" signal                                 |
-| `counts`                   | prints `#preview-section`'s `data-habits`/`data-days` (the layout actually drawn)                                                   |
-| `download-enabled`         | prints whether `#download` is enabled                                                                                               |
-| `canvas-hash`              | sha1 of the `#preview canvas` pixels — use only to confirm _something_ redrew, not to detect settling (use `wait-settled` for that) |
-| `eval <js>`                | `page.evaluate`, prints JSON                                                                                                        |
-| `text [css-sel]`           | prints `innerText` (body if no selector)                                                                                            |
-| `errors`                   | prints captured console/page errors since `launch`                                                                                  |
-| `quit`                     | closes the browser and stops the dev server if this REPL started it                                                                 |
+| `goto [path]`              | navigates to `http://localhost:5173/<path>` (default `/`; port follows `PORT`, see `server-start`)                                                                                                                                   |
+| `ss [name]`                | screenshot -> `/tmp/habits-grid-shots/<name>.png`                                                                                                                                                                                    |
+| `fill <css-sel> <value>`   | clears then fills a text/number input                                                                                                                                                                                                |
+| `select <css-sel> <value>` | sets a `<select>`'s value                                                                                                                                                                                                            |
+| `click <css-sel>`          | clicks an element                                                                                                                                                                                                                    |
+| `wait <css-sel>`           | waits up to 10s for a selector                                                                                                                                                                                                       |
+| `wait-settled`             | waits up to 10s for `#preview-section[aria-busy="false"]` — the page's own "render finished" signal                                                                                                                                  |
+| `counts`                   | prints `#preview-section`'s `data-habits`/`data-days` (the layout actually drawn)                                                                                                                                                    |
+| `download-enabled`         | prints whether `#download` is enabled                                                                                                                                                                                                |
+| `canvas-hash`              | sha1 of the `#preview canvas` pixels — use only to confirm _something_ redrew, not to detect settling (use `wait-settled` for that)                                                                                                  |
+| `eval <js>`                | `page.evaluate`, prints JSON                                                                                                                                                                                                         |
+| `text [css-sel]`           | prints `innerText` (body if no selector)                                                                                                                                                                                             |
+| `errors`                   | prints captured console/page errors since `launch`                                                                                                                                                                                   |
+| `quit`                     | closes the browser and stops the dev server if this REPL started it                                                                                                                                                                  |
 
 `quit` (or stdin EOF / Ctrl-D) always tears down the browser and, if
 this process started it, the dev server — verified the port is free

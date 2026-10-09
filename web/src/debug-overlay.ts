@@ -26,7 +26,13 @@ if (enabled) {
 export function debugLog(...parts: unknown[]): void {
   if (!debugOverlay) return;
   const line = parts
-    .map((p) => (p instanceof Error ? `${p.name}: ${p.message}\n${p.stack}` : typeof p === 'object' ? JSON.stringify(p) : String(p)))
+    .map((p) =>
+      p instanceof Error
+        ? `${p.name}: ${p.message}\n${p.stack}`
+        : typeof p === 'object'
+          ? JSON.stringify(p)
+          : String(p),
+    )
     .join(' ');
   debugOverlay.textContent += `[${new Date().toISOString().slice(11, 23)}] ${line}\n`;
 }
@@ -34,5 +40,10 @@ export function debugLog(...parts: unknown[]): void {
 if (enabled) {
   window.addEventListener('error', (e) => debugLog('window error:', e.message, e.error));
   window.addEventListener('unhandledrejection', (e) => debugLog('unhandledrejection:', e.reason));
-  debugLog('boot', { ua: navigator.userAgent, dpr: window.devicePixelRatio, innerW: window.innerWidth, innerH: window.innerHeight });
+  debugLog('boot', {
+    ua: navigator.userAgent,
+    dpr: window.devicePixelRatio,
+    innerW: window.innerWidth,
+    innerH: window.innerHeight,
+  });
 }

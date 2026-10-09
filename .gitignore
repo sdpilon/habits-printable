@@ -30,7 +30,3 @@ Thumbs.db
 
 # Cross-project registry entry (read by ~/.claude/bldoc.toml, not by this repo)
 entry-description.md
-
-# Local markdownlint (mdl) config - not wired into CI/package.json
-.mdlrc
-.mdl_style.rb

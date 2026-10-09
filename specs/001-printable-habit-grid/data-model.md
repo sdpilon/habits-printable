@@ -6,31 +6,31 @@ Nothing is stored. These are the in-memory values the page holds and passes to t
 
 The person's current settings. Each download and preview is built from one `TrackerOptions` value.
 
-| Field | Type | Default | Rule | Source |
-|-------|------|---------|------|--------|
-| `layout` | enum: `rows`, `columns`, `calendars` | `rows` | One of the three layouts | FR-003 |
-| `habits` | integer | 5 | 1 ≤ habits ≤ 20 | FR-001, clarification |
-| `days` | integer | 31 | 1 ≤ days ≤ 365 | FR-002 |
-| `perRow` | integer | 7 | 1 ≤ perRow ≤ 31 | FR-006, clarification |
-| `dotDiameterMm` | number | 4 | 2 ≤ value ≤ 5 | FR-007, clarification |
-| `dotSpacingMm` | number | 1.5 | 0.5 ≤ value ≤ 5 (planning default; range is not in the spec) | FR-007 |
-| `paper` | enum: `a4`, `letter` | `a4` | A4 default | FR-011 |
+| Field           | Type                                 | Default | Rule                                                         | Source                |
+| --------------- | ------------------------------------ | ------- | ------------------------------------------------------------ | --------------------- |
+| `layout`        | enum: `rows`, `columns`, `calendars` | `rows`  | One of the three layouts                                     | FR-003                |
+| `habits`        | integer                              | 5       | 1 ≤ habits ≤ 20                                              | FR-001, clarification |
+| `days`          | integer                              | 31      | 1 ≤ days ≤ 365                                               | FR-002                |
+| `perRow`        | integer                              | 7       | 1 ≤ perRow ≤ 31                                              | FR-006, clarification |
+| `dotDiameterMm` | number                               | 4       | 2 ≤ value ≤ 5                                                | FR-007, clarification |
+| `dotSpacingMm`  | number                               | 1.5     | 0.5 ≤ value ≤ 5 (planning default; range is not in the spec) | FR-007                |
+| `paper`         | enum: `a4`, `letter`                 | `a4`    | A4 default                                                   | FR-011                |
 
 The row label width (40 mm) is a fixed constant for layout (1), set in `typst/tracker.typ`. It is not a person-set option. Layouts (2) and (3) use the header sizes in the Label decision below.
 
 **Validation (FR-012)**: A field that is empty, zero, negative, non-numeric, or over its maximum makes `TrackerOptions` invalid. The page shows a message for that field, keeps the last valid preview, and disables download.
 
-**Overflow (FR-013)**: A valid `TrackerOptions` whose compiled template runs to more than one page is *overflowing*. The page shows the overflow warning and disables download.
+**Overflow (FR-013)**: A valid `TrackerOptions` whose compiled template runs to more than one page is _overflowing_. The page shows the overflow warning and disables download.
 
 ## HabitRow (layout-specific shape)
 
 One habit's section of the tracker. Its shape depends on `layout`:
 
-| Layout | Habit is | Dots per line set by | Label sits |
-|--------|----------|----------------------|------------|
-| `rows` | a row | `perRow` dots per habit row, wrapping in order | left of the row |
-| `columns` | a column | `perRow` habits per row group | above the column |
-| `calendars` | a mini calendar | `perRow` dots per calendar row | above the calendar |
+| Layout      | Habit is        | Dots per line set by                           | Label sits         |
+| ----------- | --------------- | ---------------------------------------------- | ------------------ |
+| `rows`      | a row           | `perRow` dots per habit row, wrapping in order | left of the row    |
+| `columns`   | a column        | `perRow` habits per row group                  | above the column   |
+| `calendars` | a mini calendar | `perRow` dots per calendar row                 | above the calendar |
 
 All three hold the same ordered sequence of `days` dots, one per day.
 

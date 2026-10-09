@@ -31,10 +31,7 @@ export default defineConfig({
   retries: 0,
   // Removes this run's build folder once the run ends, so folders don't pile up under dist/.
   globalTeardown: './tests/e2e/support/global-teardown.ts',
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: `playwright-report/${runId}`, open: 'never' }],
-  ],
+  reporter: [['list'], ['html', { outputFolder: `playwright-report/${runId}`, open: 'never' }]],
   use: {
     baseURL: `http://localhost:${port}`,
     acceptDownloads: true,
@@ -43,9 +40,7 @@ export default defineConfig({
     // CI uses the Chrome preinstalled on the runner; locally the bundled Chromium is already cached.
     ...(process.env.CI ? { channel: 'chrome' } : {}),
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     // Always build and start a fresh server. A server left running from an older build must never be tested.
     // build-page.mjs prints a clear message when the build fails.

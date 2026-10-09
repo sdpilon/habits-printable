@@ -12,7 +12,7 @@ fit-width) that was mis-specified and is not wanted. This spec keeps only the co
 behavior — the preview always fits the whole page in the viewport, undistorted, with
 no mode choice.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - See the entire generated page without distortion (Priority: P1)
 
@@ -60,7 +60,7 @@ proportions match the actual generated page (not stretched or squashed).
   preview should not briefly show the page at a distorted or unfit size (e.g.,
   flash at native/stretched size, then correct).
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -78,7 +78,7 @@ proportions match the actual generated page (not stretched or squashed).
 - **FR-005**: The fit behavior MUST remain functional at the narrow-viewport
   breakpoint the app already defines, not only at wide desktop sizes.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -25,7 +25,7 @@
 - Q: Should the 40 mm label area apply in every layout? → A: No. 40 mm applies to layout (1) only. Layouts (2) and (3) use the label shapes in FR-005.
 - Q: How should each habit's name be written above its column in the habits-as-columns layout? → A: Written vertically (rotated) in a header above the column, so each column stays one dot wide. (Planning choice: in the mini-calendar layout the name spans the calendar's width.)
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Generate and download a printable habit grid (Priority: P1)
 
@@ -82,7 +82,7 @@ The person adjusts how the dots are arranged on the page (for example how many d
 - How does the preview behave when the browser is slow or the layout is complex? The preview must still reflect the latest valid options and must not show a stale layout after the person has changed a value.
 - What happens if the download is requested while the preview is still updating? The downloaded PDF must match the options currently shown, not an earlier state.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -102,14 +102,14 @@ The person adjusts how the dots are arranged on the page (for example how many d
 - **FR-014**: The layout and rendering MUST be produced with Typst, so that the same layout definition drives both the preview and the PDF (user-mandated constraint, recorded here so that planning keeps it).
 - **FR-015**: The grid MUST print day numbers on every fifth day (5, 10, 15, and so on) in every layout, so the person can locate a day without counting dots. Day numbers are printed text only and are not part of the hand-filled dots.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tracker Options**: The person's chosen settings: layout, number of habits, number of days per habit, per-row count for the layout, dot size, dot spacing, and paper size.
 - **Habit Row**: One habit's section of the tracker (a row, column, or mini calendar, depending on layout), containing a label area and an ordered sequence of day dots.
 - **Day Dot**: A single empty circle representing one day for one habit.
 - **Tracker Document**: The full printable layout built from the options, which is both shown as the preview and exported as the PDF.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

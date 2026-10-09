@@ -19,7 +19,9 @@ interface Case {
   options: TrackerOptions;
 }
 
-const { cases } = JSON.parse(readFileSync(join(root, 'tests/comparison/cases.json'), 'utf8')) as { cases: Case[] };
+const { cases } = JSON.parse(readFileSync(join(root, 'tests/comparison/cases.json'), 'utf8')) as {
+  cases: Case[];
+};
 const source = readFileSync(join(root, 'typst/tracker.typ'), 'utf8');
 
 class CanvasFactory {
@@ -41,21 +43,38 @@ class CanvasFactory {
   }
 }
 
-async function rasterize(pdf: Uint8Array): Promise<{ width: number; height: number; rgba: Uint8ClampedArray }> {
-  const doc = await pdfjs.getDocument({ data: pdf.slice(), isEvalSupported: false, disableFontFace: true, verbosity: 0 }).promise;
+async function rasterize(
+  pdf: Uint8Array,
+): Promise<{ width: number; height: number; rgba: Uint8ClampedArray }> {
+  const doc = await pdfjs.getDocument({
+    data: pdf.slice(),
+    isEvalSupported: false,
+    disableFontFace: true,
+    verbosity: 0,
+  }).promise;
   const page = await doc.getPage(1);
   const viewport = page.getViewport({ scale: DPI / 72 });
   const canvasFactory = new CanvasFactory();
   const cc = canvasFactory.create(Math.round(viewport.width), Math.round(viewport.height));
-  await page.render({ canvasContext: cc.context as never, viewport, canvasFactory: canvasFactory as never }).promise;
+  await page.render({
+    canvasContext: cc.context as never,
+    viewport,
+    canvasFactory: canvasFactory as never,
+  }).promise;
   const { width, height } = cc.canvas;
   return { width, height, rgba: cc.context.getImageData(0, 0, width, height).data };
 }
 
 // Bounding box of printed content, checked against the margin on each side.
-function insideMargin(page: { width: number; height: number; rgba: Uint8ClampedArray }): { ok: boolean; box: string } {
+function insideMargin(page: { width: number; height: number; rgba: Uint8ClampedArray }): {
+  ok: boolean;
+  box: string;
+} {
   const { width, height, rgba } = page;
-  let minX = Infinity, minY = Infinity, maxX = -1, maxY = -1;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -1,
+    maxY = -1;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4;
@@ -69,7 +88,8 @@ function insideMargin(page: { width: number; height: number; rgba: Uint8ClampedA
   }
   if (maxX < 0) return { ok: false, box: 'no content' };
   const box = `${maxX - minX + 1}x${maxY - minY + 1}+${minX}+${minY}`;
-  const ok = minX >= MARGIN_PX && minY >= MARGIN_PX && maxX < width - MARGIN_PX && maxY < height - MARGIN_PX;
+  const ok =
+    minX >= MARGIN_PX && minY >= MARGIN_PX && maxX < width - MARGIN_PX && maxY < height - MARGIN_PX;
   return { ok, box };
 }
 
@@ -78,14 +98,20 @@ let failures = 0;
 for (const testCase of cases) {
   const compiled = await compileSource(source, testCase.options);
   if (compiled.overflowing) {
-    console.log(`${testCase.name}: skipped (overflow, ${compiled.pageCount} pages; download is blocked)`);
+    console.log(
+      `${testCase.name}: skipped (overflow, ${compiled.pageCount} pages; download is blocked)`,
+    );
     continue;
   }
 
   const margin = insideMargin(await rasterize(compiled.pdf));
   if (!margin.ok) failures++;
-  console.log(`${testCase.name}: ${margin.ok ? 'PASS' : 'FAIL'} (content box: ${margin.box}, margin ${MARGIN_PX}px)`);
+  console.log(
+    `${testCase.name}: ${margin.ok ? 'PASS' : 'FAIL'} (content box: ${margin.box}, margin ${MARGIN_PX}px)`,
+  );
 }
 
-console.log(failures === 0 ? 'All margin checks passed.' : `${failures} case(s) outside the margin.`);
+console.log(
+  failures === 0 ? 'All margin checks passed.' : `${failures} case(s) outside the margin.`,
+);
 process.exit(failures === 0 ? 0 : 1);

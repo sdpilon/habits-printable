@@ -6,7 +6,11 @@
 export function installMapUpsertPolyfill(): void {
   const proto = Map.prototype as unknown as Record<string, unknown>;
   if (!proto.getOrInsertComputed) {
-    proto.getOrInsertComputed = function (this: Map<unknown, unknown>, key: unknown, fn: (key: unknown) => unknown) {
+    proto.getOrInsertComputed = function (
+      this: Map<unknown, unknown>,
+      key: unknown,
+      fn: (key: unknown) => unknown,
+    ) {
       if (!this.has(key)) this.set(key, fn(key));
       return this.get(key);
     };

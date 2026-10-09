@@ -6,14 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write . && prettier --write \"**/*.md\"",
+    "format:check": "biome format . && prettier --check \"**/*.md\"",
     "test": "vitest run tests/unit",
     "margins": "node tests/comparison/margins.ts",
     "perf": "vitest run tests/perf",
     "e2e": "playwright test"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
     "@napi-rs/canvas": "1.0.10",
     "@playwright/test": "^1.63.0",
+    "prettier": "^3.9.9",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
     "vitest": "^5.0.3"

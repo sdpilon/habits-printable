@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openPage, readPreviewCounts, resetDefaults, setOption, waitForSettled } from './support/page.ts';
+import {
+  openPage,
+  readPreviewCounts,
+  resetDefaults,
+  setOption,
+  waitForSettled,
+} from './support/page.ts';
 
 // The warning shows and download is blocked, but the overflowing layout is still drawn (main.ts render path).
 async function expectOverflowBlocked(page: Page): Promise<void> {

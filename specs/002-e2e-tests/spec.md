@@ -25,7 +25,7 @@
 - Q: Where do the tests run? → A: On the developer's own machine, started by one command on demand. (Superseded on 2026-10-06: the suite also runs in the existing CI workflow; see above.)
 - Q: Which browsers? → A: One current desktop Chromium-based browser for the first version. Other browsers are a follow-on decision, because the printable output must match across browsers and that comparison is not yet defined.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Confirm the download path works end to end (Priority: P1)
 
@@ -83,7 +83,7 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 - Two runs happen at the same time on one machine. Each run must write its files to its own output location so that one run cannot read another run's PDF.
 - A previous run left a PDF behind. The run must check the file it just downloaded, not an older one.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -102,12 +102,12 @@ A developer changes the fit logic or a layout. The end-to-end tests set option c
 - **FR-013**: The suite MUST run every scenario even when an earlier scenario fails, and MUST report every failing scenario in the same run.
 - **FR-014**: When the suite runs in CI and a scenario fails, the failure screenshots MUST be kept as downloadable run artifacts for 7 days.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Scenario**: A named check, such as "invalid habit count is rejected". It has a starting option set, a list of steps, and an expected result.
 - **Run report**: The result of one suite execution. It lists each scenario, its pass or fail status, the failing step if any, and the saved screenshots.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

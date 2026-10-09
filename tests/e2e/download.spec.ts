@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { expectOnePageUsLetter } from './support/pdf.ts';
-import { isDownloadEnabled, openPage, readPreviewCounts, resetDefaults, setOption, waitForSettled } from './support/page.ts';
+import {
+  isDownloadEnabled,
+  openPage,
+  readPreviewCounts,
+  resetDefaults,
+  setOption,
+  waitForSettled,
+} from './support/page.ts';
 
 test.describe('US1: download path', () => {
   test('defaults download a one-page US Letter PDF', async ({ page }) => {

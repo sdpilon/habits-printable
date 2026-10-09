@@ -34,20 +34,20 @@ Technical approach (see research.md): Playwright Test with a single Chromium pro
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 Constitution version 2.0.0 (US Letter only).
 
-| Principle | Assessment | Status |
-|-----------|------------|--------|
-| I. Single Layout Source | The suite only observes the page. It draws nothing and adds no layout code. | PASS |
-| II. Preview Equals Print | The suite checks that the downloaded file is the one-page US Letter PDF. Byte-level equality with the preview stays with the design (the preview is drawn from that PDF). The suite does not add a second rendering. | PASS |
-| III. Hand-Fillable Output | No change to dots, margins, or layout. The margin check is untouched. | PASS (not affected) |
-| IV. Responsive Options | The suite checks that changes update the preview and that invalid values block download. This is the principle's own test. | PASS |
-| V. Scope Discipline | Adds one test dependency and three test-only page attributes (`aria-busy`, `data-habits`, `data-days`). All are required by the spec (FR-001 to FR-006, US1 AC2). No product features. | PASS, see Complexity Tracking |
-| Technical: Typst | Unchanged. | PASS |
-| Technical: US Letter only | The suite targets US Letter only, as the constitution now requires. | PASS |
-| Workflow: margin check | Not triggered: no layout or rendering change. | PASS (not triggered) |
+| Principle                 | Assessment                                                                                                                                                                                                           | Status                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| I. Single Layout Source   | The suite only observes the page. It draws nothing and adds no layout code.                                                                                                                                          | PASS                          |
+| II. Preview Equals Print  | The suite checks that the downloaded file is the one-page US Letter PDF. Byte-level equality with the preview stays with the design (the preview is drawn from that PDF). The suite does not add a second rendering. | PASS                          |
+| III. Hand-Fillable Output | No change to dots, margins, or layout. The margin check is untouched.                                                                                                                                                | PASS (not affected)           |
+| IV. Responsive Options    | The suite checks that changes update the preview and that invalid values block download. This is the principle's own test.                                                                                           | PASS                          |
+| V. Scope Discipline       | Adds one test dependency and three test-only page attributes (`aria-busy`, `data-habits`, `data-days`). All are required by the spec (FR-001 to FR-006, US1 AC2). No product features.                               | PASS, see Complexity Tracking |
+| Technical: Typst          | Unchanged.                                                                                                                                                                                                           | PASS                          |
+| Technical: US Letter only | The suite targets US Letter only, as the constitution now requires.                                                                                                                                                  | PASS                          |
+| Workflow: margin check    | Not triggered: no layout or rendering change.                                                                                                                                                                        | PASS (not triggered)          |
 
 **Gate result**: PASS. Re-checked after Phase 1 design: the count attributes were added and are justified in Complexity Tracking.
 
@@ -96,9 +96,10 @@ package.json                  # CHANGED: "e2e" script; @playwright/test devDepen
 
 ## Complexity Tracking
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| New dev dependency `@playwright/test` (Principle V, YAGNI) | Real-browser automation with downloads, screenshots, and polling assertions is the spec's requirement (FR-001 to FR-008) | Hand-written browser scripts would re-implement waiting, screenshots, and reporting. Vitest with jsdom cannot run the WASM Typst compile or real downloads. |
-| `aria-busy` attribute added to product markup | The suite needs an observable signal for "preview settled" (5-second rule). The page exposes none today. | Polling the canvas for changes is fragile; a fixed sleep breaks the 5-second rule and is slow. The attribute is invisible and also helps assistive technology. |
+| Violation                                                         | Why Needed                                                                                                                                               | Simpler Alternative Rejected Because                                                                                                                                |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| New dev dependency `@playwright/test` (Principle V, YAGNI)        | Real-browser automation with downloads, screenshots, and polling assertions is the spec's requirement (FR-001 to FR-008)                                 | Hand-written browser scripts would re-implement waiting, screenshots, and reporting. Vitest with jsdom cannot run the WASM Typst compile or real downloads.         |
+| `aria-busy` attribute added to product markup                     | The suite needs an observable signal for "preview settled" (5-second rule). The page exposes none today.                                                 | Polling the canvas for changes is fragile; a fixed sleep breaks the 5-second rule and is slow. The attribute is invisible and also helps assistive technology.      |
 | `data-habits` and `data-days` on `#preview-section` (Principle V) | US1 AC2 requires the preview to show the chosen habit and day counts, and the suite can only check that from the page. The page exposes no counts today. | Counting dots or reading canvas pixels is fragile (research.md §3 rejects pixel polling). Reading counts from PDF text needs a parser (research.md §4 rejects one). |
+
 </content>

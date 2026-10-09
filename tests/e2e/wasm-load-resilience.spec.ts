@@ -12,7 +12,9 @@ import { expect, test } from '@playwright/test';
 // header kept, so the browser detects the body ended early), the failure is a plain network/fetch error —
 // never the old instantiateStreaming-specific error, since that code path is no longer reachable at all.
 test.describe('Symptom 2: WASM load resilience', () => {
-  test('an interrupted WASM download fails as a network error, never as instantiateStreaming', async ({ page }) => {
+  test('an interrupted WASM download fails as a network error, never as instantiateStreaming', async ({
+    page,
+  }) => {
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error') consoleErrors.push(msg.text());
@@ -40,7 +42,10 @@ test.describe('Symptom 2: WASM load resilience', () => {
     // instead of waiting on a success signal that will never come.
     await page.waitForTimeout(5_000);
 
-    expect(intercepted, 'the WASM request was not intercepted — test is not exercising the real path').toBe(true);
+    expect(
+      intercepted,
+      'the WASM request was not intercepted — test is not exercising the real path',
+    ).toBe(true);
 
     const allMessages = [...consoleErrors, ...pageErrors].join('\n');
     expect(allMessages).not.toMatch(/instantiateStreaming/i);

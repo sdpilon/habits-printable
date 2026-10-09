@@ -32,20 +32,20 @@ Technical approach (from research.md): one Typst template (`typst/tracker.typ`) 
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Check | Status |
-|-----------|-------|--------|
-| I. Single Layout Source | Grid drawn only in `typst/tracker.typ`. The page holds form controls and passes values to Typst; it has no grid drawing code. | PASS |
-| II. Preview Equals Print | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed. | PASS (by construction; amended in 1.1.0) |
-| III. Hand-Fillable Output | Dots are empty circles drawn with stroke only; default size is 4 mm, within the 2–5 mm range. Margins are kept inside the page (Typst page margins). | PASS |
-| IV. Responsive Options | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid PDF on screen until a valid value arrives. | PASS |
-| V. Scope Discipline | No accounts, storage, or analytics. Three layouts are required by the spec (user-specified), so their complexity is justified; it's the only added configurability. | PASS (justified below) |
-| Technical: Typst | Typst used for layout and rendering. | PASS |
-| Technical: A4 default, Letter available | Page size selector in the Typst inputs; A4 default. | PASS |
-| Technical: 100% scale | PDF uses true page dimensions; no scaling applied. | PASS |
-| Technical: explicit limits | 20 habits, 365 days, 31 per row, 2–5 mm dots, defined in spec. | PASS |
-| Workflow: spec checklist | 16/16 items pass (checklists/requirements.md). | PASS |
+| Principle                               | Check                                                                                                                                                               | Status                                   |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| I. Single Layout Source                 | Grid drawn only in `typst/tracker.typ`. The page holds form controls and passes values to Typst; it has no grid drawing code.                                       | PASS                                     |
+| II. Preview Equals Print                | The preview draws the same PDF file as the download, so they are identical by construction. No separate comparison is needed.                                       | PASS (by construction; amended in 1.1.0) |
+| III. Hand-Fillable Output               | Dots are empty circles drawn with stroke only; default size is 4 mm, within the 2–5 mm range. Margins are kept inside the page (Typst page margins).                | PASS                                     |
+| IV. Responsive Options                  | Each change re-compiles; invalid values show a message and disable download. The preview keeps the last valid PDF on screen until a valid value arrives.            | PASS                                     |
+| V. Scope Discipline                     | No accounts, storage, or analytics. Three layouts are required by the spec (user-specified), so their complexity is justified; it's the only added configurability. | PASS (justified below)                   |
+| Technical: Typst                        | Typst used for layout and rendering.                                                                                                                                | PASS                                     |
+| Technical: A4 default, Letter available | Page size selector in the Typst inputs; A4 default.                                                                                                                 | PASS                                     |
+| Technical: 100% scale                   | PDF uses true page dimensions; no scaling applied.                                                                                                                  | PASS                                     |
+| Technical: explicit limits              | 20 habits, 365 days, 31 per row, 2–5 mm dots, defined in spec.                                                                                                      | PASS                                     |
+| Workflow: spec checklist                | 16/16 items pass (checklists/requirements.md).                                                                                                                      | PASS                                     |
 
 ## Project Structure
 
@@ -100,6 +100,6 @@ tests/
 
 ## Complexity Tracking
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
+| Violation                            | Why Needed                                                                                                        | Simpler Alternative Rejected Because                                             |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Three layouts, not one (Principle V) | Spec User Story 3 and the clarification answers explicitly require three layouts that the person chooses between. | One fixed layout would contradict FR-003 and the recorded clarification answers. |

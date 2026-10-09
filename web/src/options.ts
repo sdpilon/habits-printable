@@ -29,7 +29,10 @@ export const PAPERS: readonly Paper[] = ['letter'];
 
 type NumericField = 'habits' | 'days' | 'perRow' | 'dotDiameterMm' | 'dotSpacingMm';
 
-export const LIMITS: Record<NumericField, { min: number; max: number; integer: boolean; label: string }> = {
+export const LIMITS: Record<
+  NumericField,
+  { min: number; max: number; integer: boolean; label: string }
+> = {
   habits: { min: 1, max: 20, integer: true, label: 'Habits' },
   days: { min: 1, max: 365, integer: true, label: 'Days' },
   perRow: { min: 1, max: 31, integer: true, label: 'Dots per row' },
@@ -52,7 +55,8 @@ function validateNumber(field: NumericField, raw: string): { value?: number; err
   if (text === '') return { error: `${rule.label} is required.` };
   const value = Number(text);
   if (!Number.isFinite(value)) return { error: `${rule.label} must be a number.` };
-  if (rule.integer && !Number.isInteger(value)) return { error: `${rule.label} must be a whole number.` };
+  if (rule.integer && !Number.isInteger(value))
+    return { error: `${rule.label} must be a whole number.` };
   if (value < rule.min || value > rule.max) {
     return { error: `${rule.label} must be between ${rule.min} and ${rule.max}.` };
   }

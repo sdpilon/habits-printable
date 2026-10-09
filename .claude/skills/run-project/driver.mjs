@@ -20,7 +20,8 @@ const BASE_URL = `http://localhost:${PORT}/`;
 function resolvePlaywrightCore() {
   const pnpmDir = path.join(ROOT, 'node_modules/.pnpm');
   const entry = fs.readdirSync(pnpmDir).find((d) => d.startsWith('playwright-core@'));
-  if (!entry) throw new Error('playwright-core not found under node_modules/.pnpm - run `pnpm install`');
+  if (!entry)
+    throw new Error('playwright-core not found under node_modules/.pnpm - run `pnpm install`');
   return path.join(pnpmDir, entry, 'node_modules/playwright-core/index.js');
 }
 
@@ -30,7 +31,8 @@ function resolvePlaywrightCore() {
 // layout but have not been exercised here - see SKILL.md's
 // "Machine-specific notes" section.
 const CHROMIUM_BINARY_BY_PLATFORM = {
-  'darwin-arm64': 'chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+  'darwin-arm64':
+    'chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
   'darwin-x64': 'chrome-mac/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
   'linux-x64': 'chrome-linux/chrome',
   'linux-arm64': 'chrome-linux/chrome',
@@ -160,20 +162,28 @@ const COMMANDS = {
         return;
       }
       const describe = (c) =>
-        `  ${c.path}  (revision ${c.revision}${c.matches ? ', matches this project\'s pinned Playwright' : ', from some other project\'s Playwright install'})`;
+        `  ${c.path}  (revision ${c.revision}${c.matches ? ", matches this project's pinned Playwright" : ", from some other project's Playwright install"})`;
       if (candidates.length === 1) {
         console.log('Found one cached Chromium binary:');
         console.log(describe(candidates[0]));
-        console.log('Ask the user to confirm using it, then run: launch ' + candidates[0].path);
-        console.log('(no quotes - this REPL takes the rest of the line as-is, paths with spaces included)');
+        console.log(`Ask the user to confirm using it, then run: launch ${candidates[0].path}`);
+        console.log(
+          '(no quotes - this REPL takes the rest of the line as-is, paths with spaces included)',
+        );
         return;
       }
       console.log(`Found ${candidates.length} cached Chromium binaries:`);
-      candidates.forEach((c) => console.log(describe(c)));
+      candidates.forEach((c) => {
+        console.log(describe(c));
+      });
       const matching = candidates.filter((c) => c.matches);
       if (matching.length === 1) {
-        console.log(`Recommended: the one at revision ${matching[0].revision} - it's the exact build this`);
-        console.log("project's pinned Playwright version expects; the other(s) are from unrelated projects.");
+        console.log(
+          `Recommended: the one at revision ${matching[0].revision} - it's the exact build this`,
+        );
+        console.log(
+          "project's pinned Playwright version expects; the other(s) are from unrelated projects.",
+        );
       }
       console.log('Ask the user which one to use, then run: launch <path> (no quotes, see above)');
       return;
@@ -195,7 +205,7 @@ const COMMANDS = {
   async ss(name) {
     if (!page) return console.log('ERROR: launch first');
     fs.mkdirSync(SHOT_DIR, { recursive: true });
-    const f = path.join(SHOT_DIR, (name || `ss-${Date.now()}`) + '.png');
+    const f = path.join(SHOT_DIR, `${name || `ss-${Date.now()}`}.png`);
     await page.screenshot({ path: f });
     console.log('screenshot:', f);
   },
@@ -247,7 +257,7 @@ const COMMANDS = {
     if (!page) return console.log('ERROR: launch first');
     const habits = await page.getAttribute('#preview-section', 'data-habits');
     const days = await page.getAttribute('#preview-section', 'data-days');
-    console.log('data-habits=' + habits, 'data-days=' + days);
+    console.log(`data-habits=${habits}`, `data-days=${days}`);
   },
 
   async 'download-enabled'() {
@@ -279,7 +289,10 @@ const COMMANDS = {
   async text(sel) {
     if (!page) return console.log('ERROR: launch first');
     console.log(
-      await page.evaluate((s) => (s ? document.querySelector(s) : document.body)?.innerText ?? '(null)', sel || null),
+      await page.evaluate(
+        (s) => (s ? document.querySelector(s) : document.body)?.innerText ?? '(null)',
+        sel || null,
+      ),
     );
   },
 
@@ -299,7 +312,11 @@ const COMMANDS = {
   },
 };
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout, prompt: 'driver> ' });
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: 'driver> ',
+});
 
 // Piped (non-TTY) stdin delivers every line immediately, so 'line' events
 // fire back-to-back without waiting for the previous async command to

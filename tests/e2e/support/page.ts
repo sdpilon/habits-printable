@@ -47,7 +47,9 @@ export async function typeOption(page: Page, name: OptionName, text: string): Pr
 
 // Fails with a timeout error if the preview has not settled within 5 seconds (clarified 2026-10-06).
 export async function waitForSettled(page: Page): Promise<void> {
-  await expect(page.locator('#preview-section')).toHaveAttribute('aria-busy', 'false', { timeout: 5_000 });
+  await expect(page.locator('#preview-section')).toHaveAttribute('aria-busy', 'false', {
+    timeout: 5_000,
+  });
 }
 
 export async function readMessages(page: Page): Promise<string[]> {
@@ -62,7 +64,9 @@ export async function isWarningVisible(page: Page): Promise<boolean> {
   return page.locator('#warning').isVisible();
 }
 
-export async function readPreviewCounts(page: Page): Promise<{ habits: string | null; days: string | null }> {
+export async function readPreviewCounts(
+  page: Page,
+): Promise<{ habits: string | null; days: string | null }> {
   return page.locator('#preview-section').evaluate((section) => ({
     habits: (section as HTMLElement).dataset.habits ?? null,
     days: (section as HTMLElement).dataset.days ?? null,

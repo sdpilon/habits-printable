@@ -59,7 +59,7 @@ Set `QUICKSTART = specs/<resolved-dir>/quickstart.md`.
   don't send it in without confirming the skill exists first.
 - `git status`: not a hard blocker, but note any uncommitted changes
   relevant to this spec in the dispatch prompt below, so the agent knows
-  what it's actually testing. Don't dispatch mid-edit to your *own*
+  what it's actually testing. Don't dispatch mid-edit to your _own_
   in-progress work in the same session without saying so.
 - Note whether a dev server is already running on the port the driving
   skill expects (e.g. `lsof -ti:5173`), so the dispatch prompt can tell the
@@ -126,7 +126,7 @@ Set `QUICKSTART = specs/<resolved-dir>/quickstart.md`.
 4. **Offer to update the PR checklist, if this project has that
    convention** — check project memory for whether open PRs here include a
    collapsible quickstart-scenario checklist. If so, offer to update it to
-   match what was *actually* confirmed: check a box only for a scenario
+   match what was _actually_ confirmed: check a box only for a scenario
    genuinely run and passed; leave it unchecked with a note for anything
    marked NOT INDEPENDENTLY VERIFIED. Never check a box on the agent's
    behalf for something it flagged as unverified.

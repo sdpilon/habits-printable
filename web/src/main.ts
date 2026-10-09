@@ -47,7 +47,8 @@ function reRenderLatest(): void {
 new ResizeObserver(() => reRenderLatest()).observe(preview);
 
 function readForm(): RawOptions {
-  const value = (name: Field) => (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
+  const value = (name: Field) =>
+    (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
   return {
     layout: value('layout'),
     habits: value('habits'),
@@ -60,11 +61,13 @@ function readForm(): RawOptions {
 }
 
 function showErrors(errors: Partial<Record<Field, string>>): void {
-  messages.replaceChildren(...Object.values(errors).map((text) => {
-    const item = document.createElement('li');
-    item.textContent = text;
-    return item;
-  }));
+  messages.replaceChildren(
+    ...Object.values(errors).map((text) => {
+      const item = document.createElement('li');
+      item.textContent = text;
+      return item;
+    }),
+  );
   for (const input of form.querySelectorAll<HTMLInputElement>('input')) {
     input.setAttribute('aria-invalid', String(input.name in errors));
   }
@@ -139,7 +142,9 @@ async function update(): Promise<void> {
 
 download.addEventListener('click', () => {
   if (!latestValid || latestValid.overflowing) return;
-  const url = URL.createObjectURL(new Blob([Uint8Array.from(latestValid.pdf)], { type: 'application/pdf' }));
+  const url = URL.createObjectURL(
+    new Blob([Uint8Array.from(latestValid.pdf)], { type: 'application/pdf' }),
+  );
   const link = document.createElement('a');
   link.href = url;
   link.download = 'habit-grid.pdf';

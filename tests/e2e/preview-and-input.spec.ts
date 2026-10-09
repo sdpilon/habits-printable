@@ -81,13 +81,19 @@ test.describe('US2: invalid habit count', () => {
         await expect(page.locator('#download')).toBeDisabled();
         // The non-numeric kind must reach the page as bad input, not as a number the page could misread.
         if (kind === 'non-numeric') {
-          expect(await page.locator('input[name="habits"]').evaluate((el) => (el as HTMLInputElement).validity.badInput)).toBe(true);
+          expect(
+            await page
+              .locator('input[name="habits"]')
+              .evaluate((el) => (el as HTMLInputElement).validity.badInput),
+          ).toBe(true);
         }
       });
     });
   }
 
-  test('a valid value after an invalid one clears the message and restores download', async ({ page }) => {
+  test('a valid value after an invalid one clears the message and restores download', async ({
+    page,
+  }) => {
     await test.step('open page and enter an empty habit count', async () => {
       await openPage(page);
       await resetDefaults(page);

@@ -13,7 +13,9 @@ import {
 const LETTER_RATIO = 612 / 792;
 
 test.describe('US1: preview always fits the viewport without distortion', () => {
-  test('default load shows the full page with no window scroll and the correct ratio', async ({ page }) => {
+  test('default load shows the full page with no window scroll and the correct ratio', async ({
+    page,
+  }) => {
     await test.step('open page with defaults', async () => {
       await openPage(page);
       await resetDefaults(page);
