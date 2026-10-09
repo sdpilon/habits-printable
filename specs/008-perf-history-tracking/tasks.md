@@ -133,3 +133,9 @@ Task: "Add permissions: contents: write to .github/workflows/ci.yml (T007)"
 - No automated tests were generated — the spec's Assumptions explicitly scope this as CI/ops tooling verified operationally, not application code with its own test suite.
 - Commit after each task or logical group of tasks, per this repo's standing git convention (commit when asked; this feature's own speckit hooks auto-commit after each phase command, independent of per-task commits during implementation).
 - The sequencing constraint (US1's T003 before US2's T008 first real run) is the one cross-story coupling in this feature — call it out explicitly during review rather than relying on task order alone, since the two stories are otherwise fully independent.
+
+---
+
+## Phase 6: Convergence
+
+- [ ] T012 [HIGH] Commit the trailing-semicolon fix in `scripts/backfill-perf-history.ts`'s `writeFileSync` call (must write `` `window.BENCHMARK_DATA = ${JSON.stringify(data, null, 2)}` `` with no trailing `;`) per FR-002, SC-004 (contradicts) — the committed version still has the bug that caused a live CI run to silently discard all 51 backfilled entries down to 1 on `gh-pages`; the fix exists only as an uncommitted local diff.

@@ -169,7 +169,13 @@ function main() {
   };
 
   mkdirSync(OUTPUT_DIR, { recursive: true });
-  writeFileSync(OUTPUT_FILE, `window.BENCHMARK_DATA = ${JSON.stringify(data, null, 2)};\n`);
+  // No trailing `;` — the action's own `loadDataJs` does a bare
+  // `script.slice(SCRIPT_PREFIX.length)` then `JSON.parse`, with no
+  // semicolon stripping. A trailing `;` breaks that parse, which silently
+  // falls back to an empty default and discards all prior entries instead
+  // of appending to them (confirmed by reproducing this exact failure
+  // against the live action once already — see T003 implementation notes).
+  writeFileSync(OUTPUT_FILE, `window.BENCHMARK_DATA = ${JSON.stringify(data, null, 2)}`);
 
   console.log(
     `Wrote ${entries.length} entries to ${OUTPUT_FILE} (skipped ${skipped} run(s) with no usable value).`,
