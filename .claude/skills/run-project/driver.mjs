@@ -202,6 +202,30 @@ const COMMANDS = {
     console.log('goto ->', page.url());
   },
 
+  // viewport <width> <height> - resizes the current page. Takes effect
+  // immediately (no relaunch needed); persists until changed again or the
+  // browser quits. Useful for responsive-breakpoint/mobile checks.
+  async viewport(args) {
+    if (!page) return console.log('ERROR: launch first');
+    const [w, h] = args.split(/\s+/).map(Number);
+    if (!w || !h) return console.log('usage: viewport <width> <height>');
+    await page.setViewportSize({ width: w, height: h });
+    console.log(`viewport -> ${w}x${h}`);
+  },
+
+  // color-scheme <light|dark|no-preference> - emulates prefers-color-scheme
+  // on the current page. Takes effect immediately; persists until changed
+  // again or the browser quits.
+  async 'color-scheme'(value) {
+    if (!page) return console.log('ERROR: launch first');
+    const v = value.trim();
+    if (!['light', 'dark', 'no-preference'].includes(v)) {
+      return console.log('usage: color-scheme <light|dark|no-preference>');
+    }
+    await page.emulateMedia({ colorScheme: v });
+    console.log('color-scheme ->', v);
+  },
+
   async ss(name) {
     if (!page) return console.log('ERROR: launch first');
     fs.mkdirSync(SHOT_DIR, { recursive: true });
