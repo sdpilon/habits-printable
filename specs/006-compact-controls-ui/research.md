@@ -17,9 +17,10 @@ the label, one for the input). Side-by-side is the standard compact-form pattern
 markup semantics, so it carries no accessibility regression risk.
 
 **Alternatives considered**:
-- *Floating/placeholder-as-label*: rejected — placeholder text disappears on input and fails
+
+- _Floating/placeholder-as-label_: rejected — placeholder text disappears on input and fails
   FR-004 (label must stay associated/visible), and is a known accessibility anti-pattern.
-- *Collapsible/accordion sections*: rejected explicitly by FR-003 (no hiding controls behind an
+- _Collapsible/accordion sections_: rejected explicitly by FR-003 (no hiding controls behind an
   extra interaction).
 
 ## 2. Grouping related numeric fields
@@ -58,18 +59,18 @@ the preview canvas's outline). Target values: `#8a8a8a` in light mode (~3.45:1 a
 and `#707070` in dark mode (~3.44:1 against `#1c1c1e`).
 
 **Rationale**: Computing the actual WCAG contrast ratios for the current palette (see table below)
-shows every *text* color already clears 4.5:1 comfortably, but `--line` — used today for every
+shows every _text_ color already clears 4.5:1 comfortably, but `--line` — used today for every
 input/select/button border — is only ~1.5:1 against the background in both color schemes, well
 under the 3:1 floor FR-009/SC-006 require for UI component boundaries. This was not visible from
 reading the CSS; it only showed up by computing the ratios.
 
-| Pair | Light | Dark |
-|---|---|---|
-| text (`--ink`) on `--bg` | 16.83:1 | 15.63:1 |
-| muted text (`--muted`) on `--bg` | 5.07:1 | 6.61:1 |
-| warning text (`--warn`) on `--bg` | 7.26:1 | 7.45:1 |
+| Pair                                    | Light              | Dark               |
+| --------------------------------------- | ------------------ | ------------------ |
+| text (`--ink`) on `--bg`                | 16.83:1            | 15.63:1            |
+| muted text (`--muted`) on `--bg`        | 5.07:1             | 6.61:1             |
+| warning text (`--warn`) on `--bg`       | 7.26:1             | 7.45:1             |
 | **current border (`--line`) on `--bg`** | **1.51:1 (fails)** | **1.50:1 (fails)** |
-| proposed control border on `--bg` | 3.45:1 (passes) | 3.44:1 (passes) |
+| proposed control border on `--bg`       | 3.45:1 (passes)    | 3.44:1 (passes)    |
 
 **Alternatives considered**: Raising `--line` itself globally — rejected because `--line` is also
 used for the preview canvas's decorative outline (`box-shadow: 0 0 0 1px var(--line)`), which is

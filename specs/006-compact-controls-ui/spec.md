@@ -29,7 +29,7 @@
   mobile, so the size reduction has a hard floor it can't shrink past? → A: 24×24 CSS px minimum,
   per the WCAG 2.2 AA target-size criterion (2.5.8).
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Compact options panel (Priority: P1)
 
@@ -119,7 +119,7 @@ more of the viewport for the preview.
 - What happens when the overflow warning is shown (grid too large for one page)? The warning must
   remain clearly visible and not get visually lost in the tightened layout.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -155,7 +155,7 @@ more of the viewport for the preview.
   sizes; savings MUST come from tighter spacing (including internal control padding), inline
   label placement, and field grouping, not from making text smaller.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

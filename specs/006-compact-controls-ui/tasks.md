@@ -32,9 +32,9 @@ Single existing web app (no new projects). All implementation tasks touch `web/i
 
 **Purpose**: Record the "before" state so the ≥30% reduction (SC-002/SC-003) can be measured.
 
-- [ ] T001 Capture baseline measurements: the options panel's rendered height at the default
-  desktop viewport and at a mobile viewport (e.g. 600px wide), on the current, unmodified layout.
-  Record both numbers in a new file `specs/006-compact-controls-ui/baseline-measurements.md`.
+- [x] T001 Capture baseline measurements: the options panel's rendered height at the default
+      desktop viewport and at a mobile viewport (e.g. 600px wide), on the current, unmodified layout.
+      Record both numbers in a new file `specs/006-compact-controls-ui/baseline-measurements.md`.
 
 **Checkpoint**: Baseline recorded — ready for foundational styling work.
 
@@ -48,20 +48,20 @@ same `input, select, button` rule in `web/src/style.css`.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 Add a `--control-border` custom property to the `:root` block and the
-  `@media (prefers-color-scheme: dark)` block in `web/src/style.css`: `#8a8a8a` (light) and
-  `#707070` (dark) — the values computed in research.md §4 to clear the WCAG AA 3:1 non-text
-  contrast floor (current `--line` is only ~1.5:1). Leave `--line` itself unchanged, since it's
-  still used for the preview canvas's decorative outline.
-- [ ] T003 Update the shared `input, select, button` rule in `web/src/style.css`: change
-  `border-color` to `var(--control-border)`, reduce padding from `0.4rem 0.5rem` to approximately
-  `0.3rem 0.4rem`, and add `min-height: 24px; min-width: 24px; box-sizing: border-box;` so the
-  24×24 CSS px floor (FR-007/SC-007) is a hard guarantee rather than a side effect of padding math
-  (research.md §3). Font size on these elements MUST NOT change (FR-010).
-- [ ] T004 Add a `:focus-visible` rule for `input, select, button` in `web/src/style.css` using
-  `var(--control-border)` for a stronger outline/box-shadow, with any transition wrapped in
-  `@media (prefers-reduced-motion: no-preference)` (FR-009, research.md §5). Do not add a plain
-  `:focus` rule or change any `tabindex`/DOM order — keyboard tab order must stay exactly as it is.
+- [x] T002 Add a `--control-border` custom property to the `:root` block and the
+      `@media (prefers-color-scheme: dark)` block in `web/src/style.css`: `#8a8a8a` (light) and
+      `#707070` (dark) — the values computed in research.md §4 to clear the WCAG AA 3:1 non-text
+      contrast floor (current `--line` is only ~1.5:1). Leave `--line` itself unchanged, since it's
+      still used for the preview canvas's decorative outline.
+- [x] T003 Update the shared `input, select, button` rule in `web/src/style.css`: change
+      `border-color` to `var(--control-border)`, reduce padding from `0.4rem 0.5rem` to approximately
+      `0.3rem 0.4rem`, and add `min-height: 24px; min-width: 24px; box-sizing: border-box;` so the
+      24×24 CSS px floor (FR-007/SC-007) is a hard guarantee rather than a side effect of padding math
+      (research.md §3). Font size on these elements MUST NOT change (FR-010).
+- [x] T004 Add a `:focus-visible` rule for `input, select, button` in `web/src/style.css` using
+      `var(--control-border)` for a stronger outline/box-shadow, with any transition wrapped in
+      `@media (prefers-reduced-motion: no-preference)` (FR-009, research.md §5). Do not add a plain
+      `:focus` rule or change any `tabindex`/DOM order — keyboard tab order must stay exactly as it is.
 
 **Checkpoint**: Foundation ready — user story implementation can now begin.
 
@@ -79,27 +79,27 @@ baseline.
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] In `web/index.html`, change each control's label from the current
-  label-above-input pattern to label-beside-input, keeping the existing implicit
-  `<label>Text <input></label>` wrapping and every existing `name` attribute unchanged (per
-  `contracts/page-interface.md` — the e2e suite selects by `name`, not position or markup shape).
-- [ ] T006 [US1] In `web/index.html`, wrap `habits`, `days`, and `perRow` in one `<div>` group and
-  `dotDiameterMm`/`dotSpacingMm` in a second `<div>` group (plain wrapper divs, no new `id`s or
-  `name`s — see data-model.md), so research.md §2's row layout has something to target in CSS.
-- [ ] T007 [US1] Rewrite the `form` and `label` rules in `web/src/style.css` for the new
-  label-beside-input layout and the two field-group rows from T006 (CSS Grid, narrow label column
-  + wider control column, each group's row splitting evenly across its fields), replacing the
-  current `label { display: grid; gap: 0.25rem; }` stacked rule.
-- [ ] T008 [US1] Reduce the `form` gap and the `h1` bottom margin in `web/src/style.css` to remove
-  the remaining extra whitespace between controls (FR-001/FR-010 — spacing/layout only, no font
-  size change).
-- [ ] T009 [US1] Run `pnpm test`, `pnpm run e2e`, `pnpm run margins`, and `pnpm run perf`. All
-  must pass unmodified (SC-005). If any e2e selector breaks, fix the markup to keep the existing
-  `name`/`id` attributes rather than updating the test.
-- [ ] T010 [US1] Measure the options panel's height at the default desktop viewport (same method
-  as T001) and compare against the T001 baseline. Append the result and the percentage reduction
-  to `specs/006-compact-controls-ui/baseline-measurements.md`. Confirm it meets or exceeds 30%
-  (SC-002); if not, revisit T007/T008 before moving on.
+- [x] T005 [US1] In `web/index.html`, change each control's label from the current
+      label-above-input pattern to label-beside-input, keeping the existing implicit
+      `<label>Text <input></label>` wrapping and every existing `name` attribute unchanged (per
+      `contracts/page-interface.md` — the e2e suite selects by `name`, not position or markup shape).
+- [x] T006 [US1] In `web/index.html`, wrap `habits`, `days`, and `perRow` in one `<div>` group and
+      `dotDiameterMm`/`dotSpacingMm` in a second `<div>` group (plain wrapper divs, no new `id`s or
+      `name`s — see data-model.md), so research.md §2's row layout has something to target in CSS.
+- [x] T007 [US1] Rewrite the `form` and `label` rules in `web/src/style.css` for the new
+      label-beside-input layout and the two field-group rows from T006 (CSS Grid, narrow label column
+  - wider control column, each group's row splitting evenly across its fields), replacing the
+    current `label { display: grid; gap: 0.25rem; }` stacked rule.
+- [x] T008 [US1] Reduce the `form` gap and the `h1` bottom margin in `web/src/style.css` to remove
+      the remaining extra whitespace between controls (FR-001/FR-010 — spacing/layout only, no font
+      size change).
+- [x] T009 [US1] Run `pnpm test`, `pnpm run e2e`, `pnpm run margins`, and `pnpm run perf`. All
+      must pass unmodified (SC-005). If any e2e selector breaks, fix the markup to keep the existing
+      `name`/`id` attributes rather than updating the test.
+- [x] T010 [US1] Measure the options panel's height at the default desktop viewport (same method
+      as T001) and compare against the T001 baseline. Append the result and the percentage reduction
+      to `specs/006-compact-controls-ui/baseline-measurements.md`. Confirm it meets or exceeds 30%
+      (SC-002); if not, revisit T007/T008 before moving on.
 
 **Checkpoint**: User Story 1 is fully functional and independently testable — desktop compaction
 done, all existing automated checks green.
@@ -118,18 +118,18 @@ behavior or PDF output.
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Restyle the `button` rule in `web/src/style.css` so the download button reads
-  as the primary action — distinct weight, color, or spacing from the input/select styling (FR-005).
-- [ ] T012 [US2] Add visual separation (spacing and/or a subtle divider) between the two
-  field groups from T006 and the `layout`/`paper` selects in `web/src/style.css`, so each group
-  reads as its own cluster (US2 acceptance scenario 1).
-- [ ] T013 [US2] Add a `:hover` rule for `input, select, button` in `web/src/style.css`, visually
-  distinct from the `:focus-visible` rule added in T004 (research.md §5).
-- [ ] T014 [US2] Recompute the WCAG contrast ratios (light/dark, text and `--control-border`) for
-  any color touched in T002/T011/T012/T013, using the method in research.md §4. Confirm every
-  value still meets 4.5:1 (text) / 3:1 (UI boundaries) in both color schemes (SC-006).
-- [ ] T015 [US2] Manually verify keyboard tab order through the controls is unchanged after the
-  T005/T006 markup restructuring (quickstart.md step 11).
+- [x] T011 [US2] Restyle the `button` rule in `web/src/style.css` so the download button reads
+      as the primary action — distinct weight, color, or spacing from the input/select styling (FR-005).
+- [x] T012 [US2] Add visual separation (spacing and/or a subtle divider) between the two
+      field groups from T006 and the `layout`/`paper` selects in `web/src/style.css`, so each group
+      reads as its own cluster (US2 acceptance scenario 1).
+- [x] T013 [US2] Add a `:hover` rule for `input, select, button` in `web/src/style.css`, visually
+      distinct from the `:focus-visible` rule added in T004 (research.md §5).
+- [x] T014 [US2] Recompute the WCAG contrast ratios (light/dark, text and `--control-border`) for
+      any color touched in T002/T011/T012/T013, using the method in research.md §4. Confirm every
+      value still meets 4.5:1 (text) / 3:1 (UI boundaries) in both color schemes (SC-006).
+- [x] T015 [US2] Manually verify keyboard tab order through the controls is unchanged after the
+      T005/T006 markup restructuring (quickstart.md step 11).
 
 **Checkpoint**: User Stories 1 and 2 are both independently functional.
 
@@ -145,17 +145,19 @@ tappable area.
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Update the `@media (max-width: 720px)` block in `web/src/style.css` so the
-  grouped, compact layout from T005–T008 and T011–T013 also applies at mobile width, instead of
-  falling back to the old stacked spacing.
-- [ ] T017 [US3] At a mobile viewport width, inspect the computed size of every input, select, and
-  the download button. Confirm each is at least 24×24 CSS px (SC-007/quickstart.md step 9). If any
-  falls short, adjust T003's `min-height`/`min-width` or T016's mobile padding — do not shrink
-  below the floor.
-- [ ] T018 [US3] Measure the options panel's height at a mobile viewport (same width used for the
-  T001 baseline) and compare against it. Append the result to
-  `specs/006-compact-controls-ui/baseline-measurements.md`. Confirm it meets or exceeds 30%
-  (SC-003).
+- [x] T016 [US3] Update the `@media (max-width: 720px)` block in `web/src/style.css` so the
+      grouped, compact layout from T005–T008 and T011–T013 also applies at mobile width, instead of
+      falling back to the old stacked spacing. **Verified no change was needed**: the compact styles
+      aren't desktop-only (the mobile media query only ever touched `main`'s grid columns/padding), so
+      they already apply at every width — confirmed empirically at 375px and 320px.
+- [x] T017 [US3] At a mobile viewport width, inspect the computed size of every input, select, and
+      the download button. Confirm each is at least 24×24 CSS px (SC-007/quickstart.md step 9). If any
+      falls short, adjust T003's `min-height`/`min-width` or T016's mobile padding — do not shrink
+      below the floor.
+- [x] T018 [US3] Measure the options panel's height at a mobile viewport (same width used for the
+      T001 baseline) and compare against it. Append the result to
+      `specs/006-compact-controls-ui/baseline-measurements.md`. Confirm it meets or exceeds 30%
+      (SC-003).
 
 **Checkpoint**: All three user stories are independently functional.
 
@@ -165,13 +167,16 @@ tappable area.
 
 **Purpose**: Final formatting, linting, and full-suite confirmation before opening a PR.
 
-- [ ] T019 Run `pnpm run format` and `pnpm run lint`, fixing any findings in `web/index.html`
-  and `web/src/style.css`.
-- [ ] T020 Work through every scenario in `quickstart.md` (all 14 manual verification steps) and
-  record the outcome of each.
-- [ ] T021 Run the full check suite one final time — `pnpm run format:check`, `pnpm run lint`,
-  `pnpm run typecheck`, `pnpm test`, `pnpm run perf`, `pnpm run margins`, `pnpm run e2e` — and
-  confirm everything is green before opening a PR.
+- [x] T019 Run `pnpm run format` and `pnpm run lint`, fixing any findings in `web/index.html`
+      and `web/src/style.css`.
+- [x] T020 Work through every scenario in `quickstart.md` (all 14 manual verification steps) and
+      record the outcome of each. All 14 passed (desktop/mobile/320px screenshots, dark mode,
+      validation message, overflow warning, reduced window height all visually confirmed via the
+      `run-project` skill; contrast and tab order confirmed in T014/T015).
+- [x] T021 Run the full check suite one final time — `pnpm run format:check`, `pnpm run lint`,
+      `pnpm run typecheck`, `pnpm test`, `pnpm run perf`, `pnpm run margins`, `pnpm run e2e` — and
+      confirm everything is green before opening a PR. All green: format:check clean, lint clean,
+      typecheck clean, 32/32 unit tests, 1/1 perf, margins all pass, 23/23 e2e.
 
 ---
 

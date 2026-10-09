@@ -42,6 +42,7 @@ responsive breakpoints, in both the light and dark color schemes the app already
 `tests/perf` timing budget is unaffected and re-run only as a regression guard.
 
 **Constraints**:
+
 - Must preserve the existing `name`/`id` contract the e2e suite depends on
   (`specs/002-e2e-tests/contracts/page-test-interface.md`) — see Contracts section.
 - Text/label font size MUST NOT shrink (clarified 2026-10-08); space savings come from layout and
@@ -60,15 +61,15 @@ routes, or persisted state.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Check | Result |
-|---|---|---|
-| I. Single Layout Source | Feature touches only the HTML options form and its CSS, never the Typst template or a separate drawing implementation. | PASS |
-| II. Preview Equals Print | Typst template, compile pipeline, and exported PDF are untouched; the preview still renders the same compiled PDF. `tests/comparison/margins.ts` re-run as a regression guard, not because this feature affects dot geometry/margins. | PASS |
-| III. Hand-Fillable Output | No change to dot size/shape or printable margins — only the on-screen control panel chrome changes. | PASS |
-| IV. Responsive Options | FR-002 explicitly requires preserving live preview updates, invalid-input messaging, and the disabled-download guard unchanged. | PASS |
-| V. Scope Discipline | No new options, fields, accounts, or persistence; purely a layout/visual change using the existing toolchain (no new dependencies). | PASS |
+| Principle                 | Check                                                                                                                                                                                                                                 | Result |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| I. Single Layout Source   | Feature touches only the HTML options form and its CSS, never the Typst template or a separate drawing implementation.                                                                                                                | PASS   |
+| II. Preview Equals Print  | Typst template, compile pipeline, and exported PDF are untouched; the preview still renders the same compiled PDF. `tests/comparison/margins.ts` re-run as a regression guard, not because this feature affects dot geometry/margins. | PASS   |
+| III. Hand-Fillable Output | No change to dot size/shape or printable margins — only the on-screen control panel chrome changes.                                                                                                                                   | PASS   |
+| IV. Responsive Options    | FR-002 explicitly requires preserving live preview updates, invalid-input messaging, and the disabled-download guard unchanged.                                                                                                       | PASS   |
+| V. Scope Discipline       | No new options, fields, accounts, or persistence; purely a layout/visual change using the existing toolchain (no new dependencies).                                                                                                   | PASS   |
 
 No violations. Complexity Tracking table is not needed.
 
@@ -88,7 +89,8 @@ specs/006-compact-controls-ui/
 ├── data-model.md         # Phase 1 output (confirms: no data model changes)
 ├── quickstart.md         # Phase 1 output
 ├── contracts/            # Phase 1 output (reaffirms the existing 002 interface contract)
-└── tasks.md              # Phase 2 output (/speckit-tasks — not created by this command)
+├── tasks.md              # Phase 2 output (/speckit-tasks — not created by this command)
+└── baseline-measurements.md  # Phase 3 output (/speckit-implement — T001/T010/T018)
 ```
 
 ### Source Code (repository root)
