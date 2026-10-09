@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791587671749,
+  "lastUpdate": 1791587994971,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1304,6 +1304,36 @@ window.BENCHMARK_DATA = {
             "value": 92.85752400000001,
             "unit": "ms",
             "extra": "branch: 9/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33335453+sdpilon@users.noreply.github.com",
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7c36586de92d2195b0a64c11fd69fae354a6eba8",
+          "message": "feat: track CI compile-time performance history on GitHub Pages (#9)\n\n* feat(spec): add perf history tracking spec\n\n* docs(plan): add perf history tracking implementation plan\n\n* docs(tasks): add perf history tracking task list\n\n* docs(spec): fix branch attribution and dashboard-path gaps from analysis\n\n* feat(ci): record compile-time perf history and publish gh-pages dashboard\n\nImplements specs/008-perf-history-tracking: backfill script seeds\nhistory from existing CI runs, timing test emits customSmallerIsBetter\nJSON, and a new CI step publishes it via benchmark-action/github-action-benchmark.\n\n* feat(ci): add CI permissions, benchmark-publish step, and fork-PR guard\n\nCompletes specs/008-perf-history-tracking's remaining implementation:\ncontents:write permission, the benchmark-action step with the\ncommitter.username fix, timing test's JSON output, and task tracking.\n\n* style: fix formatting (biome/prettier)\n\n* fix(scripts): remove trailing semicolon breaking gh-pages data parsing\n\nAlso appends a Convergence task to tasks.md tracking this fix.\n\n* docs(tasks): mark all perf history tracking tasks complete\n\nT010-T011 were already satisfied operationally (verified live) but\nunchecked; T012's fix was already committed. All re-verified before\nchecking off.\n\n* style: lowercase checkbox markers for prettier compliance",
+          "timestamp": "2026-10-09T23:19:25Z",
+          "tree_id": "fc4c3c0dae5fd120bcb30ac117aaf87b48119c33",
+          "url": "https://github.com/sdpilon/habits-printable/commit/7c36586de92d2195b0a64c11fd69fae354a6eba8"
+        },
+        "date": 1791587994300,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 148.43417699999986,
+            "unit": "ms",
+            "extra": "branch: main"
           }
         ]
       }
