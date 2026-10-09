@@ -20,6 +20,14 @@
   should all the space savings come from layout alone? → A: Keep the current font size; space
   savings MUST come entirely from tighter spacing and layout (inline labels, grouping), not from
   smaller text.
+- Q: A follow-up request to make controls "smaller" too, citing empty space inside the input
+  controls themselves — does this mean shrinking font size (reversing the prior answer), or
+  trimming the inputs' own internal padding/box size? → A: Trimming internal padding/box size
+  only; font size stays unchanged, consistent with the prior answer. Internal control padding is
+  called out explicitly as a target of the space reduction, not just the gaps between controls.
+- Q: Should the redesign commit to a specific minimum touch-target size for inputs/buttons on
+  mobile, so the size reduction has a hard floor it can't shrink past? → A: 24×24 CSS px minimum,
+  per the WCAG 2.2 AA target-size criterion (2.5.8).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -125,14 +133,18 @@ more of the viewport for the preview.
 - **FR-003**: Related fields MUST be visually grouped where doing so reduces wasted space and
   improves scannability, without hiding any control behind an extra interaction (e.g. no
   collapsed/expandable sections for controls that are currently always visible).
+- **FR-003a**: Individual controls (inputs, selects, the download button) MUST have their own
+  internal empty space (padding/box size) trimmed, not just the gaps between controls, since this
+  is a significant source of the current form's bulk.
 - **FR-004**: Every control MUST remain individually and correctly labeled (its accessible label
   still associated with its input) after the layout change.
 - **FR-005**: The visual design MUST maintain a clear distinction between input controls and the
   primary action (the download button).
 - **FR-006**: The redesigned layout MUST continue to support both the light and dark color schemes
   the application already provides.
-- **FR-007**: All interactive controls MUST remain comfortably usable at mobile sizes after
-  compaction — no control's tappable area is reduced to the point of being hard to use accurately.
+- **FR-007**: All interactive controls (inputs, selects, the download button) MUST keep a tappable
+  area of at least 24×24 CSS px at mobile sizes, per the WCAG 2.2 AA target-size criterion (2.5.8),
+  even after the padding/box-size reduction in FR-003a.
 - **FR-008**: The live PDF preview panel's size, position, and behavior MUST NOT be negatively
   affected by the options panel changes; the preview remains the dominant visual element on the
   page.
@@ -140,8 +152,8 @@ more of the viewport for the preview.
   3:1 for UI component boundaries/states) in both the light and dark color schemes, and MUST
   preserve the existing logical keyboard tab order through the controls.
 - **FR-010**: The space reduction MUST be achieved without reducing current text or label font
-  sizes; savings MUST come from tighter spacing, inline label placement, and field grouping, not
-  from making text smaller.
+  sizes; savings MUST come from tighter spacing (including internal control padding), inline
+  label placement, and field grouping, not from making text smaller.
 
 ## Success Criteria *(mandatory)*
 
@@ -161,6 +173,8 @@ more of the viewport for the preview.
 - **SC-006**: All text and interactive elements in the redesigned form meet WCAG AA contrast
   ratios (4.5:1 for text, 3:1 for UI components) in both light and dark mode, and keyboard users
   can tab through the controls in the same logical order as before.
+- **SC-007**: Every interactive control keeps at least a 24×24 CSS px tappable area at mobile
+  sizes, even with the trimmed padding/box sizing.
 
 ## Assumptions
 
