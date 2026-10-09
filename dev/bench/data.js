@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791586171328,
+  "lastUpdate": 1791587669323,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1247,6 +1247,36 @@ window.BENCHMARK_DATA = {
             "name": "Typst compile (largest fitting page, median of 10)",
             "unit": "ms",
             "value": 135.8,
+            "extra": "branch: 008-perf-history-tracking"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "24da6d44a89c3ac865b02af3d0c273a74ed3ded6",
+          "message": "style: lowercase checkbox markers for prettier compliance",
+          "timestamp": "2026-10-09T17:14:01-06:00",
+          "tree_id": "fc4c3c0dae5fd120bcb30ac117aaf87b48119c33",
+          "url": "https://github.com/sdpilon/habits-printable/commit/24da6d44a89c3ac865b02af3d0c273a74ed3ded6"
+        },
+        "date": 1791587668708,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 167.91323799999986,
+            "unit": "ms",
             "extra": "branch: 008-perf-history-tracking"
           }
         ]
