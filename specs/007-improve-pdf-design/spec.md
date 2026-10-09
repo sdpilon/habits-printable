@@ -16,11 +16,11 @@
 - Q: If a header/title area is added, what should it contain? → A: A freeform editable title only (no auto-generated date range or other structured content).
 - Q: Should the design improvements apply uniformly across all three existing layouts (rows, columns, calendars), or could some layouts get different treatment? → A: Uniform across all three layouts.
 - Q: Any other design issues? → A: Yes, noted above (label placement, day-number proximity). Additional issues raised were recognized by the requester as new functionality rather than design, and were explicitly deferred to a future, separate spec.
-- Q: How should "the day number is grouped with its own row, not the previous one" be concretely verified? → A (superseded below): initially answered as "number every dot," but that only guarantees every dot has *a* number — it does not fix why a number can read as belonging to the wrong row, which is an asymmetric-spacing defect (today, a number sits with zero visual gap against the row *above* it, separated from its *own* dot below by the full number-band height). Numbering every dot doesn't change that spacing at all.
-- Q: Given the real fix is spacing, not density, should every dot still be numbered, or should numbering revert to every fifth day now that the thing that made that ambiguous is fixed? → A: Revert to every fifth day (today's convention). Fix only the spacing: the gap between a day number and the row of dots *above* it (not its own) MUST be visibly larger than the gap between that number and its *own* row of dots below it — the opposite of today's layout. "Number every dot" is kept only as an implementation-time visual-verification technique (temporarily numbering every dot makes the pairing trivial to eyeball while tuning the spacing), not as shipped behavior.
+- Q: How should "the day number is grouped with its own row, not the previous one" be concretely verified? → A (superseded below): initially answered as "number every dot," but that only guarantees every dot has _a_ number — it does not fix why a number can read as belonging to the wrong row, which is an asymmetric-spacing defect (today, a number sits with zero visual gap against the row _above_ it, separated from its _own_ dot below by the full number-band height). Numbering every dot doesn't change that spacing at all.
+- Q: Given the real fix is spacing, not density, should every dot still be numbered, or should numbering revert to every fifth day now that the thing that made that ambiguous is fixed? → A: Revert to every fifth day (today's convention). Fix only the spacing: the gap between a day number and the row of dots _above_ it (not its own) MUST be visibly larger than the gap between that number and its _own_ row of dots below it — the opposite of today's layout. "Number every dot" is kept only as an implementation-time visual-verification technique (temporarily numbering every dot makes the pairing trivial to eyeball while tuning the spacing), not as shipped behavior.
 - Q: Any related future requests? → A: Making the day-numbering interval (currently fixed at every fifth day) a customizable option is a desired future feature, explicitly deferred to a separate spec — it is new functionality, not a design/visual fix.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Add a page title (Priority: P1)
 
@@ -94,7 +94,7 @@ A person printing any of the three layouts wants consistent, refined typography,
 - What happens to the mini-calendar layout's label, which already stacks above its dots? It is unaffected by the label-placement fix (which targets the one-row-per-habit layout specifically), but still receives the general typography/spacing polish from User Story 4.
 - What happens when the smallest supported dot size (2 mm) is combined with the largest per-row count (31)? The enlarged gap between a number and the row above it must still keep every line legible and non-overlapping at this extreme; this is verified during planning and implementation using the project's existing printable-margin and fit checks.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -112,7 +112,7 @@ A person printing any of the three layouts wants consistent, refined typography,
 
 - **Tracker Title**: An optional, freeform, single-line piece of text entered by the person, printed once as a page header. It is not tied to any individual habit and is not persisted beyond the current session, consistent with how every other option already behaves.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

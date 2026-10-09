@@ -29,15 +29,15 @@ Every scenario starts from the defaults below. Reset the form to them first, the
 is listed.
 
 | Setting      | Default                    |
-| ------------ | --------------------------- |
+| ------------ | -------------------------- |
 | Layout       | one row per habit (`rows`) |
-| Habits       | 5                            |
-| Days         | 31                           |
-| Per row      | 7                             |
-| Dot diameter | 4 mm                         |
-| Dot spacing  | 1.5 mm                       |
-| Paper        | US Letter                   |
-| Title        | (blank)                      |
+| Habits       | 5                          |
+| Days         | 31                         |
+| Per row      | 7                          |
+| Dot diameter | 4 mm                       |
+| Dot spacing  | 1.5 mm                     |
+| Paper        | US Letter                  |
+| Title        | (blank)                    |
 
 ### User Story 1: page title
 

@@ -51,6 +51,39 @@ test.describe('US2: preview and input', () => {
   }
 });
 
+test.describe('US1: page title', () => {
+  test('typing a title updates the preview, and clearing it removes the header again', async ({
+    page,
+  }) => {
+    await test.step('open page with defaults and wait for preview', async () => {
+      await openPage(page);
+      await resetDefaults(page);
+      await waitForSettled(page);
+    });
+    const blank = await readCanvasHash(page);
+
+    await test.step('type a title', async () => {
+      await page.locator('#options [name="title"]').fill('Morning Routine');
+      await waitForSettled(page);
+    });
+    const withTitle = await readCanvasHash(page);
+
+    await test.step('check the preview changed and download stays enabled', async () => {
+      expect(withTitle).not.toBe(blank);
+      expect(await isDownloadEnabled(page)).toBe(true);
+    });
+
+    await test.step('clear the title', async () => {
+      await page.locator('#options [name="title"]').fill('');
+      await waitForSettled(page);
+    });
+
+    await test.step('check the header disappears again', async () => {
+      expect(await readCanvasHash(page)).toBe(blank);
+    });
+  });
+});
+
 test.describe('US2: invalid habit count', () => {
   // Each kind is its own test, so every kind runs even if another fails (FR-013).
   const invalid: { kind: string; enter: (page: Page) => Promise<void> }[] = [

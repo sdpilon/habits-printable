@@ -9,6 +9,7 @@ const valid: RawOptions = {
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
   paper: 'letter',
+  title: '',
 };
 
 describe('validate', () => {
@@ -63,6 +64,28 @@ describe('validate', () => {
     });
     expect(result.ok).toBe(true);
   });
+
+  it('defaults title to an empty string', () => {
+    const result = validate(valid);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.options.title).toBe('');
+  });
+
+  it('passes a normal title through unchanged', () => {
+    const result = validate({ ...valid, title: 'Morning Routine' });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.options.title).toBe('Morning Routine');
+  });
+
+  it('silently truncates a title over 200 characters instead of producing an error', () => {
+    const longTitle = 'x'.repeat(250);
+    const result = validate({ ...valid, title: longTitle });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.options.title).toBe('x'.repeat(200));
+      expect(result.options.title.length).toBe(200);
+    }
+  });
 });
 
 describe('toTypstInputs', () => {
@@ -75,6 +98,11 @@ describe('toTypstInputs', () => {
       dotDiameterMm: '4',
       dotSpacingMm: '1.5',
       paper: 'letter',
+      title: '',
     });
+  });
+
+  it('passes a non-empty title through unchanged', () => {
+    expect(toTypstInputs({ ...DEFAULTS, title: 'Morning Routine' }).title).toBe('Morning Routine');
   });
 });

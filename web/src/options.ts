@@ -12,6 +12,7 @@ export interface TrackerOptions {
   dotDiameterMm: number;
   dotSpacingMm: number;
   paper: Paper;
+  title: string;
 }
 
 export const DEFAULTS: TrackerOptions = {
@@ -22,6 +23,7 @@ export const DEFAULTS: TrackerOptions = {
   dotDiameterMm: 4,
   dotSpacingMm: 1.5,
   paper: 'letter',
+  title: '',
 };
 
 export const LAYOUTS: readonly Layout[] = ['rows', 'columns', 'calendars'];
@@ -40,7 +42,7 @@ export const LIMITS: Record<
   dotSpacingMm: { min: 0.5, max: 5, integer: false, label: 'Dot spacing (mm)' },
 };
 
-export type Field = NumericField | 'layout' | 'paper';
+export type Field = NumericField | 'layout' | 'paper' | 'title';
 
 export type ValidationResult =
   | { ok: true; options: TrackerOptions }
@@ -91,6 +93,7 @@ export function validate(raw: RawOptions): ValidationResult {
       dotDiameterMm: numbers.dotDiameterMm!,
       dotSpacingMm: numbers.dotSpacingMm!,
       paper,
+      title: raw.title.slice(0, 200),
     },
   };
 }
@@ -105,5 +108,6 @@ export function toTypstInputs(options: TrackerOptions): Record<string, string> {
     dotDiameterMm: String(options.dotDiameterMm),
     dotSpacingMm: String(options.dotSpacingMm),
     paper: options.paper,
+    title: options.title,
   };
 }
