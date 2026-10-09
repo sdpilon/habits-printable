@@ -35,8 +35,9 @@ the previous one unless noted; only the changes needed are listed.
 3. **Expect**: a new commit on `gh-pages` from the action, and the
    data file's entry count for this metric is exactly one more than
    before the push.
-4. Visit the published Pages URL (`gh api repos/{owner}/{repo}/pages
-   --jq .html_url`).
+4. Visit the published Pages URL with the benchmark-data-dir-path
+   suffix appended (e.g. `<html_url>dev/bench/` — confirm the exact
+   path against T004's configuration, not the bare Pages root).
 5. **Expect**: the chart renders and its most recent point matches the
    value this CI run printed in its "Timing check" step log.
 

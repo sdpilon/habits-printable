@@ -15,7 +15,7 @@ One measurement, produced per qualifying CI run.
 | `commit.id` | string (SHA) | The commit the CI run measured. |
 | `commit.message` | string | For dashboard readability; sourced from `git log` (backfill) or the action's own commit context (live runs). |
 | `commit.timestamp` | ISO 8601 string | Commit time, not CI-run time. |
-| `branch` | string | Which branch/PR the run was on — not a top-level field in the action's own schema, but implied by which commit the entry is attached to. |
+| `branch` | string | Which branch/PR the run was on. Stored in the action's optional `extra` field (`"branch: <name>"`) — the only place this schema has for free-form per-entry metadata; not a dedicated top-level field. |
 | `date` | epoch ms | When the measurement was recorded. |
 | `value` | number | The `median compile: X ms` value. |
 | `unit` | string | Always `"ms"`. |

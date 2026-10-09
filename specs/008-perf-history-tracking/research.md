@@ -21,14 +21,35 @@ the action provides for free.
 ## Decision: `customSmallerIsBetter` data shape
 
 ```json
-[{"name": "Typst compile (largest fitting page, median of 10)", "unit": "ms", "value": <median>}]
+[{
+  "name": "Typst compile (largest fitting page, median of 10)",
+  "unit": "ms",
+  "value": <median>,
+  "extra": "branch: <branch-name>"
+}]
 ```
 
 **Rationale**: This is the action's documented format for a simple
 named numeric metric with no built-in benchmark-tool output to parse
 (confirmed via the action's own documentation: entries need only
 `name`, `unit`, `value`, with optional `range`/`extra`). Matches our
-single existing metric exactly.
+single existing metric exactly. `extra` carries the branch name —
+the schema has no dedicated branch field (see the gh-pages data file
+schema decision below), and User Story 2 requires each dashboard
+entry to be attributable to the branch that produced it.
+
+## Decision: dashboard URL includes the benchmark-data-dir-path
+
+The action serves its generated `index.html` under its configured
+`benchmark-data-dir-path` (default `dev/bench/`), not at the gh-pages
+branch root. The Pages site's base URL (from `gh api
+repos/{owner}/{repo}/pages --jq .html_url`) must have that path
+appended — e.g. `<html_url>dev/bench/` — to actually reach the chart.
+
+**Action for implementation**: confirm this once the action is
+configured (it's set via the action's `benchmark-data-dir-path`
+input, left at its default unless explicitly overridden), and use the
+resolved full URL everywhere the dashboard is linked or checked.
 
 ## Decision: gh-pages data file schema (for backfill script compatibility)
 
