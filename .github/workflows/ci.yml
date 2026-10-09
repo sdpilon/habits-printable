@@ -7,6 +7,8 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -36,6 +38,18 @@ jobs:
 
       - name: Timing check
         run: pnpm perf
+
+      - name: Publish benchmark result
+        if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name != 'pull_request'
+        uses: benchmark-action/github-action-benchmark@v1.22.2
+        with:
+          name: 'Typst compile (largest fitting page, median of 10)'
+          tool: 'customSmallerIsBetter'
+          output-file-path: perf-result.json
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
 
       - name: Margin check
         run: pnpm margins
