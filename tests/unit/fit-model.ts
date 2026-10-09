@@ -4,11 +4,13 @@ import type { TrackerOptions } from '../../web/src/options.ts';
 
 const MARGIN_MM = 10;
 const GAP_MM = 4;
-const LABEL_H_MM = 6;
+const LABEL_H_MM = 2;
 const LABEL_COL_H_MM = 30;
-const NUM_H_MM = 3;
+const HEADER_H_MM = 6;
+const NUM_GAP_ABOVE_MM = 1;
+const NUM_GAP_BELOW_MM = 0.4;
+const NUM_TEXT_H_MM = 1.8;
 const NUM_W_MM = 6;
-const ROW_LABEL_W_MM = 40;
 
 export function usableArea(paper: TrackerOptions['paper']): { w: number; h: number } {
   const [pageW, pageH] = paper === 'letter' ? [215.9, 279.4] : [210, 297];
@@ -18,15 +20,16 @@ export function usableArea(paper: TrackerOptions['paper']): { w: number; h: numb
 // True when the layout fits on one page, using the formulas in data-model.md.
 export function predictFits(o: TrackerOptions): boolean {
   const pitch = o.dotDiameterMm + o.dotSpacingMm;
-  const lineH = pitch + NUM_H_MM;
+  const lineH = pitch + NUM_GAP_ABOVE_MM + NUM_TEXT_H_MM + NUM_GAP_BELOW_MM;
   const area = usableArea(o.paper);
+  const headerH = o.title === '' ? 0 : HEADER_H_MM + GAP_MM;
   let width: number;
   let height: number;
 
   if (o.layout === 'rows') {
     const lines = Math.ceil(o.days / o.perRow);
-    width = ROW_LABEL_W_MM + o.perRow * pitch;
-    height = o.habits * lines * lineH + (o.habits - 1) * GAP_MM;
+    width = o.perRow * pitch;
+    height = o.habits * (LABEL_H_MM + lines * lineH) + (o.habits - 1) * GAP_MM;
   } else if (o.layout === 'columns') {
     const groups = Math.ceil(o.habits / o.perRow);
     width = NUM_W_MM + Math.min(o.habits, o.perRow) * pitch;
@@ -40,5 +43,5 @@ export function predictFits(o: TrackerOptions): boolean {
     height = rows * blockH + (rows - 1) * GAP_MM;
   }
 
-  return width <= area.w && height <= area.h;
+  return width <= area.w && height <= area.h - headerH;
 }

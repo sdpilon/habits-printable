@@ -9,7 +9,21 @@
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
+      }
+    },
+    {
+      "name": "default-letter-with-title",
+      "options": {
+        "layout": "rows",
+        "habits": 5,
+        "days": 31,
+        "perRow": 7,
+        "dotDiameterMm": 4,
+        "dotSpacingMm": 1.5,
+        "paper": "letter",
+        "title": "Morning Routine"
       }
     },
     {
@@ -21,7 +35,8 @@
         "perRow": 1,
         "dotDiameterMm": 2,
         "dotSpacingMm": 0.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -33,7 +48,8 @@
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -45,7 +61,8 @@
         "perRow": 31,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -57,7 +74,8 @@
         "perRow": 31,
         "dotDiameterMm": 2,
         "dotSpacingMm": 0.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -69,7 +87,8 @@
         "perRow": 5,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -81,7 +100,8 @@
         "perRow": 20,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -93,7 +113,8 @@
         "perRow": 20,
         "dotDiameterMm": 5,
         "dotSpacingMm": 5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -105,7 +126,8 @@
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -117,7 +139,8 @@
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     },
     {
@@ -129,7 +152,8 @@
         "perRow": 31,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter"
+        "paper": "letter",
+        "title": ""
       }
     }
   ],

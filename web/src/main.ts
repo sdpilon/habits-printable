@@ -57,6 +57,7 @@ function readForm(): RawOptions {
     dotDiameterMm: value('dotDiameterMm'),
     dotSpacingMm: value('dotSpacingMm'),
     paper: value('paper'),
+    title: value('title'),
   };
 }
 
