@@ -8,6 +8,19 @@
 
 **Input**: User description: "Do a UI uplift, make it look nice, make the controls take up less room that isn't needed."
 
+## Clarifications
+
+### Session 2026-10-08
+
+- Q: Should this redesign commit to a specific accessibility bar (contrast ratios, keyboard tab
+  order) as a testable requirement, or just preserve whatever accessibility the current form
+  already has without a formal target? → A: WCAG AA contrast ratios (4.5:1 text, 3:1 UI elements)
+  in both color schemes, plus unchanged keyboard tab order through the controls.
+- Q: To make the controls more compact, is it acceptable to also shrink text/label font size, or
+  should all the space savings come from layout alone? → A: Keep the current font size; space
+  savings MUST come entirely from tighter spacing and layout (inline labels, grouping), not from
+  smaller text.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Compact options panel (Priority: P1)
@@ -123,6 +136,12 @@ more of the viewport for the preview.
 - **FR-008**: The live PDF preview panel's size, position, and behavior MUST NOT be negatively
   affected by the options panel changes; the preview remains the dominant visual element on the
   page.
+- **FR-009**: The redesigned styling MUST meet WCAG AA contrast ratios (at least 4.5:1 for text,
+  3:1 for UI component boundaries/states) in both the light and dark color schemes, and MUST
+  preserve the existing logical keyboard tab order through the controls.
+- **FR-010**: The space reduction MUST be achieved without reducing current text or label font
+  sizes; savings MUST come from tighter spacing, inline label placement, and field grouping, not
+  from making text smaller.
 
 ## Success Criteria *(mandatory)*
 
@@ -139,6 +158,9 @@ more of the viewport for the preview.
   more organized and less cluttered than the current layout.
 - **SC-005**: Every existing automated check (unit tests, end-to-end tests, margin checks, and
   performance checks) continues to pass after the redesign, confirming no functional regression.
+- **SC-006**: All text and interactive elements in the redesigned form meet WCAG AA contrast
+  ratios (4.5:1 for text, 3:1 for UI components) in both light and dark mode, and keyboard users
+  can tab through the controls in the same logical order as before.
 
 ## Assumptions
 
@@ -154,3 +176,5 @@ more of the viewport for the preview.
   change to validation rules, option limits, or PDF output.
 - Both the desktop (sidebar) and mobile (stacked) breakpoints receive the compactness and polish
   treatment, since the request did not limit the uplift to one of them.
+- If the polish introduces hover/focus transitions or other motion, they respect a user's
+  reduced-motion preference rather than always animating.
