@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791587669323,
+  "lastUpdate": 1791587671749,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1278,6 +1278,32 @@ window.BENCHMARK_DATA = {
             "value": 167.91323799999986,
             "unit": "ms",
             "extra": "branch: 008-perf-history-tracking"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "id": "24da6d44a89c3ac865b02af3d0c273a74ed3ded6",
+          "message": "feat: track CI compile-time performance history on GitHub Pages",
+          "timestamp": "2026-10-09T19:57:18Z",
+          "url": "https://github.com/sdpilon/habits-printable/pull/9/commits/24da6d44a89c3ac865b02af3d0c273a74ed3ded6"
+        },
+        "date": 1791587671094,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 92.85752400000001,
+            "unit": "ms",
+            "extra": "branch: 9/merge"
           }
         ]
       }
