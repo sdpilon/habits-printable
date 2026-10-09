@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TrackerOptions",
+  "description": "Input dictionary passed from the web page to typst/tracker.typ. Extends specs/001-printable-habit-grid/contracts/tracker-options.schema.json with one new optional `title` property; every other property is unchanged.",
+  "type": "object",
+  "required": ["layout", "habits", "days", "perRow", "dotDiameterMm", "dotSpacingMm", "paper"],
+  "additionalProperties": false,
+  "properties": {
+    "layout": { "type": "string", "enum": ["rows", "columns", "calendars"] },
+    "habits": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "days": { "type": "integer", "minimum": 1, "maximum": 365 },
+    "perRow": { "type": "integer", "minimum": 1, "maximum": 31 },
+    "dotDiameterMm": { "type": "number", "minimum": 2, "maximum": 5 },
+    "dotSpacingMm": { "type": "number", "minimum": 0.5, "maximum": 5 },
+    "paper": { "type": "string", "enum": ["letter"] },
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "default": "",
+      "description": "Optional freeform page title. Empty string means no header is rendered (FR-002). The 200-character cap is a defensive input limit, not the rendering rule — long titles are clipped at the printable width regardless (research.md §1)."
+    }
+  }
+}
