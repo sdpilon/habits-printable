@@ -86,9 +86,13 @@ the PDF and confirm the title matches; clear the field and confirm the header di
       printable width is clipped rather than wrapped (research.md §1, spec Edge Cases: "clipped/truncated
       at the printable margin rather than wrapping to a second line or shrinking indefinitely"). When
       `title` is empty, render nothing in that space (FR-002).
-- [ ] T006 [US1] In `typst/tracker.typ`, compute `header-h-total = if title == "" { 0mm } else { header-h + gap }`
-      and subtract it from the height available to the grid's own fit check (`fits-w`/overflow logic),
-      per data-model.md's Fit rules ("Usable height for the grid itself = usableHeight(paper) - headerH").
+- [ ] T006 [US1] In `typst/tracker.typ`, render the header (from T005) in the page's content flow
+      *before* any layout's grid content begins, so it occupies real vertical space ahead of the
+      grid. Do **not** add a separate height-fit formula to `fits-w` — that check is width-only
+      (its own comment: "height overflow is caught by Typst's own pagination"), and a taller page
+      from the header is already caught by the existing page-count-based overflow detection,
+      consistent with 001's research.md §2 decision not to duplicate fit logic outside Typst
+      (Principle I).
 - [ ] T007 [P] [US1] In `tests/unit/fit-model.ts`, add the same `headerH` computation and subtract it
       from `area.h` before each layout's height comparison in `predictFits`, mirroring T006 exactly
       (data-model.md Fit rules). `TrackerOptions` there will pick up the `title` field from T002's
@@ -161,7 +165,10 @@ own dots is visibly smaller than its gap to the row above.
       space, then the dot — instead of today's number-at-top/dot-at-bottom-of-one-box with zero
       spacing between boxes. New `line-h = pitch + num-gap-above + <number text height> + num-gap-below`
       (data-model.md's `lineH` formula). This single function change benefits both `rows` (via T012's
-      reuse of the same shape) and `calendars`.
+      reuse of the same shape) and `calendars`. If the rendered day-number glyph height differs
+      materially from the ~1.8mm planning estimate (data-model.md `NUM_TEXT_H`), adjust
+      `num-gap-below` so `num-gap-above > num-gap-below` still holds, and update the constant's
+      value in `data-model.md`.
 - [ ] T017 [US3] As a temporary local debug aid only (research.md §4, not shipped), comment out the
       `calc.rem(day, 5) == 0` guard in `dot-cell` in `typst/tracker.typ` to number every dot,
       visually confirm each number now reads as grouped with its own row rather than the row above,
@@ -173,7 +180,9 @@ own dots is visibly smaller than its gap to the row above.
 - [ ] T019 [US3] Run `pnpm margins` against `rows-31-small-dots` and every `calendars-*` case in
       `tests/comparison/cases.json` (the smallest dot size / most dots per row combinations). Confirm
       numbers stay legible and non-overlapping and every case still passes the 10mm margin check
-      (spec Edge Cases).
+      (spec Edge Cases). Separately, confirm every `columns-*` case in `tests/comparison/cases.json`
+      is unaffected by this story (FR-005) — no change to the day-number column width or position in
+      that layout.
 
 **Checkpoint**: User Stories 1, 2, and 3 are all independently functional.
 
