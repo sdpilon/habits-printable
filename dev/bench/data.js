@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791601746137,
+  "lastUpdate": 1791601843257,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1364,6 +1364,32 @@ window.BENCHMARK_DATA = {
             "value": 180.61605600000007,
             "unit": "ms",
             "extra": "branch: 009-gh-pages-deploy"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "id": "7020341aba21897bf99fd1053066c7f8fd0f3355",
+          "message": "feat(ci): deploy the main site to GitHub Pages",
+          "timestamp": "2026-10-09T23:19:30Z",
+          "url": "https://github.com/sdpilon/habits-printable/pull/10/commits/7020341aba21897bf99fd1053066c7f8fd0f3355"
+        },
+        "date": 1791601842874,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 180.94194000000016,
+            "unit": "ms",
+            "extra": "branch: 10/merge"
           }
         ]
       }
