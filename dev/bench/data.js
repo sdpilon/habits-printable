@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791587994971,
+  "lastUpdate": 1791601746137,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1334,6 +1334,36 @@ window.BENCHMARK_DATA = {
             "value": 148.43417699999986,
             "unit": "ms",
             "extra": "branch: main"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "7020341aba21897bf99fd1053066c7f8fd0f3355",
+          "message": "feat(ci): deploy the main site to GitHub Pages\n\nPush the production build to the root of gh-pages alongside the existing\nperf-benchmark dashboard, gated to main-only pushes with a concurrency\ngroup so overlapping deploys can't finish out of order. Also switch Vite\nto a relative base so the same build works at both the origin root and\nthe Pages subpath.",
+          "timestamp": "2026-10-09T21:04:48-06:00",
+          "tree_id": "f2d705701956479c9ad9da601401c4c70c6b567c",
+          "url": "https://github.com/sdpilon/habits-printable/commit/7020341aba21897bf99fd1053066c7f8fd0f3355"
+        },
+        "date": 1791601745803,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 180.61605600000007,
+            "unit": "ms",
+            "extra": "branch: 009-gh-pages-deploy"
           }
         ]
       }
