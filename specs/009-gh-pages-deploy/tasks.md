@@ -52,7 +52,7 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 ### Validation for User Story 1
 
-- [ ] T007 [US1] Once this feature has reached `main` and the first real deploy (Phase 2) has completed, run `quickstart.md` Scenario 1: open `https://sdpilon.github.io/habits-printable/` directly, confirm no asset 404s, and confirm a configure → preview → download cycle completes. Depends on T006.
+- [x] T007 [US1] Once this feature has reached `main` and the first real deploy (Phase 2) has completed, run `quickstart.md` Scenario 1: open `https://sdpilon.github.io/habits-printable/` directly, confirm no asset 404s, and confirm a configure → preview → download cycle completes. Depends on T006.
 
 **Checkpoint**: User Story 1 is independently demoable — the live app works for a visitor.
 
@@ -66,10 +66,10 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 ### Validation for User Story 2
 
-- [ ] T008 [US2] Validate `quickstart.md` Scenario 2: push a small visible change to `main`, wait for CI to finish, confirm a new commit lands on `gh-pages` with no manual action, and the published URL reflects the change after reload. Depends on T006.
-- [ ] T009 [US2] Validate `quickstart.md` Scenario 3 by inspection: confirm in `.github/workflows/ci.yml` that the steps added in T005/T006 are the last steps in the `check` job, after format/lint/typecheck/unit/timing/margins/e2e — so any of those failing stops the job before the deploy step ever runs. Depends on T006.
-- [ ] T010 [US2] Validate `quickstart.md` Scenario 5 by inspection: confirm the `if:` condition added in T005/T006 excludes `pull_request` events (requires both `github.ref == 'refs/heads/main'` and `github.event_name == 'push'`), so a PR run skips the deploy step rather than running or failing it. Depends on T006.
-- [ ] T011 [US2] Validate `quickstart.md` Scenario 6 by inspection: confirm the `concurrency` block added in T004 is present at the workflow's top level with `group: pages` and `cancel-in-progress: false`, so an in-progress deploy is never killed mid-push and any superseded queued run is skipped automatically in favor of the latest one. Depends on T004.
+- [x] T008 [US2] Validate `quickstart.md` Scenario 2: push a small visible change to `main`, wait for CI to finish, confirm a new commit lands on `gh-pages` with no manual action, and the published URL reflects the change after reload. Depends on T006.
+- [x] T009 [US2] Validate `quickstart.md` Scenario 3 by inspection: confirm in `.github/workflows/ci.yml` that the steps added in T005/T006 are the last steps in the `check` job, after format/lint/typecheck/unit/timing/margins/e2e — so any of those failing stops the job before the deploy step ever runs. Depends on T006.
+- [x] T010 [US2] Validate `quickstart.md` Scenario 5 by inspection: confirm the `if:` condition added in T005/T006 excludes `pull_request` events (requires both `github.ref == 'refs/heads/main'` and `github.event_name == 'push'`), so a PR run skips the deploy step rather than running or failing it. Depends on T006.
+- [x] T011 [US2] Validate `quickstart.md` Scenario 6 by inspection: confirm the `concurrency` block added in T004 is present at the workflow's top level with `group: pages` and `cancel-in-progress: false`, so an in-progress deploy is never killed mid-push and any superseded queued run is skipped automatically in favor of the latest one. Depends on T004.
 
 **Checkpoint**: User Stories 1 and 2 both independently hold — the live site works and stays current without ever regressing to an older or broken build.
 
@@ -83,7 +83,7 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 ### Validation for User Story 3
 
-- [ ] T012 [US3] Once the first real deploy (Phase 2) has completed, validate `quickstart.md` Scenario 4: confirm `dev/bench/`'s latest commit hash on `gh-pages` is unchanged from before the deploy (`git log origin/gh-pages -1 --format=%H -- dev/bench`), and `<html_url>dev/bench/` still renders the existing chart with all prior history. Depends on T006.
+- [x] T012 [US3] Once the first real deploy (Phase 2) has completed, validate `quickstart.md` Scenario 4: confirm `dev/bench/`'s latest commit hash on `gh-pages` is unchanged from before the deploy (`git log origin/gh-pages -1 --format=%H -- dev/bench`), and `<html_url>dev/bench/` still renders the existing chart with all prior history. Depends on T006.
 
 **Checkpoint**: All three user stories now independently hold.
 
@@ -91,7 +91,7 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T013 Run `quickstart.md` end-to-end, in order (Scenarios 1 through 6), once this feature has been merged to `main` and had at least one real deploy — confirming the full feature holds together, not just each scenario in isolation.
+- [x] T013 Run `quickstart.md` end-to-end, in order (Scenarios 1 through 6), once this feature has been merged to `main` and had at least one real deploy — confirming the full feature holds together, not just each scenario in isolation.
 
 ---
 
