@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791602494665,
+  "lastUpdate": 1791604256338,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1418,6 +1418,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Typst compile (largest fitting page, median of 10)",
             "value": 158.14335000000005,
+            "unit": "ms",
+            "extra": "branch: main"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "58bd67eaddc12c96b87f2f0f2c871f67be29203b",
+          "message": "docs: mark gh-pages-deploy tasks complete\n\nPost-merge validation (T007-T013) confirmed against the real deploy:\nlive app works end-to-end, benchmark history intact, CI-failure/PR/\nconcurrency guarantees hold.",
+          "timestamp": "2026-10-09T21:50:05-06:00",
+          "tree_id": "4da2e2ad2d5457e783994757a2ec371344ac3e3f",
+          "url": "https://github.com/sdpilon/habits-printable/commit/58bd67eaddc12c96b87f2f0f2c871f67be29203b"
+        },
+        "date": 1791604254864,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 153.2352800000001,
             "unit": "ms",
             "extra": "branch: main"
           }
