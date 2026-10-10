@@ -45,6 +45,7 @@ at `https://sdpilon.github.io/habits-printable/`.
 adds no new runtime work, only a static-file publish step.
 
 **Constraints**:
+
 - MUST NOT disrupt the existing `dev/bench/` benchmark history on `gh-pages`
   (FR-004).
 - MUST guarantee the live site always ends up matching the latest commit on
@@ -57,21 +58,21 @@ every CI-passing push to `main`; no additional scope.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Assessment |
-|---|---|
-| I. Single Layout Source | Not affected — no rendering/layout code changes. |
-| II. Preview Equals Print | Not affected — no change to how the PDF/preview is produced. |
-| III. Hand-Fillable Output | Not affected. |
-| IV. Responsive Options | Not affected. |
-| V. Scope Discipline | Not affected — publishing the existing generator publicly adds no accounts/storage/tracking features. |
-| Technical Constraints (Typst, US Letter, 100% scale) | Not affected — no rendering changes. |
-| Development Workflow (spec before planning, quality checklist) | Satisfied — this spec passed its quality checklist (16/16) before this plan. |
+| Principle                                                      | Assessment                                                                                            |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| I. Single Layout Source                                        | Not affected — no rendering/layout code changes.                                                      |
+| II. Preview Equals Print                                       | Not affected — no change to how the PDF/preview is produced.                                          |
+| III. Hand-Fillable Output                                      | Not affected.                                                                                         |
+| IV. Responsive Options                                         | Not affected.                                                                                         |
+| V. Scope Discipline                                            | Not affected — publishing the existing generator publicly adds no accounts/storage/tracking features. |
+| Technical Constraints (Typst, US Letter, 100% scale)           | Not affected — no rendering changes.                                                                  |
+| Development Workflow (spec before planning, quality checklist) | Satisfied — this spec passed its quality checklist (16/16) before this plan.                          |
 
 **Result**: PASS. No violations; no Complexity Tracking entries needed.
 
-*Post-Phase-1 re-check*: unchanged — the Phase 1 design (research.md,
+_Post-Phase-1 re-check_: unchanged — the Phase 1 design (research.md,
 data-model.md, quickstart.md) introduces no rendering/layout/data changes,
 so the table above still holds.
 
@@ -107,4 +108,4 @@ block) — consistent with the repo's existing single-job CI convention (see
 
 ## Complexity Tracking
 
-*No entries — Constitution Check reported no violations.*
+_No entries — Constitution Check reported no violations._

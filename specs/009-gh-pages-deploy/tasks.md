@@ -1,5 +1,4 @@
 ---
-
 description: "Task list for Deploy the Main Site to GitHub Pages"
 ---
 
@@ -25,8 +24,8 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 **Purpose**: Resolve the one open implementation-time decision flagged in research.md, and reconfirm the two facts the whole plan is built on, since they were established by live `gh`/`git` queries during planning (not fixed in code) and could have drifted.
 
-- [ ] T001 Look up the current latest release tag of `JamesIves/github-pages-deploy-action` at https://github.com/JamesIves/github-pages-deploy-action/releases (research.md Decision 2 named the action but never pinned a version — this must be confirmed, not guessed). Record the confirmed tag in `specs/009-gh-pages-deploy/research.md`'s Decision 2.
-- [ ] T002 Confirm `gh api repos/sdpilon/habits-printable/pages --jq .source` still returns `{"branch":"gh-pages","path":"/"}` (research.md Decision 1), and that `.github/workflows/ci.yml`'s `check` job still has `permissions: contents: write` (already present, used by the existing benchmark-publish step) — no new permission is needed for the deploy step added in Phase 2.
+- [x] T001 Look up the current latest release tag of `JamesIves/github-pages-deploy-action` at https://github.com/JamesIves/github-pages-deploy-action/releases (research.md Decision 2 named the action but never pinned a version — this must be confirmed, not guessed). Record the confirmed tag in `specs/009-gh-pages-deploy/research.md`'s Decision 2.
+- [x] T002 Confirm `gh api repos/sdpilon/habits-printable/pages --jq .source` still returns `{"branch":"gh-pages","path":"/"}` (research.md Decision 1), and that `.github/workflows/ci.yml`'s `check` job still has `permissions: contents: write` (already present, used by the existing benchmark-publish step) — no new permission is needed for the deploy step added in Phase 2.
 
 ---
 
@@ -36,10 +35,10 @@ description: "Task list for Deploy the Main Site to GitHub Pages"
 
 **⚠️ CRITICAL**: No user story can be validated until this phase is complete.
 
-- [ ] T003 [P] Set `base: './'` in `vite.config.ts`'s `defineConfig({...})` call (research.md Decision 3) — add the one key, no other changes. Needed so the build produced in T005 resolves its assets correctly whether served from the origin root (local preview, e2e) or the GitHub Pages subpath.
-- [ ] T004 Add a top-level `concurrency: { group: pages, cancel-in-progress: false }` block to `.github/workflows/ci.yml`, after the existing `on:` block (research.md Decision 5). Same file as T005/T006 below — do these three sequentially to avoid conflicting edits, not because of a logical dependency on this one.
-- [ ] T005 Add a "Build production bundle" step to the end of the `check` job in `.github/workflows/ci.yml`, after the existing "End-to-end tests" step: `run: pnpm build`, guarded by `if: github.ref == 'refs/heads/main' && github.event_name == 'push'` (FR-001, FR-002, FR-006). Depends on T003 (the build must use the new relative `base`).
-- [ ] T006 Add a "Deploy to GitHub Pages" step immediately after T005's step in `.github/workflows/ci.yml`, using `JamesIves/github-pages-deploy-action@<tag confirmed in T001>` with `folder: dist`, `clean: true`, and a `clean-exclude` list containing `dev/bench` (research.md Decision 2 — satisfies FR-004), guarded by the same `if:` condition as T005 (FR-006). Depends on T001, T005.
+- [x] T003 [P] Set `base: './'` in `vite.config.ts`'s `defineConfig({...})` call (research.md Decision 3) — add the one key, no other changes. Needed so the build produced in T005 resolves its assets correctly whether served from the origin root (local preview, e2e) or the GitHub Pages subpath.
+- [x] T004 Add a top-level `concurrency: { group: pages, cancel-in-progress: false }` block to `.github/workflows/ci.yml`, after the existing `on:` block (research.md Decision 5). Same file as T005/T006 below — do these three sequentially to avoid conflicting edits, not because of a logical dependency on this one.
+- [x] T005 Add a "Build production bundle" step to the end of the `check` job in `.github/workflows/ci.yml`, after the existing "End-to-end tests" step: `run: pnpm build`, guarded by `if: github.ref == 'refs/heads/main' && github.event_name == 'push'` (FR-001, FR-002, FR-006). Depends on T003 (the build must use the new relative `base`).
+- [x] T006 Add a "Deploy to GitHub Pages" step immediately after T005's step in `.github/workflows/ci.yml`, using `JamesIves/github-pages-deploy-action@<tag confirmed in T001>` with `folder: dist`, `clean: true`, and a `clean-exclude` list containing `dev/bench` (research.md Decision 2 — satisfies FR-004), guarded by the same `if:` condition as T005 (FR-006). Depends on T001, T005.
 
 **Checkpoint**: Foundational complete — once this reaches `main`, the next CI run performs one full real deploy. All three user stories below can now be validated.
 

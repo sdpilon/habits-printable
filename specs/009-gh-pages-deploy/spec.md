@@ -14,7 +14,7 @@
 
 - Q: If two pushes to `main` finish their CI runs out of order, should the live site be guaranteed to always end up reflecting the latest commit on `main`, or is it acceptable for whichever deploy happens to finish last to "win" even if it's not the newest commit? → A: Guarantee latest wins — serialize deploys / cancel any in-progress deploy when a newer push supersedes it.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Visit the live app (Priority: P1)
 
@@ -96,7 +96,7 @@ benchmark-dashboard URL and confirm prior history is still intact.
   the deploy for a newer commit already has — the live site MUST always end
   up matching the latest commit on `main`.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -121,7 +121,7 @@ benchmark-dashboard URL and confirm prior history is still intact.
   finish out of order — an older build MUST NOT overwrite a newer one that
   has already been published.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -26,15 +26,17 @@ dashboard onto the same artifact pipeline, which is unrelated extra scope.
 
 ## Decision 2: Publish via `JamesIves/github-pages-deploy-action`, excluding `dev/bench/`
 
-**Decision**: Use `JamesIves/github-pages-deploy-action`, pinned to the
-release tag confirmed in tasks.md T001 (not guessed at plan time), to push
-the production build to the root of `gh-pages`, with `clean: true` (default)
-and `clean-exclude: dev/bench` so stale app assets get swept on every deploy
-while the benchmark history is explicitly protected.
+**Decision**: Use `JamesIves/github-pages-deploy-action`, pinned to `v4.9.0`
+(the latest release as of 2026-10-09, confirmed via `gh api
+repos/JamesIves/github-pages-deploy-action/releases/latest` during tasks.md
+T001 — not guessed at plan time), to push the production build to the root
+of `gh-pages`, with `clean: true` (default) and `clean-exclude: dev/bench`
+so stale app assets get swept on every deploy while the benchmark history is
+explicitly protected.
 
 **Rationale**: Satisfies FR-004 directly. The alternative,
 `peaceiris/actions-gh-pages` with `keep_files: true`, would also avoid
-touching `dev/bench/`, but `keep_files: true` keeps *everything* ever
+touching `dev/bench/`, but `keep_files: true` keeps _everything_ ever
 published — since Vite content-hashes asset filenames, every deploy would
 leave the previous deploy's JS/WASM chunks behind forever, growing the branch
 unbounded. `clean-exclude` gets the protection without that downside.
@@ -54,7 +56,7 @@ preview` (e2e) and `vite dev`, but not for a GitHub Pages project page, which
 serves from `/habits-printable/`. A relative base makes every built asset
 reference relative to `index.html`'s own location, so the exact same
 `pnpm build` output works unmodified at the origin root (e2e, local preview)
-*and* under the Pages subpath — no second build config, no env-conditional
+_and_ under the Pages subpath — no second build config, no env-conditional
 base. Confirmed safe: the app has no client-side routing and no absolute-path
 `fetch()`/`new URL('/...')` calls (checked `web/src/*.ts`); the only
 absolute-looking path is `<link href="/src/style.css">` in `web/index.html`,
@@ -88,9 +90,9 @@ deploy step needs `check`'s own build output anyway.
 **Decision**: Add a workflow-level `concurrency: { group: pages, cancel-in-progress: false }`.
 
 **Rationale**: GitHub Actions concurrency groups automatically skip any
-queued run that is superseded by a newer one *before it starts*, regardless
+queued run that is superseded by a newer one _before it starts_, regardless
 of `cancel-in-progress`. Setting `cancel-in-progress: false` means an
-*already-running* deploy is never killed mid-push (which could leave
+_already-running_ deploy is never killed mid-push (which could leave
 `gh-pages` in a half-written state); it simply finishes, and any
 now-stale queued runs in between are skipped automatically, so the branch
 always ends up at the latest pushed commit. `cancel-in-progress: true` was
