@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791601843257,
+  "lastUpdate": 1791602494665,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1390,6 +1390,36 @@ window.BENCHMARK_DATA = {
             "value": 180.94194000000016,
             "unit": "ms",
             "extra": "branch: 10/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33335453+sdpilon@users.noreply.github.com",
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "464d824a365f4323f2fee660f4375fc4f63e220b",
+          "message": "feat(ci): deploy the main site to GitHub Pages (#10)\n\n* docs: add spec for deploying main site to GitHub Pages\n\n* docs: clarify deploy ordering guarantee in gh-pages-deploy spec\n\n* docs: add implementation plan for gh-pages-deploy spec\n\n* docs: add tasks for gh-pages-deploy spec\n\n* docs: apply analyze remediations to gh-pages-deploy spec\n\nMerge duplicate FR-006 into FR-002 and renumber; add a Setup task to\nconfirm the deploy action's release tag instead of guessing it.\n\n* feat(ci): deploy the main site to GitHub Pages\n\nPush the production build to the root of gh-pages alongside the existing\nperf-benchmark dashboard, gated to main-only pushes with a concurrency\ngroup so overlapping deploys can't finish out of order. Also switch Vite\nto a relative base so the same build works at both the origin root and\nthe Pages subpath.",
+          "timestamp": "2026-10-09T21:21:07-06:00",
+          "tree_id": "f2d705701956479c9ad9da601401c4c70c6b567c",
+          "url": "https://github.com/sdpilon/habits-printable/commit/464d824a365f4323f2fee660f4375fc4f63e220b"
+        },
+        "date": 1791602494163,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 158.14335000000005,
+            "unit": "ms",
+            "extra": "branch: main"
           }
         ]
       }
