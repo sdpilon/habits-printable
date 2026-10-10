@@ -8,6 +8,12 @@
 
 **Input**: User description: "Deploy the main site to gh Pages"
 
+## Clarifications
+
+### Session 2026-10-09
+
+- Q: If two pushes to `main` finish their CI runs out of order, should the live site be guaranteed to always end up reflecting the latest commit on `main`, or is it acceptable for whichever deploy happens to finish last to "win" even if it's not the newest commit? → A: Guarantee latest wins — serialize deploys / cancel any in-progress deploy when a newer push supersedes it.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Visit the live app (Priority: P1)
@@ -85,6 +91,10 @@ benchmark-dashboard URL and confirm prior history is still intact.
   a deploy to the live site.
 - What happens to already-published benchmark history when the site deploy
   first runs? It MUST be left intact — no overwrite, no deletion.
+- What happens when two pushes to `main` have overlapping or out-of-order CI
+  runs? The deploy for the older commit MUST NOT be allowed to publish after
+  the deploy for a newer commit already has — the live site MUST always end
+  up matching the latest commit on `main`.
 
 ## Requirements *(mandatory)*
 
@@ -106,6 +116,10 @@ benchmark-dashboard URL and confirm prior history is still intact.
   build-and-copy script) once set up — pushing to `main` is sufficient.
 - **FR-007**: Pull request / non-`main` CI runs MUST NOT publish to the live
   site.
+- **FR-008**: System MUST guarantee the live site always ends up reflecting
+  the latest pushed commit on `main`, even when multiple pushes' CI runs
+  finish out of order — an older build MUST NOT overwrite a newer one that
+  has already been published.
 
 ## Success Criteria *(mandatory)*
 
