@@ -26,10 +26,11 @@ dashboard onto the same artifact pipeline, which is unrelated extra scope.
 
 ## Decision 2: Publish via `JamesIves/github-pages-deploy-action`, excluding `dev/bench/`
 
-**Decision**: Use `JamesIves/github-pages-deploy-action` to push the
-production build to the root of `gh-pages`, with `clean: true` (default) and
-`clean-exclude: dev/bench` so stale app assets get swept on every deploy while
-the benchmark history is explicitly protected.
+**Decision**: Use `JamesIves/github-pages-deploy-action`, pinned to the
+release tag confirmed in tasks.md T001 (not guessed at plan time), to push
+the production build to the root of `gh-pages`, with `clean: true` (default)
+and `clean-exclude: dev/bench` so stale app assets get swept on every deploy
+while the benchmark history is explicitly protected.
 
 **Rationale**: Satisfies FR-004 directly. The alternative,
 `peaceiris/actions-gh-pages` with `keep_files: true`, would also avoid
@@ -74,7 +75,7 @@ separate job.
 steps — see the `Publish benchmark result` step already living mid-job) and
 the project's current scale doesn't justify the added complexity/duplicate
 checkout+install cost of a second job. The deploy step's own `if:` condition
-restricts it to `main` pushes only (FR-007), the same pattern the benchmark
+restricts it to `main` pushes only (FR-006), the same pattern the benchmark
 step already uses for its own condition.
 
 **Alternatives considered**: separate `deploy` job depending on `check` via
@@ -82,7 +83,7 @@ step already uses for its own condition.
 size; would re-pay the checkout/install/cache cost for no benefit since the
 deploy step needs `check`'s own build output anyway.
 
-## Decision 5: Concurrency control for FR-008 (latest-wins guarantee)
+## Decision 5: Concurrency control for FR-007 (latest-wins guarantee)
 
 **Decision**: Add a workflow-level `concurrency: { group: pages, cancel-in-progress: false }`.
 

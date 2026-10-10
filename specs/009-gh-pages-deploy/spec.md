@@ -103,7 +103,9 @@ benchmark-dashboard URL and confirm prior history is still intact.
 - **FR-001**: System MUST build a production version of the web app from
   `main` and publish it to a publicly reachable GitHub Pages URL.
 - **FR-002**: System MUST automatically redeploy the live site whenever new
-  changes are pushed to `main`, with no manual deploy step.
+  changes are pushed to `main` and CI passes — pushing to `main` MUST be
+  sufficient on its own, with no manual deploy step (e.g. no hand-running a
+  build-and-copy script) required once this is set up.
 - **FR-003**: System MUST only publish a build that has passed the project's
   existing CI checks (format, lint, typecheck, unit tests, e2e) — a failing
   build MUST NOT replace the live site.
@@ -112,11 +114,9 @@ benchmark-dashboard URL and confirm prior history is still intact.
 - **FR-005**: The published site MUST work correctly when loaded directly at
   its published URL — all asset and navigation paths MUST resolve under
   wherever GitHub Pages actually serves the project from.
-- **FR-006**: Deployment MUST require no manual step (e.g., hand-running a
-  build-and-copy script) once set up — pushing to `main` is sufficient.
-- **FR-007**: Pull request / non-`main` CI runs MUST NOT publish to the live
+- **FR-006**: Pull request / non-`main` CI runs MUST NOT publish to the live
   site.
-- **FR-008**: System MUST guarantee the live site always ends up reflecting
+- **FR-007**: System MUST guarantee the live site always ends up reflecting
   the latest pushed commit on `main`, even when multiple pushes' CI runs
   finish out of order — an older build MUST NOT overwrite a newer one that
   has already been published.

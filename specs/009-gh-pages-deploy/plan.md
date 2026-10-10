@@ -48,7 +48,7 @@ adds no new runtime work, only a static-file publish step.
 - MUST NOT disrupt the existing `dev/bench/` benchmark history on `gh-pages`
   (FR-004).
 - MUST guarantee the live site always ends up matching the latest commit on
-  `main`, even with overlapping/out-of-order CI runs (FR-008).
+  `main`, even with overlapping/out-of-order CI runs (FR-007).
 - Built asset and navigation paths MUST resolve correctly when served from
   the Pages subpath, not just at origin root (FR-005).
 
