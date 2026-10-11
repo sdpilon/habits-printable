@@ -4,6 +4,7 @@ import { validate, type Field, type RawOptions } from './options.ts';
 import { compileTracker, type Compiled } from './typst-engine.ts';
 import { loadPreviewDocument, renderPreview, type PreviewDocument } from './preview.ts';
 import { debugLog } from './debug-overlay.ts';
+import { initSliders, initSteppers } from './numeric-controls.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
@@ -156,5 +157,10 @@ download.addEventListener('click', () => {
 form.addEventListener('input', () => {
   void update();
 });
+
+// Wired once at startup, before the first update(), so the steppers' initial disabled state is
+// correct for the default values rendered in the markup.
+initSteppers(form);
+initSliders(form);
 
 void update();

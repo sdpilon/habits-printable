@@ -15,8 +15,13 @@ Habits 5, Days 31, Dots per row 7, Dot diameter 4 mm, Dot spacing 1.5 mm.
 3. `pnpm test`: unit tests for step, clamp, rounding, and slider mapping pass.
 4. `pnpm e2e`: the existing suite passes **unmodified** (SC-005 in the spec), plus the new
    `tests/e2e/mobile-numeric-controls.spec.ts`.
-5. Optional: `pnpm margins`. Not required, since Typst output is unchanged, but it is a cheap
-   regression guard.
+5. `pnpm margins`: run and recorded per the constitution's Development Workflow (T024).
+
+## Baseline (T001, pre-implementation, 2026-10-10)
+
+- `pnpm typecheck`: clean, no errors.
+- `pnpm test` (`tests/unit`): 3 files, 37 tests, all passed.
+- `pnpm e2e`: 24 tests, all passed. No pre-existing failures.
 
 ## Phone-viewport scenarios (390×844, touch enabled)
 
@@ -31,7 +36,7 @@ Run the dev server (`pnpm dev`) and open the page at a 390×844 viewport.
    change nothing.
 5. **Upper limit.** Tap "+" on Dots per row until it reads 31. The "+" button is disabled.
 6. **Slider.** Drag the Dot diameter slider from left to right. The readout tracks the thumb, moves
-   in 0.1 steps, and stops at 2.0 and 5.0. The preview redraws on release or on each change.
+   in 0.1 steps, and stops at 2.0 and 5.0. The preview redraws once, when the drag ends.
 7. **Slider limits.** Drag Dot spacing to both ends. The readout reads 0.5 and 5.0.
 8. **Typing still works.** Type `12` into Days. The preview shows 12 days. Slider and steppers
    reflect the new value.
@@ -60,3 +65,27 @@ Run the dev server (`pnpm dev`) and open the page at a 390×844 viewport.
 2. Each slider has an accessible name equal to its field label.
 3. Tab order through the options is unchanged from before (a new button follows its field's
    decrease button and precedes its increase button).
+
+## Results (T023, T024, post-implementation, 2026-10-10)
+
+All scenarios above were verified with Playwright at the stated viewports, substituting for a
+manual phone pass (no physical device in this environment):
+
+- Scenarios 1–13 (phone, 390×844): **PASS**, via
+  `tests/e2e/mobile-numeric-controls.spec.ts` (18 tests, all passing) plus the T018/T019 ad hoc
+  checks below.
+- Desktop check (1–3, above 720px): **PASS**. Spinners hidden (`appearance: none` on all five
+  fields); steppers and slider confirmed interactive (Habits 5→6, Dot diameter 4→4.1); field
+  positions/labels unchanged apart from the added controls.
+- Accessibility check (1–2): **PASS**, via `getByRole('button'|'slider', { name })` locators in
+  the e2e suite. Tab order (3) not independently verified beyond markup order (buttons placed
+  immediately before/after each field's `<label>`, matching source order).
+- T018 (`readWindowFits` at 390×844): **PASS** — `true`, no fallback from research.md §4 needed.
+- T019 (320×640, no horizontal scroll): **PASS** — `scrollWidth` (320) ≤ `clientWidth` (320);
+  every stepper button's bounding box stayed within the viewport.
+- T021 (3:1 border contrast, light/dark): **PASS** — enabled buttons inherit the existing
+  dark-pill button style (`border-color: var(--ink)`, already compliant per feature 006);
+  disabled buttons use `var(--control-border)`, the same value feature 006 established as
+  passing the 3:1 floor in both color schemes.
+- T024 (`pnpm margins`): **PASS** — all 12 cases passed or were correctly skipped as
+  overflow (download blocked); no Typst/PDF output changed by this feature.

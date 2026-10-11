@@ -25,14 +25,14 @@ and one **companion** control:
 
 ## Validation and state rules
 
-| Rule | Source |
-| --- | --- |
-| The field's text value is the only value read by `readForm()` and `validate()`. Companions never write a value that `validate()` cannot read. | `web/src/main.ts`, `web/src/options.ts` |
-| A stepper write always lands within `[min, max]`. Its button is disabled at the limit it would exceed. | spec FR-004 |
-| A stepper tap, or a slider release that changes the value, dispatches a bubbling `input` event on the field, exactly as typing does. A slider drag dispatches nothing while it moves. | spec FR-010 |
-| A slider's value follows the field when the field is a valid number in range. Otherwise the thumb sits at the nearest end, and the readout shows the field's text. | spec FR-008 and edge case |
-| An empty or non-numeric field: "+" sets `min`, "−" sets `max`. | spec edge case |
-| The readout shows the field's text exactly as typed or stepped, with no rounding. | spec FR-007 |
+| Rule                                                                                                                                                                                  | Source                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| The field's text value is the only value read by `readForm()` and `validate()`. Companions never write a value that `validate()` cannot read.                                         | `web/src/main.ts`, `web/src/options.ts` |
+| A stepper write always lands within `[min, max]`. Its button is disabled at the limit it would exceed.                                                                                | spec FR-004                             |
+| A stepper tap, or a slider release that changes the value, dispatches a bubbling `input` event on the field, exactly as typing does. A slider drag dispatches nothing while it moves. | spec FR-010                             |
+| A slider's value follows the field when the field is a valid number in range. Otherwise the thumb sits at the nearest end, and the readout shows the field's text.                    | spec FR-008 and edge case               |
+| An empty or non-numeric field: "+" sets `min`, "−" sets `max`.                                                                                                                        | spec edge case                          |
+| The readout shows the field's text exactly as typed or stepped, with no rounding.                                                                                                     | spec FR-007                             |
 
 ## State transitions (one numeric control)
 

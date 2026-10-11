@@ -57,6 +57,66 @@ label {
   gap: 0.15rem;
 }
 
+/* Stepper row: [−] [label+input] [+]. The label keeps its own text-above-input layout from the
+   rule above; this row only places the two stepper buttons beside it (research.md §4). */
+.numeric-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.numeric-row label {
+  flex: 1;
+  min-width: 0;
+}
+
+.numeric-row button[data-stepper] {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.numeric-row button[data-stepper]:disabled {
+  /* Dim via opacity like other disabled buttons, but keep the border at the same visible
+     contrast as an enabled control (3:1 UI floor, feature 006) instead of fading it too. */
+  opacity: 0.5;
+  border-color: var(--control-border);
+  background: transparent;
+  color: var(--ink);
+}
+
+/* Slider row: [label+input] on its own line, then [range] [readout] beneath. */
+.slider-row {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.slider-row .readout-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.slider-row output {
+  flex: none;
+  min-width: 2.5rem;
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 input,
 select,
 button {
@@ -71,6 +131,19 @@ button {
 
 input[aria-invalid="true"] {
   border-color: var(--warn);
+}
+
+/* Hide the browser's hover-only number spinners on all five numeric fields (spec FR-005): they
+   never render on phones anyway, and the stepper buttons/sliders added above replace them. */
+input[type="number"] {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }
 
 input:hover,
@@ -154,6 +227,12 @@ button:disabled {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
     padding: 1rem;
+  }
+
+  /* Each numeric field becomes a full-width row (research.md §4): the narrow multi-column grid
+     used above 720px doesn't leave room for a usable input plus two 44px buttons. */
+  .field-group {
+    grid-template-columns: 1fr;
   }
 }
 

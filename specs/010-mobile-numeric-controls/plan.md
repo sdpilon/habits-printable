@@ -54,17 +54,17 @@ verified at 390×844) and the existing desktop sidebar layout, in light and dark
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
-| Principle | Status | Notes |
-| --- | --- | --- |
-| I. Single Layout Source | PASS | No drawing code added to the page. Controls only set option values. |
-| II. Preview Equals Print | PASS | Typst template, dot geometry, and margins are untouched, so the printed output is unchanged for identical option values. The Development Workflow requires the margin check for layout changes; the options panel change is treated as one, so the check is run and recorded (T024). |
-| III. Hand-Fillable Output | PASS | No change to the PDF. |
-| IV. Responsive Options | PASS | A stepper tap or slider release dispatches the same `input` event as typing, so the preview updates immediately; a slider drag updates only the readout until release. Steppers clamp to limits, so they cannot create an invalid value. Typed invalid input still produces the existing message and blocks download. |
-| V. Scope Discipline | PASS | Only the requested controls. No new option, persistence, or analytics. |
-| Technical Constraints: Typst, US Letter, 100% scale, explicit limits | PASS | Limits already defined in `LIMITS`; not changed. |
-| Development Workflow: spec + checklist before planning | PASS | `checklists/requirements.md` passed on 2026-10-10. |
+| Principle                                                            | Status | Notes                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| I. Single Layout Source                                              | PASS   | No drawing code added to the page. Controls only set option values.                                                                                                                                                                                                                                                   |
+| II. Preview Equals Print                                             | PASS   | Typst template, dot geometry, and margins are untouched, so the printed output is unchanged for identical option values. The Development Workflow requires the margin check for layout changes; the options panel change is treated as one, so the check is run and recorded (T024).                                  |
+| III. Hand-Fillable Output                                            | PASS   | No change to the PDF.                                                                                                                                                                                                                                                                                                 |
+| IV. Responsive Options                                               | PASS   | A stepper tap or slider release dispatches the same `input` event as typing, so the preview updates immediately; a slider drag updates only the readout until release. Steppers clamp to limits, so they cannot create an invalid value. Typed invalid input still produces the existing message and blocks download. |
+| V. Scope Discipline                                                  | PASS   | Only the requested controls. No new option, persistence, or analytics.                                                                                                                                                                                                                                                |
+| Technical Constraints: Typst, US Letter, 100% scale, explicit limits | PASS   | Limits already defined in `LIMITS`; not changed.                                                                                                                                                                                                                                                                      |
+| Development Workflow: spec + checklist before planning               | PASS   | `checklists/requirements.md` passed on 2026-10-10.                                                                                                                                                                                                                                                                    |
 
 **Gate result**: PASS. No violations, so Complexity Tracking is not needed.
 

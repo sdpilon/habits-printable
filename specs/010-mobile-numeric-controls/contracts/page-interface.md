@@ -14,11 +14,11 @@ Everything in that contract stays as it is. The additions below are the only new
 
 ## New names
 
-| Name / selector | Element | Rule |
-| --- | --- | --- |
+| Name / selector                                                                    | Element              | Rule                                                                                                                                |
+| ---------------------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `#options button[data-stepper="<field>"][data-direction="increase" \| "decrease"]` | `button type=button` | One per integer field (`habits`, `days`, `perRow`), two per field. Has `aria-label`, e.g. `Increase habits`. Disabled at its limit. |
-| `#options input[type="range"][data-slider-for="<field>"]` | `input type=range` | One per mm field (`dotDiameterMm`, `dotSpacingMm`). Has no `name` attribute. Has `aria-label` equal to the field label. |
-| `#options output[data-readout-for="<field>"]` | `output` | One per mm field. Text equals the field's current text exactly, with no rounding. |
+| `#options input[type="range"][data-slider-for="<field>"]`                          | `input type=range`   | One per mm field (`dotDiameterMm`, `dotSpacingMm`). Has no `name` attribute. Has `aria-label` equal to the field label.             |
+| `#options output[data-readout-for="<field>"]`                                      | `output`             | One per mm field. Text equals the field's current text exactly, with no rounding.                                                   |
 
 ## Rules for future changes
 

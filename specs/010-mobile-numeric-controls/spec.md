@@ -8,7 +8,7 @@
 
 **Input**: User description: "Make the numeric options usable on phones. Habits, Days, and Dots per row get visible −/+ stepper buttons beside the field, with tap targets of at least 44px. The browser's native hover-only spinners are hidden for these fields. Steppers clamp to each field's min/max and disable at the limit. Dot diameter and Dot spacing (mm) get a slider with a live numeric readout, which stays in sync with the value. Typing a value directly still works for all five fields. Any change, from a stepper, slider, or typing, updates the form value and triggers the existing preview recompile. Controls get accessible labels (e.g. "Increase habits"). Desktop behavior is unchanged apart from the hidden spinners. Verify at a phone viewport that each control changes the value, respects limits, and updates the preview."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Adjust integer options with tap steppers (Priority: P1)
 
@@ -68,7 +68,7 @@ A person who wants an exact value can still type into any of the five fields dir
 - What happens on a desktop browser? The stepper buttons and sliders are present and work, but the native hover-only spinners are hidden on the five fields as well, so the controls look the same on both device classes.
 - What happens if the person holds a stepper button down? Holding is not required; each tap changes the value by one step. Repeat-on-hold is out of scope for this feature.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -91,7 +91,7 @@ A person who wants an exact value can still type into any of the five fields dir
 
 - **Numeric option**: One of the five fields (Habits, Days, Dots per row, Dot diameter, Dot spacing). Each has a current value, a minimum, a maximum, and a step size, all already defined by the existing options.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
