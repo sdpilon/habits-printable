@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791738078403,
+  "lastUpdate": 1791738206114,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1480,6 +1480,32 @@ window.BENCHMARK_DATA = {
             "value": 160.05901700000004,
             "unit": "ms",
             "extra": "branch: 010-mobile-numeric-controls"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "id": "c89088d9f72cff3d6ce7a155060966a45f31e397",
+          "message": "feat: phone-friendly numeric controls (steppers, sliders)",
+          "timestamp": "2026-10-10T03:50:30Z",
+          "url": "https://github.com/sdpilon/habits-printable/pull/11/commits/c89088d9f72cff3d6ce7a155060966a45f31e397"
+        },
+        "date": 1791738204137,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 178.9679779999999,
+            "unit": "ms",
+            "extra": "branch: 11/merge"
           }
         ]
       }
