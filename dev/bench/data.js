@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791757759927,
+  "lastUpdate": 1791757886543,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1566,6 +1566,32 @@ window.BENCHMARK_DATA = {
             "value": 13.547019999999975,
             "unit": "ms",
             "extra": "branch: 011-layout-shape-orientation-repeat"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "id": "33d0abfef458821f67895ee6f4830967dec22b5e",
+          "message": "Layout controls: Shape, Direction, Repeat",
+          "timestamp": "2026-10-11T17:11:32Z",
+          "url": "https://github.com/sdpilon/habits-printable/pull/12/commits/33d0abfef458821f67895ee6f4830967dec22b5e"
+        },
+        "date": 1791757884422,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 8.90259900000001,
+            "unit": "ms",
+            "extra": "branch: 12/merge"
           }
         ]
       }
