@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Printable Habit Grid</title>
-    <script type="module" crossorigin src="./assets/index-91qY4V5P.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-QjkFCJLr.css">
+    <script type="module" crossorigin src="./assets/index-C6wMqLYZ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B4iJGwfi.css">
   </head>
   <body>
     <main>
@@ -23,27 +23,87 @@
           </select>
         </label>
 
-        <div class="field-group">
-          <label
-            >Habits <input name="habits" type="number" min="1" max="20" step="1" value="5"
-          /></label>
-          <label
-            >Days <input name="days" type="number" min="1" max="365" step="1" value="31"
-          /></label>
-          <label
-            >Dots per row <input name="perRow" type="number" min="1" max="31" step="1" value="7"
-          /></label>
+        <div class="field-group numeric-field-group">
+          <div class="numeric-row">
+            <button type="button" data-stepper="habits" data-direction="decrease" aria-label="Decrease habits">
+              −
+            </button>
+            <label>Habits <input name="habits" type="number" min="1" max="20" step="1" value="5" /></label>
+            <button type="button" data-stepper="habits" data-direction="increase" aria-label="Increase habits">
+              +
+            </button>
+          </div>
+          <div class="numeric-row">
+            <button type="button" data-stepper="days" data-direction="decrease" aria-label="Decrease days">
+              −
+            </button>
+            <label>Days <input name="days" type="number" min="1" max="365" step="1" value="31" /></label>
+            <button type="button" data-stepper="days" data-direction="increase" aria-label="Increase days">
+              +
+            </button>
+          </div>
+          <div class="numeric-row">
+            <button
+              type="button"
+              data-stepper="perRow"
+              data-direction="decrease"
+              aria-label="Decrease dots per row"
+            >
+              −
+            </button>
+            <label
+              >Dots per row <input name="perRow" type="number" min="1" max="31" step="1" value="7"
+            /></label>
+            <button
+              type="button"
+              data-stepper="perRow"
+              data-direction="increase"
+              aria-label="Increase dots per row"
+            >
+              +
+            </button>
+          </div>
         </div>
 
         <div class="field-group">
-          <label
-            >Dot diameter (mm)
-            <input name="dotDiameterMm" type="number" min="2" max="5" step="0.1" value="4"
-          /></label>
-          <label
-            >Dot spacing (mm)
-            <input name="dotSpacingMm" type="number" min="0.5" max="5" step="0.1" value="1.5"
-          /></label>
+          <div class="slider-row">
+            <label
+              >Dot diameter (mm)
+              <input name="dotDiameterMm" type="number" min="2" max="5" step="0.1" value="4"
+            /></label>
+            <div class="readout-row">
+              <input
+                type="range"
+                data-slider-for="dotDiameterMm"
+                id="dotDiameterMm-slider"
+                min="2"
+                max="5"
+                step="0.1"
+                value="4"
+                aria-label="Dot diameter (mm)"
+              />
+              <output data-readout-for="dotDiameterMm" for="dotDiameterMm-slider">4</output>
+            </div>
+          </div>
+          <div class="slider-row">
+            <label
+              >Dot spacing (mm)
+              <input name="dotSpacingMm" type="number" min="0.5" max="5" step="0.1" value="1.5"
+            /></label>
+            <div class="readout-row">
+              <input
+                type="range"
+                data-slider-for="dotSpacingMm"
+                id="dotSpacingMm-slider"
+                min="0.5"
+                max="5"
+                step="0.1"
+                value="1.5"
+                aria-label="Dot spacing (mm)"
+              />
+              <output data-readout-for="dotSpacingMm" for="dotSpacingMm-slider">1.5</output>
+            </div>
+          </div>
         </div>
 
         <label
