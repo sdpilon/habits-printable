@@ -15,7 +15,7 @@ unchanged. Native spinners are hidden on the five fields. Limits and steps come 
 `LIMITS` table in `web/src/options.ts`, so the controls and the validator cannot disagree.
 
 Approach: static markup additions in `web/index.html`, styling in `web/src/style.css`, and a small
-behavior module `web/src/numeric-controls.ts` whose pure step/clamp/format logic is unit-tested.
+behavior module `web/src/numeric-controls.ts` whose pure step/clamp logic is unit-tested.
 No Typst, PDF, or validation-rule changes.
 
 ## Technical Context
@@ -95,7 +95,7 @@ specs/010-mobile-numeric-controls/
 web/
 ├── index.html               # MODIFIED: stepper buttons and slider+readout beside the five numeric fields
 ├── src/
-│   ├── numeric-controls.ts  # NEW: pure step/clamp/format helpers + DOM wiring for steppers and sliders
+│   ├── numeric-controls.ts  # NEW: pure step/clamp helpers + DOM wiring for steppers and sliders
 │   ├── main.ts              # MODIFIED: call the numeric-controls wiring once at startup
 │   ├── options.ts           # UNCHANGED: LIMITS remains the single source of min/max/step
 │   └── style.css            # MODIFIED: hide native spinners, stepper and slider layout, 44px tap targets

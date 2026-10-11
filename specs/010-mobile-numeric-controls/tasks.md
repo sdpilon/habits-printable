@@ -53,7 +53,7 @@
 
 ### Tests for User Story 1
 
-- [ ] T004 [US1] Create `tests/e2e/mobile-numeric-controls.spec.ts` with a phone-viewport (390×844, `hasTouch: true`) describe block covering: stepper increment changes the value and redraws the preview; "−" on Days stops at 1 with the button disabled; "+" on Dots per row stops at 31 with the button disabled; stepper from an empty Days field goes to 1 on "+" and 365 on "−"; each button has the accessible name `Increase habits` / `Decrease habits` (and the same pattern for Days and Dots per row) and each is at least 44×44 px
+- [ ] T004 [US1] Create `tests/e2e/mobile-numeric-controls.spec.ts` with a phone-viewport (390×844, `hasTouch: true`) describe block covering: stepper increment changes the value and redraws the preview; "−" on Habits stops at 1 with the button disabled; "+" on Habits stops at 20 with the button disabled; "−" on Days stops at 1 with the button disabled; "+" on Dots per row stops at 31 with the button disabled; stepper from an empty Days field goes to 1 on "+" and 365 on "−"; each button has the accessible name `Increase habits` / `Decrease habits` (and the same pattern for Days and Dots per row); each is at least 44×44 px; and each of the five fields has `appearance: none` (or the vendor-prefixed equivalent) computed on its spin-button pseudo-elements, confirming the native spinner is hidden
 
 ### Implementation for User Story 1
 
@@ -75,13 +75,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T010 [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element; each slider has the accessible name `Dot diameter (mm)` / `Dot spacing (mm)` (checked with `getByRole('slider', { name })`); and releasing a slider at its current value leaves `#preview-section` `aria-busy` as `"false"` in a read taken right after the release
+- [ ] T010 [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element; each slider has the accessible name `Dot diameter (mm)` / `Dot spacing (mm)` (checked with `getByRole('slider', { name })`); releasing a slider at its current value leaves `#preview-section` `aria-busy` as `"false"` in a read taken right after the release; and dragging either slider confirms the value only lands on 0.1 mm increments (e.g. never `4.05`)
 
 ### Implementation for User Story 2
 
 - [ ] T011 [US2] In `web/index.html`, add next to each of the `dotDiameterMm` and `dotSpacingMm` labels (outside the `<label>` element, for the same reason as T005) an `<input type="range">` with `min`, `max`, and `step` copied from the limits table above, `data-slider-for="<field>"`, `aria-label` equal to the visible label (`Dot diameter (mm)` / `Dot spacing (mm)`), and an `id` such as `dotDiameterMm-slider`. Add an `<output data-readout-for="<field>" for="<id>">` after it. The range input MUST NOT have a `name` attribute.
 - [ ] T012 [US2] In `web/src/style.css`, lay out each mm field as `[range] [readout]` on phones, with the range taking the remaining width and the readout a fixed width so the value does not shift as it changes. Keep the existing label font size.
-- [ ] T013 [US2] In `web/src/numeric-controls.ts`, add `initSliders(form: HTMLFormElement): void`. An `input` event on a range (fires during the drag) writes its value to the paired field (`data-slider-for`) and updates the readout, without dispatching. A `change` event on a range (fires on release) dispatches a bubbling `input` event on that field, but only if the field's text changed since the drag began (record it on `pointerdown`). A `input` event on a mm field sets the range to `sliderValueFor` from T002 (or leaves the range unchanged when the text is not a number) and updates the readout to the field's text.
+- [ ] T013 [US2] In `web/src/numeric-controls.ts`, add `initSliders(form: HTMLFormElement): void`. An `input` event on a range (fires during the drag) writes its value to the paired field (`data-slider-for`) and updates the readout, without dispatching. A `change` event on a range (fires on release) dispatches a bubbling `input` event on that field, but only if the field's text changed since the drag began (record it on `pointerdown`). An `input` event on a mm field sets the range to `sliderValueFor` from T002 — clamped to the nearest end for an out-of-range value, left unchanged when the text is not a number — and updates the readout to the field's text verbatim. Confirm no code in this function writes to a field on an `input` event that came from the field itself (no feedback loop).
 - [ ] T014 [US2] In `web/src/main.ts`, call `initSliders(form)` next to `initSteppers(form)` added in T009.
 
 **Checkpoint**: User Stories 1 and 2 both work independently. Sliders update the preview, and the e2e name-uniqueness assertion passes.
@@ -90,14 +90,14 @@
 
 ## Phase 5: User Story 3 - Type exact values into any field (Priority: P3)
 
-**Goal**: Typing still works on all five fields with the same validation, error messages, and download gating as before. Out-of-range typed values pin the slider and show the existing error.
+**Goal**: Typing still works on all five fields with the same validation, error messages, and download gating as before. Out-of-range typed values pin the slider and show the existing error (behavior implemented in T013; this phase locks it in with tests).
 
 **Independent Test**: Type `12` into Days and confirm the preview shows 12 days. Type `0` into Habits and confirm the error message appears and Download is disabled. Type `9` into Dot spacing and confirm the thumb pins to the right end, the readout shows `9`, and the error appears.
 
-### Implementation for User Story 3
+### Tests for User Story 3
 
-- [ ] T015 [US3] In `web/src/numeric-controls.ts`, make `initSliders` pin the range thumb to the nearest end for a typed out-of-range value (via `sliderValueFor`), and leave the readout showing the typed text. Confirm that no code in this file writes to a field on a `input` event that came from the field itself (no feedback loop).
-- [ ] T016 [US3] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for typing: `typeOption` (from `tests/e2e/support/page.ts`) into Days `12` updates the preview; `0` into Habits shows a `#messages li` error and `input[aria-invalid="true"]` on habits, and leaves Download disabled; `9` into Dot spacing shows an error and the range value is `5`; and the four existing typed-invalid cases in `tests/e2e/` still pass
+- [ ] T015 [P] [US3] Add a unit test to `tests/unit/numeric-controls.test.ts` confirming `sliderValueFor` clamps a typed out-of-range value to the nearest end (e.g. `9` for `dotSpacingMm` → `5`) and that the slider-sync code in T013 has no feedback loop (a programmatic field write does not re-trigger the range's own `input` handler).
+- [ ] T016 [US3] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for typing: `typeOption` (from `tests/e2e/support/page.ts`) into Days `12` updates the preview; `0` into Habits shows a `#messages li` error and `input[aria-invalid="true"]` on habits, and leaves Download disabled; `9` into Dot spacing shows an error and the range value is `5`; and the existing typed-invalid cases in `tests/e2e/` still pass
 
 **Checkpoint**: All three stories work independently and together. Validation is still owned by `validate()` in `web/src/options.ts`.
 
@@ -185,4 +185,3 @@ Task: "Verify contrast in light and dark (T021)"
 - Each user story can be checked at its checkpoint before moving on
 - Do not add a `name` attribute to any stepper button or slider (contract rule in `contracts/page-interface.md`)
 - Validation stays in `validate()` in `web/src/options.ts`; the new code must not duplicate it
-- Commit after each phase checkpoint, or as the speckit hooks require

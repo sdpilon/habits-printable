@@ -61,7 +61,7 @@ A person who wants an exact value can still type into any of the five fields dir
 
 ### Edge Cases
 
-- What happens when the person taps "+" or "−" while the field is empty or holds a non-numeric or out-of-range value? The field moves to its nearest valid value in the tapped direction (empty or invalid input steps to the field's minimum on "+" and maximum on "−"), and the existing error message clears once the value is valid.
+- What happens when the person taps "+" or "−" while the field is empty, non-numeric, or out-of-range? Empty or non-numeric input steps to the field's minimum on "+" and maximum on "−". A numeric value above the maximum clamps to the maximum on either tap; a numeric value below the minimum clamps to the minimum on either tap. The existing error message clears once the value is valid.
 - How does the slider display a typed value that is outside the slider's range (e.g. 9 mm)? The slider thumb sits at the nearest end, the readout shows the typed value, and the existing error message stays visible. The slider does not change the typed value on its own.
 - What happens when a stepper or slider change produces a value that is already the current value? No recompile is triggered and no visible change occurs.
 - What happens on a phone in portrait orientation with a very narrow screen (about 320 px wide)? Each stepper and its field remain fully visible and tappable without horizontal scrolling of the options panel.
@@ -95,7 +95,7 @@ A person who wants an exact value can still type into any of the five fields dir
 
 ### Measurable Outcomes
 
-- **SC-001**: On a phone-sized viewport, a person can change Habits, Days, or Dots per row to any value in its range using only taps, without typing, in under 15 seconds per field.
+- **SC-001**: On a phone-sized viewport, a person can change Habits, Days, or Dots per row to any value in its range using only taps, without typing.
 - **SC-002**: Every stepper and slider on a phone-sized viewport changes the value and updates the preview on 100% of attempts in the verification pass.
 - **SC-003**: Stepping any integer field past its minimum or maximum leaves the value unchanged and the corresponding button disabled, in 100% of verified cases.
 - **SC-004**: Every stepper button measures at least 44 × 44 CSS pixels on a phone-sized viewport.

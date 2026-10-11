@@ -38,8 +38,8 @@ so results are rounded with `Number(x.toFixed(decimals))`, where `decimals` is 0
 fields and 1 for mm fields.
 
 **Alternatives considered**: Calling `stepUp()`/`stepDown()` on the input (rejected: those do not
-dispatch `input` in every browser the same way, and they respect the browser's step base, which is
-fragile for a `min=0.5` field with `step=0.1`; they also throw on fields that are invalid).
+dispatch an `input` event, so nothing downstream would react; they also respect the browser's step
+base, which is fragile for a `min=0.5` field with `step=0.1`).
 
 ## 3. Slider sync and the no-`name` rule
 
