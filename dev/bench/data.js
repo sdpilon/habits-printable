@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791738206114,
+  "lastUpdate": 1791738607792,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1506,6 +1506,36 @@ window.BENCHMARK_DATA = {
             "value": 178.9679779999999,
             "unit": "ms",
             "extra": "branch: 11/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33335453+sdpilon@users.noreply.github.com",
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "17c3d198ffb7b2d8e5cd381d7e36097503334a35",
+          "message": "feat: phone-friendly numeric controls (steppers, sliders) (#11)\n\n* docs(spec): add phone-friendly numeric controls spec\n\n* docs(plan): add phone-friendly numeric controls plan\n\n* docs(tasks): add phone-friendly numeric controls task list\n\n* docs(tasks): drop [P] from e2e tasks that share a file\n\n* docs(spec): resolve analysis findings for numeric controls\n\n* docs(spec): resolve remaining analysis findings\n\n* feat: phone-friendly numeric controls (steppers, sliders)\n\n* fix(web): keep desktop stepper and slider layouts from overflowing",
+          "timestamp": "2026-10-11T11:09:30-06:00",
+          "tree_id": "73d363504de138947d76fb7e45b6e494e18b0ead",
+          "url": "https://github.com/sdpilon/habits-printable/commit/17c3d198ffb7b2d8e5cd381d7e36097503334a35"
+        },
+        "date": 1791738606532,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 178.23445199999992,
+            "unit": "ms",
+            "extra": "branch: main"
           }
         ]
       }
