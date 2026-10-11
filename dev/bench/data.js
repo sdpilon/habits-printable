@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791738607792,
+  "lastUpdate": 1791757759927,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1536,6 +1536,36 @@ window.BENCHMARK_DATA = {
             "value": 178.23445199999992,
             "unit": "ms",
             "extra": "branch: main"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "33d0abfef458821f67895ee6f4830967dec22b5e",
+          "message": "fix(layout): lock dots-per-row to calendar shape only, cap mobile options height\n\n\"Dots per row\" now only applies to Shape=Calendar; a Line is always a\nsingle unbroken line (Rows) or group (Columns, sized from days/habits,\nor computed to fit the page width for side-by-side tiling). Also caps\nthe options form at half the mobile viewport instead of letting it push\nthe preview down to a sliver.\n\nAlong the way, fixes two bugs: the `hidden` attribute was silently\noverridden by other display rules on the same elements (so Direction\nand Dots-per-row were never actually hidden despite the DOM property\nreading true), and `main`'s desktop `align-items: start` meant the\nmobile height cap had nothing to constrain against.",
+          "timestamp": "2026-10-11T16:28:49-06:00",
+          "tree_id": "4b6d4864b4cbb85fbcf6000ce76001615de9e0e7",
+          "url": "https://github.com/sdpilon/habits-printable/commit/33d0abfef458821f67895ee6f4830967dec22b5e"
+        },
+        "date": 1791757758711,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 13.547019999999975,
+            "unit": "ms",
+            "extra": "branch: 011-layout-shape-orientation-repeat"
           }
         ]
       }
