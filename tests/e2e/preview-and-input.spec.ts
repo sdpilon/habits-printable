@@ -18,10 +18,13 @@ const changes: {
   option: OptionName;
   value: string;
   counts?: { habits: string; days: string };
+  // Extra option(s) to set before capturing the "before" hash — used only for perRow, which is
+  // hidden and has no effect under the default Shape=Line (it only matters for Shape=Calendar).
+  setup?: { option: OptionName; value: string }[];
 }[] = [
   { option: 'habits', value: '4', counts: { habits: '4', days: '31' } },
   { option: 'days', value: '14', counts: { habits: '5', days: '14' } },
-  { option: 'perRow', value: '10' },
+  { option: 'perRow', value: '10', setup: [{ option: 'shape', value: 'calendar' }] },
   { option: 'dotDiameterMm', value: '3' },
   { option: 'dotSpacingMm', value: '2' },
   { option: 'direction', value: 'columns' },
@@ -33,6 +36,9 @@ test.describe('US2: preview and input', () => {
       await test.step('open page with defaults and wait for preview', async () => {
         await openPage(page);
         await resetDefaults(page);
+        if (change.setup) {
+          for (const s of change.setup) await setOption(page, s.option, s.value);
+        }
         await waitForSettled(page);
       });
       const before = await readCanvasHash(page);

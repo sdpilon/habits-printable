@@ -63,6 +63,8 @@ test.describe('US1: integer steppers', () => {
   });
 
   test('increasing Dots per row to its maximum disables the increase button', async ({ page }) => {
+    // Dots per row is only visible for Shape=Calendar (FR: a Line is always one unbroken line).
+    await setOption(page, 'shape', 'calendar');
     await setOption(page, 'perRow', '31');
     await waitForSettled(page);
     const increase = page.locator('[data-stepper="perRow"][data-direction="increase"]');
@@ -82,6 +84,9 @@ test.describe('US1: integer steppers', () => {
   });
 
   test('each stepper button has an accessible name and a 44×44 tap target', async ({ page }) => {
+    // Dots per row is only visible for Shape=Calendar (FR: a Line is always one unbroken line).
+    await setOption(page, 'shape', 'calendar');
+    await waitForSettled(page);
     for (const [field, label] of [
       ['habits', 'habits'],
       ['days', 'days'],

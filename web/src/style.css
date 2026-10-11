@@ -44,6 +44,15 @@ label {
   font-size: 0.9rem;
 }
 
+/* The browser's own [hidden] UA rule (display: none) is a normal-weight author-origin loser
+   against any other display declaration on the same element (label's own `display: grid` above,
+   .numeric-row's `display: flex` below) — so a plain `hidden` attribute alone silently fails to
+   hide these two fields without an author-origin override of at least equal specificity. */
+#direction-field[hidden],
+#per-row-field[hidden] {
+  display: none;
+}
+
 .field-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
@@ -240,8 +249,20 @@ button:disabled {
 @media (max-width: 720px) {
   main {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    /* Both rows get an equal half of the viewport as a cap; the options form scrolls
+       internally past that instead of pushing the preview down to a sliver. */
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     padding: 1rem;
+    /* Desktop's align-items: start (above) lets the sidebar hug the top instead of stretching to
+       match the preview's height. On mobile that leaves #options with no actual height to scroll
+       within, so overflow-y: auto below never engages and tall content spills into the preview
+       row instead of stopping at it. Stretch both rows to their 50% track height instead. */
+    align-items: stretch;
+  }
+
+  #options {
+    min-height: 0;
+    overflow-y: auto;
   }
 
   /* Pre-existing feature-006 behavior: the mm-slider field-group's own multi-column grid

@@ -5,17 +5,17 @@ Supersedes the `layout` field described in `specs/001-printable-habit-grid/data-
 
 ## TrackerOptions
 
-| Field           | Type                            | Default  | Rule                                                               | Source         |
-| --------------- | ------------------------------- | -------- | ------------------------------------------------------------------ | -------------- |
-| `shape`         | enum: `line`, `calendar`        | `line`   | One of the two shapes                                              | FR-001         |
-| `direction`     | enum: `rows`, `columns`         | `rows`   | Ignored/not applicable when `shape` is `calendar` (FR-003)         | FR-002         |
-| `repeat`        | enum: `stacked`, `side-by-side` | derived  | Default depends on `shape`/`direction` (see Repeat defaults below) | FR-004, FR-005 |
-| `habits`        | integer                         | 5        | 1 ≤ habits ≤ 20 (unchanged)                                        | existing       |
-| `days`          | integer                         | 31       | 1 ≤ days ≤ 365 (unchanged)                                         | existing       |
-| `perRow`        | integer                         | 7        | 1 ≤ perRow ≤ 31 (unchanged; meaning is unaffected by this feature) | existing       |
-| `dotDiameterMm` | number                          | 4        | 2 ≤ value ≤ 5 (unchanged)                                          | existing       |
-| `dotSpacingMm`  | number                          | 1.5      | 0.5 ≤ value ≤ 5 (unchanged)                                        | existing       |
-| `paper`         | enum: `letter`                  | `letter` | US Letter only (unchanged, constitution Technical Constraints)     | existing       |
+| Field           | Type                            | Default  | Rule                                                                                                                                                                                                                                                                                                                          | Source          |
+| --------------- | ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `shape`         | enum: `line`, `calendar`        | `line`   | One of the two shapes                                                                                                                                                                                                                                                                                                         | FR-001          |
+| `direction`     | enum: `rows`, `columns`         | `rows`   | Ignored/not applicable when `shape` is `calendar` (FR-003)                                                                                                                                                                                                                                                                    | FR-002          |
+| `repeat`        | enum: `stacked`, `side-by-side` | derived  | Default depends on `shape`/`direction` (see Repeat defaults below)                                                                                                                                                                                                                                                            | FR-004, FR-005  |
+| `habits`        | integer                         | 5        | 1 ≤ habits ≤ 20 (unchanged)                                                                                                                                                                                                                                                                                                   | existing        |
+| `days`          | integer                         | 31       | 1 ≤ days ≤ 365 (unchanged)                                                                                                                                                                                                                                                                                                    | existing        |
+| `perRow`        | integer                         | 7        | 1 ≤ perRow ≤ 31. **Used only when `shape` is `calendar`** (FR-014–FR-017) — for `shape: line`, a habit is always one unbroken line/group derived from `days`/`habits`, and the "Dots per row" control is hidden; the stored value is ignored (not cleared) while hidden, same pattern as `direction` under `shape: calendar`. | existing/FR-014 |
+| `dotDiameterMm` | number                          | 4        | 2 ≤ value ≤ 5 (unchanged)                                                                                                                                                                                                                                                                                                     | existing        |
+| `dotSpacingMm`  | number                          | 1.5      | 0.5 ≤ value ≤ 5 (unchanged)                                                                                                                                                                                                                                                                                                   | existing        |
+| `paper`         | enum: `letter`                  | `letter` | US Letter only (unchanged, constitution Technical Constraints)                                                                                                                                                                                                                                                                | existing        |
 
 `layout` is removed from `TrackerOptions`. `LAYOUTS` is removed from `options.ts`'s exports; `SHAPES`,
 `DIRECTIONS`, and `REPEATS` readonly arrays replace it for validation, mirroring the existing
@@ -42,17 +42,17 @@ every reachable Shape/Direction/Repeat combination, not shrunk or paginated.
 One habit's own section of the tracker (before Repeat decides how multiple HabitBlocks are
 arranged). Its shape depends on `shape` and `direction`:
 
-| `shape`    | `direction` | Habit is        | Dots per line/row set by                       | Label sits         |
-| ---------- | ----------- | --------------- | ---------------------------------------------- | ------------------ |
-| `line`     | `rows`      | a row           | `perRow` dots per habit row, wrapping in order | left of the row    |
-| `line`     | `columns`   | a column        | `perRow` habits per row group                  | above the column   |
-| `calendar` | _(n/a)_     | a mini calendar | `perRow` dots per calendar row                 | above the calendar |
+| `shape`    | `direction` | Habit is        | Dots per line/row set by                                                                                                          | Label sits         |
+| ---------- | ----------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `line`     | `rows`      | a row           | `days` — always one unbroken line, never wrapped (FR-015)                                                                         | left of the row    |
+| `line`     | `columns`   | a column        | `habits` (Repeat=Stacked, one unbroken group) or a computed page-width fit (Repeat=Side-by-side) — never `perRow` (FR-016/FR-017) | above the column   |
+| `calendar` | _(n/a)_     | a mini calendar | `perRow`, the shape's own user-chosen wrap width                                                                                  | above the calendar |
 
-`line`+`rows` and `calendar` use the identical block shape (confirmed in research.md: today's
-`row-habit` and `calendar-block` Typst functions are byte-identical). This feature collapses them
-into one shared block builder; `shape` no longer selects a distinct rendering path, only a UI
-default/label (e.g. "dots per row" vs. "calendar row width" framing) — the geometry is governed
-entirely by `direction` and `perRow`.
+`line`+`rows` and `calendar` use the identical block _builder_ (confirmed in research.md: today's
+`row-habit` and `calendar-block` Typst functions are byte-identical) — `shape` doesn't select a
+distinct rendering function, only which value feeds that builder's wrap width: `days` (always, for
+`line`) or the user's `perRow` (for `calendar`). Column grouping is similarly derived rather than
+user-set for `line` (FR-016/FR-017).
 
 All block kinds hold the same ordered sequence of `days` dots, one per day.
 

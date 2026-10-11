@@ -11,6 +11,7 @@ const shapeSelect = document.querySelector<HTMLSelectElement>('[name="shape"]')!
 const directionSelect = document.querySelector<HTMLSelectElement>('[name="direction"]')!;
 const directionField = document.querySelector<HTMLElement>('#direction-field')!;
 const repeatSelect = document.querySelector<HTMLSelectElement>('[name="repeat"]')!;
+const perRowField = document.querySelector<HTMLElement>('#per-row-field')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
 const warning = document.querySelector<HTMLParagraphElement>('#warning')!;
 const messages = document.querySelector<HTMLUListElement>('#messages')!;
@@ -174,6 +175,10 @@ directionSelect.addEventListener('input', () => {
 });
 
 shapeSelect.addEventListener('input', () => {
+  // "Dots per row" only has meaning for Calendar's own arbitrary wrap width; a Line is always a
+  // single unbroken line/column (Days and Habits are the only counts that matter), so the field
+  // is hidden rather than left changeable with no visible effect.
+  perRowField.hidden = shapeSelect.value !== 'calendar';
   if (shapeSelect.value === 'calendar') {
     // Direction has no effect while Calendar is selected (FR-003); hidden, not just ignored.
     directionField.hidden = true;

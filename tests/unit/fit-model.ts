@@ -45,8 +45,11 @@ export function predictFits(o: TrackerOptions): boolean {
   let height: number;
 
   if (effectiveDirection === 'rows') {
-    const lines = Math.ceil(o.days / o.perRow);
-    const blockW = o.perRow * pitch;
+    // A "line" is always one unbroken line (locked to days); only "calendar" wraps at its own
+    // chosen width (o.perRow). perRow is otherwise unused for shape "line".
+    const linePerRow = o.shape === 'calendar' ? o.perRow : o.days;
+    const lines = Math.ceil(o.days / linePerRow);
+    const blockW = linePerRow * pitch;
     const blockH = LABEL_H_MM + lines * lineH;
     width = blockW;
     if (o.repeat === 'side-by-side') {
@@ -57,13 +60,18 @@ export function predictFits(o: TrackerOptions): boolean {
       height = o.habits * blockH + (o.habits - 1) * GAP_MM;
     }
   } else {
-    const groupCount = Math.ceil(o.habits / o.perRow);
+    // "stacked": one single unbroken group of every habit (no artificial grouping — too wide is
+    // an overflow, not an auto-wrap). "side-by-side": the largest group that still fits the page
+    // width, so multiple such groups can tile and wrap — computed, never a user-chosen number.
+    const groupSize =
+      o.repeat === 'stacked' ? o.habits : Math.max(1, Math.floor((area.w - NUM_W_MM) / pitch));
+    const groupCount = Math.ceil(o.habits / groupSize);
     const groupWidths = Array.from(
       { length: groupCount },
-      (_, g) => NUM_W_MM + Math.min(o.perRow, o.habits - g * o.perRow) * pitch,
+      (_, g) => NUM_W_MM + Math.min(groupSize, o.habits - g * groupSize) * pitch,
     );
     const groupH = LABEL_COL_H_MM + o.days * pitch;
-    width = NUM_W_MM + Math.min(o.habits, o.perRow) * pitch;
+    width = NUM_W_MM + Math.min(o.habits, groupSize) * pitch;
     if (o.repeat === 'side-by-side') {
       const rows = packSideBySide(groupWidths, area.w);
       height = rows * groupH + (rows - 1) * GAP_MM;

@@ -12,6 +12,9 @@
 // Shape has no distinct rendering path of its own (research.md): a "calendar" is structurally
 // identical to a "line" shape wrapping in the rows direction. Shape only selects this default.
 #let effective-direction = if shape-kind == "calendar" { "rows" } else { direction-kind }
+// A "line" is always a single unbroken line or column; only "calendar" wraps at a chosen width
+// (its own arbitrary row width, e.g. 5 for weekdays-only). perRow (below) is read but only used
+// when shape-kind is "calendar" — a line's per-row/per-group size is always derived, never input.
 #let habits = int-in("habits", 5)
 #let days = int-in("days", 31)
 #let per-row = int-in("perRow", 7)
@@ -69,20 +72,25 @@
   ..range(first, last + 1).map(d => dot-cell(d)),
 )
 
-// Line shape, rows direction: one habit per block, dots wrap at per-row, label strip above the
-// dots. Used for every "rows"-direction combination, including shape "calendar" (research.md:
-// a calendar block is structurally identical to this; shape only changes the default repeat).
+// The per-row width actually used for rows-direction wrapping: a line's own chosen width for
+// "calendar" shape, or the full day count (no wrap at all — one unbroken line) for "line" shape.
+#let line-per-row = if shape-kind == "calendar" { per-row } else { days }
+
+// Line shape, rows direction: one habit per block, dots wrap at line-per-row, label strip above
+// the dots. Used for every "rows"-direction combination, including shape "calendar" (research.md:
+// a calendar block is structurally identical to this; shape only changes line-per-row's source
+// and the default repeat).
 #let row-habit = {
-  let nlines = calc.ceil(days / per-row)
+  let nlines = calc.ceil(days / line-per-row)
   let lines = range(nlines).map(i => dot-line(
-    i * per-row + 1,
-    calc.min((i + 1) * per-row, days),
+    i * line-per-row + 1,
+    calc.min((i + 1) * line-per-row, days),
   ))
   stack(
     dir: ttb,
     spacing: 0pt,
-    box(width: per-row * pitch, height: label-h)[
-      #place(bottom, writing-line(per-row * pitch))
+    box(width: line-per-row * pitch, height: label-h)[
+      #place(bottom, writing-line(line-per-row * pitch))
     ],
     ..lines,
   )
@@ -141,12 +149,23 @@
   stack(dir: ttb, spacing: gap, ..blocks)
 }
 
+// The habit-column count actually used per group: for "stacked", one single unbroken group of
+// every habit (no artificial grouping; too-wide is an overflow, not an auto-wrap); for
+// "side-by-side", the largest group that still fits the page width, so multiple such groups can
+// tile and wrap (spec: "any shape chosen repeats in the direction chosen and wraps around if
+// there's room" — the grouping width is computed, never a user-chosen number, for line shape).
+#let columns-group-size = if repeat-kind == "stacked" {
+  habits
+} else {
+  calc.max(1, calc.floor((usable-w - num-w) / pitch))
+}
+
 // Fit check on width (height overflow is caught by Typst's own pagination). Only a single
 // block/group needs to fit — side-by-side packing above wraps within usable-w by construction.
 #let fits-w = if effective-direction == "columns" {
-  num-w + calc.min(habits, per-row) * pitch <= usable-w
+  num-w + calc.min(habits, columns-group-size) * pitch <= usable-w
 } else {
-  per-row * pitch <= usable-w
+  line-per-row * pitch <= usable-w
 }
 
 // Optional page title (FR-001/FR-002): rendered once, ahead of any layout's grid content, only
@@ -163,13 +182,16 @@
   pagebreak()
   [Overflow: the grid is too wide for one page.]
 } else if effective-direction == "columns" {
-  let group-count = calc.ceil(habits / per-row)
-  let group-sizes = range(group-count).map(g => calc.min(per-row, habits - g * per-row))
+  let group-count = calc.ceil(habits / columns-group-size)
+  let group-sizes = range(group-count).map(g => calc.min(
+    columns-group-size,
+    habits - g * columns-group-size,
+  ))
   let widths = group-sizes.map(n => num-w + n * pitch)
   let blocks = group-sizes.map(n => column-group(n))
   tile-blocks(widths, blocks)
 } else {
-  let widths = range(habits).map(_ => per-row * pitch)
+  let widths = range(habits).map(_ => line-per-row * pitch)
   let blocks = range(habits).map(_ => row-habit)
   tile-blocks(widths, blocks)
 }
