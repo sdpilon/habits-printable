@@ -8,7 +8,7 @@
 
 **Input**: User description: "Model: Shape (per-habit): line or calendar. Orientation (only meaningful for line): horizontal (= today's "rows") or vertical (= today's "columns"). Calendar has no orientation control — exposing it would be confusing with no real use case, so it's fixed. Repeat direction (how multiple habit-shapes tile across the page): horizontal or vertical, available for every shape, with a sensible default per combo: line+horizontal → repeat vertical (today's only "rows" behavior); line+vertical → repeat horizontal (today's only "columns" behavior); calendar → repeat horizontal (today's only "calendars" behavior); the non-default repeat option becomes available for all three, which is what generalizes "calendars'" grid-tiling to also work for rows and columns — directly resolving the asymmetry, as a user choice rather than a hardcode. days and perRow keep their current meaning. UI controls: 1. "Shape": Line / Calendar. 2. "Direction" (shown only when Shape = Line): Rows / Columns. 3. "Repeat": Stacked / Side-by-side — defaults change based on (1)+(2), user can override. Data model (options.ts): replace layout: 'rows'|'columns'|'calendars' with shape: 'line'|'calendar', orientation: 'horizontal'|'vertical' (ignored/hidden when shape=calendar), repeat: 'horizontal'|'vertical'. Typst template: generalize the page-level packing currently only implemented for calendar blocks into one shared tiling function parameterized by repeat direction, used by all three shape/orientation combos instead of calendars being special-cased."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Understand what each layout control actually does (Priority: P1)
 
@@ -64,7 +64,7 @@ A user choosing the Calendar shape wants to set "dots per row" to control the ca
 - What happens to a previously saved or shared configuration that used the old single "layout" value (rows/columns/calendars)? Each old value must map to one specific Shape+Direction+Repeat combination so the rendered output for that configuration is unchanged by default.
 - What happens when Repeat is set to Side-by-side but the page is too narrow to fit even two blocks side-by-side? The layout falls back to a single column of blocks (equivalent to Stacked), consistent with how calendar tiling already degrades today.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -84,7 +84,7 @@ A user choosing the Calendar shape wants to set "dots per row" to control the ca
 
 - **Layout Configuration**: The per-habit-tracker settings that determine page layout: Shape (Line or Calendar), Direction (Rows or Columns; applicable only to Line), Repeat (Stacked or Side-by-side), total days, and dots-per-row. Shape and Direction together determine how a single habit's dots are arranged; Repeat determines how multiple habits' shapes are arranged relative to each other on the page.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -17,30 +17,59 @@ export function usableArea(paper: TrackerOptions['paper']): { w: number; h: numb
   return { w: pageW - 2 * MARGIN_MM, h: pageH - 2 * MARGIN_MM };
 }
 
+// Number of page-rows needed to pack a list of block widths left-to-right with wraparound,
+// mirroring typst/tracker.typ's tile-blocks greedy packing (data-model.md Fit rules).
+function packSideBySide(widths: number[], areaW: number): number {
+  let pageRows = 1;
+  let currentW = widths[0] ?? 0;
+  for (let i = 1; i < widths.length; i++) {
+    const w = widths[i];
+    if (currentW + GAP_MM + w <= areaW) {
+      currentW += GAP_MM + w;
+    } else {
+      pageRows++;
+      currentW = w;
+    }
+  }
+  return pageRows;
+}
+
 // True when the layout fits on one page, using the formulas in data-model.md.
 export function predictFits(o: TrackerOptions): boolean {
   const pitch = o.dotDiameterMm + o.dotSpacingMm;
   const lineH = pitch + NUM_GAP_ABOVE_MM + NUM_TEXT_H_MM + NUM_GAP_BELOW_MM;
   const area = usableArea(o.paper);
   const headerH = o.title === '' ? 0 : HEADER_H_MM + GAP_MM;
+  const effectiveDirection = o.shape === 'calendar' ? 'rows' : o.direction;
   let width: number;
   let height: number;
 
-  if (o.layout === 'rows') {
+  if (effectiveDirection === 'rows') {
     const lines = Math.ceil(o.days / o.perRow);
-    width = o.perRow * pitch;
-    height = o.habits * (LABEL_H_MM + lines * lineH) + (o.habits - 1) * GAP_MM;
-  } else if (o.layout === 'columns') {
-    const groups = Math.ceil(o.habits / o.perRow);
-    width = NUM_W_MM + Math.min(o.habits, o.perRow) * pitch;
-    height = groups * (LABEL_COL_H_MM + o.days * pitch) + (groups - 1) * GAP_MM;
-  } else {
     const blockW = o.perRow * pitch;
-    const blockH = LABEL_H_MM + Math.ceil(o.days / o.perRow) * lineH;
-    const blocksPerRow = Math.max(1, Math.floor((area.w + GAP_MM) / (blockW + GAP_MM)));
-    const rows = Math.ceil(o.habits / blocksPerRow);
+    const blockH = LABEL_H_MM + lines * lineH;
     width = blockW;
-    height = rows * blockH + (rows - 1) * GAP_MM;
+    if (o.repeat === 'side-by-side') {
+      const widths = Array.from({ length: o.habits }, () => blockW);
+      const rows = packSideBySide(widths, area.w);
+      height = rows * blockH + (rows - 1) * GAP_MM;
+    } else {
+      height = o.habits * blockH + (o.habits - 1) * GAP_MM;
+    }
+  } else {
+    const groupCount = Math.ceil(o.habits / o.perRow);
+    const groupWidths = Array.from(
+      { length: groupCount },
+      (_, g) => NUM_W_MM + Math.min(o.perRow, o.habits - g * o.perRow) * pitch,
+    );
+    const groupH = LABEL_COL_H_MM + o.days * pitch;
+    width = NUM_W_MM + Math.min(o.habits, o.perRow) * pitch;
+    if (o.repeat === 'side-by-side') {
+      const rows = packSideBySide(groupWidths, area.w);
+      height = rows * groupH + (rows - 1) * GAP_MM;
+    } else {
+      height = groupCount * groupH + (groupCount - 1) * GAP_MM;
+    }
   }
 
   return width <= area.w && height <= area.h - headerH;

@@ -32,7 +32,7 @@ Replace the single `layout: 'rows' | 'columns' | 'calendars'` option with three 
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - **I. Single Layout Source** — PASS. The new `shape`/`direction`/`repeat` values are passed through as additional `sys.inputs` strings, same as today's `layout`; all geometry/wrapping/tiling logic stays in `typst/tracker.typ`. No layout computation moves into TypeScript.
 - **II. Preview Equals Print** — PASS. Preview and export remain the same compiled PDF; unaffected by this change. The printable-margin check (`tests/comparison/margins.ts`) MUST be re-run and MUST pass for both existing and newly-reachable Shape/Direction/Repeat combinations (notably Columns+Side-by-side, Rows+Side-by-side, Calendar+Stacked) before this feature is accepted.

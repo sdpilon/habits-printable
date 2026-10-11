@@ -24,7 +24,7 @@ const changes: {
   { option: 'perRow', value: '10' },
   { option: 'dotDiameterMm', value: '3' },
   { option: 'dotSpacingMm', value: '2' },
-  { option: 'layout', value: 'columns' },
+  { option: 'direction', value: 'columns' },
 ];
 
 test.describe('US2: preview and input', () => {

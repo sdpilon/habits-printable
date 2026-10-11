@@ -14,11 +14,26 @@
         <label>Title <input name="title" type="text" maxlength="200" /></label>
 
         <label
-          >Layout
-          <select name="layout">
-            <option value="rows" selected>One row per habit</option>
-            <option value="columns">Habits as columns</option>
-            <option value="calendars">One mini calendar per habit</option>
+          >Shape
+          <select name="shape">
+            <option value="line" selected>Line</option>
+            <option value="calendar">Calendar</option>
+          </select>
+        </label>
+
+        <label id="direction-field"
+          >Direction
+          <select name="direction">
+            <option value="rows" selected>Rows</option>
+            <option value="columns">Columns</option>
+          </select>
+        </label>
+
+        <label
+          >Repeat
+          <select name="repeat">
+            <option value="stacked" selected>Stacked</option>
+            <option value="side-by-side">Side-by-side</option>
           </select>
         </label>
 

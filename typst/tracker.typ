@@ -6,7 +6,12 @@
 #let num-in(key, default) = float(inp(key, str(default)))
 #let int-in(key, default) = int(float(inp(key, str(default))))
 
-#let layout-kind = inp("layout", "rows")
+#let shape-kind = inp("shape", "line")
+#let direction-kind = inp("direction", "rows")
+#let repeat-kind = inp("repeat", "stacked")
+// Shape has no distinct rendering path of its own (research.md): a "calendar" is structurally
+// identical to a "line" shape wrapping in the rows direction. Shape only selects this default.
+#let effective-direction = if shape-kind == "calendar" { "rows" } else { direction-kind }
 #let habits = int-in("habits", 5)
 #let days = int-in("days", 31)
 #let per-row = int-in("perRow", 7)
@@ -64,8 +69,9 @@
   ..range(first, last + 1).map(d => dot-cell(d)),
 )
 
-// Layout rows: one habit per block, dots wrap at per-row, label strip above the dots
-// (the same shape calendar-block uses; data-model.md).
+// Line shape, rows direction: one habit per block, dots wrap at per-row, label strip above the
+// dots. Used for every "rows"-direction combination, including shape "calendar" (research.md:
+// a calendar block is structurally identical to this; shape only changes the default repeat).
 #let row-habit = {
   let nlines = calc.ceil(days / per-row)
   let lines = range(nlines).map(i => dot-line(
@@ -107,28 +113,38 @@
   stack(dir: ttb, spacing: 0pt, header, ..rows)
 }
 
-// Layout calendars: one mini calendar per habit, per-row dots per calendar row.
-#let calendar-block = {
-  let nlines = calc.ceil(days / per-row)
-  let lines = range(nlines).map(i => dot-line(
-    i * per-row + 1,
-    calc.min((i + 1) * per-row, days),
-  ))
-  stack(
-    dir: ttb,
-    spacing: 0pt,
-    box(width: per-row * pitch, height: label-h)[
-      #place(bottom, writing-line(per-row * pitch))
-    ],
-    ..lines,
-  )
+// Arranges a list of blocks, each paired with its own width, either stacked top-to-bottom
+// (repeat-kind "stacked") or tiled left-to-right with wraparound (repeat-kind "side-by-side").
+// Packs by each block's actual width rather than a fixed per-row count, so a narrower trailing
+// column-group (habits not a multiple of per-row) still packs correctly (research.md: one shared
+// tiling function, generalizing the grid math that used to be hardcoded to "calendars" only).
+#let tile-blocks(widths, blocks) = if repeat-kind == "side-by-side" {
+  let row-groups = ()
+  let current = ()
+  let current-w = 0mm
+  for i in range(blocks.len()) {
+    let w = widths.at(i)
+    let b = blocks.at(i)
+    let needed = if current.len() == 0 { w } else { current-w + gap + w }
+    if current.len() > 0 and needed > usable-w {
+      row-groups.push(current)
+      current = (b,)
+      current-w = w
+    } else {
+      current.push(b)
+      current-w = needed
+    }
+  }
+  if current.len() > 0 { row-groups.push(current) }
+  stack(dir: ttb, spacing: gap, ..row-groups.map(row => stack(dir: ltr, spacing: gap, ..row)))
+} else {
+  stack(dir: ttb, spacing: gap, ..blocks)
 }
 
-// Fit checks on width (height overflow is caught by Typst's own pagination).
-#let fits-w = if layout-kind == "columns" {
+// Fit check on width (height overflow is caught by Typst's own pagination). Only a single
+// block/group needs to fit — side-by-side packing above wraps within usable-w by construction.
+#let fits-w = if effective-direction == "columns" {
   num-w + calc.min(habits, per-row) * pitch <= usable-w
-} else if layout-kind == "calendars" {
-  per-row * pitch <= usable-w
 } else {
   per-row * pitch <= usable-w
 }
@@ -146,19 +162,14 @@
   [Overflow: the grid is too wide for one page.]
   pagebreak()
   [Overflow: the grid is too wide for one page.]
-} else if layout-kind == "columns" {
-  let groups = range(calc.ceil(habits / per-row)).map(g => column-group(
-    calc.min(per-row, habits - g * per-row),
-  ))
-  stack(dir: ttb, spacing: gap, ..groups)
-} else if layout-kind == "calendars" {
-  let per-page-row = calc.max(1, calc.floor((usable-w + gap) / (per-row * pitch + gap)))
-  let rows = range(calc.ceil(habits / per-page-row)).map(r => stack(
-    dir: ltr,
-    spacing: gap,
-    ..range(r * per-page-row, calc.min((r + 1) * per-page-row, habits)).map(_ => calendar-block),
-  ))
-  stack(dir: ttb, spacing: gap, ..rows)
+} else if effective-direction == "columns" {
+  let group-count = calc.ceil(habits / per-row)
+  let group-sizes = range(group-count).map(g => calc.min(per-row, habits - g * per-row))
+  let widths = group-sizes.map(n => num-w + n * pitch)
+  let blocks = group-sizes.map(n => column-group(n))
+  tile-blocks(widths, blocks)
 } else {
-  stack(dir: ttb, spacing: gap, ..range(habits).map(_ => row-habit))
+  let widths = range(habits).map(_ => per-row * pitch)
+  let blocks = range(habits).map(_ => row-habit)
+  tile-blocks(widths, blocks)
 }

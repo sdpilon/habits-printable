@@ -7,6 +7,10 @@ import { debugLog } from './debug-overlay.ts';
 import { initSliders, initSteppers } from './numeric-controls.ts';
 
 const form = document.querySelector<HTMLFormElement>('#options')!;
+const shapeSelect = document.querySelector<HTMLSelectElement>('[name="shape"]')!;
+const directionSelect = document.querySelector<HTMLSelectElement>('[name="direction"]')!;
+const directionField = document.querySelector<HTMLElement>('#direction-field')!;
+const repeatSelect = document.querySelector<HTMLSelectElement>('[name="repeat"]')!;
 const preview = document.querySelector<HTMLDivElement>('#preview')!;
 const warning = document.querySelector<HTMLParagraphElement>('#warning')!;
 const messages = document.querySelector<HTMLUListElement>('#messages')!;
@@ -51,7 +55,9 @@ function readForm(): RawOptions {
   const value = (name: Field) =>
     (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement).value;
   return {
-    layout: value('layout'),
+    shape: value('shape'),
+    direction: value('direction'),
+    repeat: value('repeat'),
     habits: value('habits'),
     days: value('days'),
     perRow: value('perRow'),
@@ -152,6 +158,33 @@ download.addEventListener('click', () => {
   link.download = 'habit-grid.pdf';
   link.click();
   URL.revokeObjectURL(url);
+});
+
+// Repeat's default depends on the current Shape/Direction combination (data-model.md Repeat
+// defaults table, FR-005); re-applied on every Shape/Direction change, not just on load, so a
+// combination always starts from its own default while still letting the user override it
+// (FR-006). These run on 'input', directly on the controlling selects, so they mutate the form
+// before the 'input' listener below (attached on the ancestor form) reads it for the same event.
+function defaultRepeatFor(direction: string): 'stacked' | 'side-by-side' {
+  return direction === 'columns' ? 'side-by-side' : 'stacked';
+}
+
+directionSelect.addEventListener('input', () => {
+  repeatSelect.value = defaultRepeatFor(directionSelect.value);
+});
+
+shapeSelect.addEventListener('input', () => {
+  if (shapeSelect.value === 'calendar') {
+    // Direction has no effect while Calendar is selected (FR-003); hidden, not just ignored.
+    directionField.hidden = true;
+    repeatSelect.value = 'side-by-side';
+  } else {
+    directionField.hidden = false;
+    // Direction reappears defaulted to Rows, not whatever it was before Calendar was selected
+    // (FR-003; quickstart.md scenario 7).
+    directionSelect.value = 'rows';
+    repeatSelect.value = defaultRepeatFor(directionSelect.value);
+  }
 });
 
 form.addEventListener('input', () => {

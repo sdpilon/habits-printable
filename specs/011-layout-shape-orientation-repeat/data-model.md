@@ -5,17 +5,17 @@ Supersedes the `layout` field described in `specs/001-printable-habit-grid/data-
 
 ## TrackerOptions
 
-| Field           | Type                              | Default | Rule                                                                      | Source      |
-| --------------- | ---------------------------------- | ------- | -------------------------------------------------------------------------- | ----------- |
-| `shape`         | enum: `line`, `calendar`           | `line`  | One of the two shapes                                                      | FR-001      |
-| `direction`     | enum: `rows`, `columns`            | `rows`  | Ignored/not applicable when `shape` is `calendar` (FR-003)                 | FR-002      |
-| `repeat`        | enum: `stacked`, `side-by-side`    | derived | Default depends on `shape`/`direction` (see Repeat defaults below)         | FR-004, FR-005 |
-| `habits`        | integer                            | 5       | 1 ≤ habits ≤ 20 (unchanged)                                                | existing    |
-| `days`          | integer                            | 31      | 1 ≤ days ≤ 365 (unchanged)                                                 | existing    |
-| `perRow`        | integer                            | 7       | 1 ≤ perRow ≤ 31 (unchanged; meaning is unaffected by this feature)        | existing    |
-| `dotDiameterMm` | number                             | 4       | 2 ≤ value ≤ 5 (unchanged)                                                  | existing    |
-| `dotSpacingMm`  | number                             | 1.5     | 0.5 ≤ value ≤ 5 (unchanged)                                                | existing    |
-| `paper`         | enum: `letter`                     | `letter`| US Letter only (unchanged, constitution Technical Constraints)            | existing    |
+| Field           | Type                            | Default  | Rule                                                               | Source         |
+| --------------- | ------------------------------- | -------- | ------------------------------------------------------------------ | -------------- |
+| `shape`         | enum: `line`, `calendar`        | `line`   | One of the two shapes                                              | FR-001         |
+| `direction`     | enum: `rows`, `columns`         | `rows`   | Ignored/not applicable when `shape` is `calendar` (FR-003)         | FR-002         |
+| `repeat`        | enum: `stacked`, `side-by-side` | derived  | Default depends on `shape`/`direction` (see Repeat defaults below) | FR-004, FR-005 |
+| `habits`        | integer                         | 5        | 1 ≤ habits ≤ 20 (unchanged)                                        | existing       |
+| `days`          | integer                         | 31       | 1 ≤ days ≤ 365 (unchanged)                                         | existing       |
+| `perRow`        | integer                         | 7        | 1 ≤ perRow ≤ 31 (unchanged; meaning is unaffected by this feature) | existing       |
+| `dotDiameterMm` | number                          | 4        | 2 ≤ value ≤ 5 (unchanged)                                          | existing       |
+| `dotSpacingMm`  | number                          | 1.5      | 0.5 ≤ value ≤ 5 (unchanged)                                        | existing       |
+| `paper`         | enum: `letter`                  | `letter` | US Letter only (unchanged, constitution Technical Constraints)     | existing       |
 
 `layout` is removed from `TrackerOptions`. `LAYOUTS` is removed from `options.ts`'s exports; `SHAPES`,
 `DIRECTIONS`, and `REPEATS` readonly arrays replace it for validation, mirroring the existing
@@ -23,11 +23,11 @@ Supersedes the `layout` field described in `specs/001-printable-habit-grid/data-
 
 ### Repeat defaults
 
-| `shape`    | `direction` | Default `repeat` | Reproduces today's... |
-| ---------- | ----------- | ----------------- | ---------------------- |
-| `line`     | `rows`      | `stacked`          | "One row per habit" preset, exactly |
-| `line`     | `columns`   | `side-by-side`     | **New default** — today's "Habits as columns" preset always stacks; `repeat: stacked` remains available to reproduce it exactly |
-| `calendar` | *(n/a)*     | `side-by-side`     | "One mini calendar per habit" preset, exactly |
+| `shape`    | `direction` | Default `repeat` | Reproduces today's...                                                                                                           |
+| ---------- | ----------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `line`     | `rows`      | `stacked`        | "One row per habit" preset, exactly                                                                                             |
+| `line`     | `columns`   | `side-by-side`   | **New default** — today's "Habits as columns" preset always stacks; `repeat: stacked` remains available to reproduce it exactly |
+| `calendar` | _(n/a)_     | `side-by-side`   | "One mini calendar per habit" preset, exactly                                                                                   |
 
 **Validation**: Unchanged shape for numeric/paper fields (FR-012 in the original spec). `shape`,
 `direction`, and `repeat` are validated like `layout`/`paper` today — a value outside its enum is an
@@ -42,11 +42,11 @@ every reachable Shape/Direction/Repeat combination, not shrunk or paginated.
 One habit's own section of the tracker (before Repeat decides how multiple HabitBlocks are
 arranged). Its shape depends on `shape` and `direction`:
 
-| `shape`    | `direction` | Habit is        | Dots per line/row set by                   | Label sits          |
-| ---------- | ------------ | --------------- | ------------------------------------------- | -------------------- |
-| `line`     | `rows`       | a row           | `perRow` dots per habit row, wrapping in order | left of the row    |
-| `line`     | `columns`    | a column        | `perRow` habits per row group                | above the column     |
-| `calendar` | *(n/a)*      | a mini calendar | `perRow` dots per calendar row               | above the calendar   |
+| `shape`    | `direction` | Habit is        | Dots per line/row set by                       | Label sits         |
+| ---------- | ----------- | --------------- | ---------------------------------------------- | ------------------ |
+| `line`     | `rows`      | a row           | `perRow` dots per habit row, wrapping in order | left of the row    |
+| `line`     | `columns`   | a column        | `perRow` habits per row group                  | above the column   |
+| `calendar` | _(n/a)_     | a mini calendar | `perRow` dots per calendar row                 | above the calendar |
 
 `line`+`rows` and `calendar` use the identical block shape (confirmed in research.md: today's
 `row-habit` and `calendar-block` Typst functions are byte-identical). This feature collapses them
@@ -61,12 +61,12 @@ All block kinds hold the same ordered sequence of `days` dots, one per day.
 How multiple HabitBlocks are arranged on the page, previously hardcoded per preset (`rows`/`columns`
 always `ttb`-stacked, `calendars` always tiled) and now a user-facing choice for every combination:
 
-| `repeat`       | Arrangement                                                                 |
-| -------------- | ---------------------------------------------------------------------------- |
-| `stacked`      | Blocks/groups stack top-to-bottom in a single column (today's `rows`/`columns` behavior) |
+| `repeat`       | Arrangement                                                                                                                                                                                                                |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stacked`      | Blocks/groups stack top-to-bottom in a single column (today's `rows`/`columns` behavior)                                                                                                                                   |
 | `side-by-side` | Blocks/groups tile left-to-right, wrapping to a new row when the page width is used up (today's `calendars`-only behavior); falls back to a single column if even two blocks can't fit side-by-side (edge case in spec.md) |
 
-For `direction: columns`, the unit that repeats is a column-*group* (up to `perRow` habits as
+For `direction: columns`, the unit that repeats is a column-_group_ (up to `perRow` habits as
 columns), not a single habit — unchanged from today's `column-group`.
 
 ## DayDot

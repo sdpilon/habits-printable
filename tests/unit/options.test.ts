@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULTS, toTypstInputs, validate, type RawOptions } from '../../web/src/options.ts';
 
 const valid: RawOptions = {
-  layout: 'rows',
+  shape: 'line',
+  direction: 'rows',
+  repeat: 'stacked',
   habits: '5',
   days: '31',
   perRow: '7',
@@ -38,12 +40,29 @@ describe('validate', () => {
     if (!result.ok) expect(result.errors[field as keyof RawOptions]).toBeTruthy();
   });
 
-  it('rejects an unknown layout and paper', () => {
-    const result = validate({ ...valid, layout: 'grid', paper: 'b5' });
+  it('rejects an unknown shape, direction, repeat, and paper', () => {
+    const result = validate({
+      ...valid,
+      shape: 'grid',
+      direction: 'diagonal',
+      repeat: 'random',
+      paper: 'b5',
+    });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.errors.layout).toBeTruthy();
+      expect(result.errors.shape).toBeTruthy();
+      expect(result.errors.direction).toBeTruthy();
+      expect(result.errors.repeat).toBeTruthy();
       expect(result.errors.paper).toBeTruthy();
+    }
+  });
+
+  it('accepts a direction value even when shape is calendar (FR-003: direction has no effect, not an error)', () => {
+    const result = validate({ ...valid, shape: 'calendar', direction: 'columns' });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.options.shape).toBe('calendar');
+      expect(result.options.direction).toBe('columns');
     }
   });
 
@@ -91,7 +110,9 @@ describe('validate', () => {
 describe('toTypstInputs', () => {
   it('passes every option as a string', () => {
     expect(toTypstInputs(DEFAULTS)).toEqual({
-      layout: 'rows',
+      shape: 'line',
+      direction: 'rows',
+      repeat: 'stacked',
       habits: '5',
       days: '31',
       perRow: '7',

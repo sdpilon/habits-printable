@@ -3,7 +3,9 @@ import { expect, type Page } from '@playwright/test';
 
 // The quickstart.md defaults. Paper is fixed to letter: the form offers no other size.
 export const DEFAULTS = {
-  layout: 'rows',
+  shape: 'line',
+  direction: 'rows',
+  repeat: 'stacked',
   habits: '5',
   days: '31',
   perRow: '7',
@@ -14,7 +16,7 @@ export const DEFAULTS = {
 
 export type OptionName = keyof typeof DEFAULTS;
 
-const SELECTS: ReadonlySet<OptionName> = new Set(['layout', 'paper']);
+const SELECTS: ReadonlySet<OptionName> = new Set(['shape', 'direction', 'repeat', 'paper']);
 
 // Waits for the first preview to be drawn. Startup loads the compiler, so this uses a longer limit than
 // the 5-second settle rule, which applies to option changes only.
