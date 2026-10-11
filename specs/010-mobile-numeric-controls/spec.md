@@ -33,7 +33,7 @@ On a phone, a person adjusts Dot diameter (mm) and Dot spacing (mm) by dragging 
 
 **Why this priority**: These two fields have fine increments (0.1 mm) and wide ranges, which suit a drag control better than stepping one tick at a time. They are less frequently changed than the integer fields.
 
-**Independent Test**: On a phone-sized viewport, drag the Dot diameter slider from one end to the other and confirm the readout tracks the position, the value stays within 2 to 5 mm in 0.1 mm steps, and the preview redraws at each committed value.
+**Independent Test**: On a phone-sized viewport, drag the Dot diameter slider from one end to the other and confirm the readout tracks the position, the value stays within 2 to 5 mm in 0.1 mm steps, the readout tracks the drag, and the preview redraws once when the drag ends.
 
 **Acceptance Scenarios**:
 
@@ -78,10 +78,10 @@ A person who wants an exact value can still type into any of the five fields dir
 - **FR-004**: Each stepper MUST clamp the value to the field's existing minimum and maximum, and MUST be disabled when the value is already at the limit in that direction.
 - **FR-005**: The browser's native hover-only number spinners MUST be hidden on the five numeric fields.
 - **FR-006**: Dot diameter (mm) and Dot spacing (mm) MUST each show a slider covering the field's existing range (2 to 5 mm for diameter, 0.5 to 5 mm for spacing) in steps of 0.1 mm.
-- **FR-007**: Each slider MUST display a numeric readout of its current value, updated live as the slider moves.
+- **FR-007**: Each slider MUST display a numeric readout of its current value, updated live as the slider moves. The readout shows the number field's text exactly, with no rounding (a typed `3.75` reads `3.75`).
 - **FR-008**: Each slider and its numeric field MUST stay in sync: a change to one MUST update the other, and a typed value MUST move the slider to the nearest position it can represent.
 - **FR-009**: All five fields MUST continue to accept typed values directly, with the same validation and error messages as today.
-- **FR-010**: Any change from a stepper, slider, or typing MUST update the form's value and trigger the existing preview recompile, with the same behavior as a typed change today.
+- **FR-010**: Any change from a stepper, slider, or typing MUST update the form's value and trigger the existing preview recompile, with the same behavior as a typed change today. A slider drag triggers one recompile, when the drag ends, not one per intermediate position. A change that leaves the value unchanged triggers no recompile.
 - **FR-011**: Each stepper button MUST have an accessible name that says what it does and which field it affects (for example, "Increase habits" and "Decrease days").
 - **FR-012**: Each slider MUST have an accessible name identifying the field it controls (for example, "Dot diameter (mm)").
 - **FR-013**: On desktop-width screens, the layout and behavior of the options MUST be unchanged except for the hidden native spinners and the added stepper buttons and sliders.

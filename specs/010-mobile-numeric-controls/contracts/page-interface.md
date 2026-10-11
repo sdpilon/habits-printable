@@ -18,11 +18,11 @@ Everything in that contract stays as it is. The additions below are the only new
 | --- | --- | --- |
 | `#options button[data-stepper="<field>"][data-direction="increase" \| "decrease"]` | `button type=button` | One per integer field (`habits`, `days`, `perRow`), two per field. Has `aria-label`, e.g. `Increase habits`. Disabled at its limit. |
 | `#options input[type="range"][data-slider-for="<field>"]` | `input type=range` | One per mm field (`dotDiameterMm`, `dotSpacingMm`). Has no `name` attribute. Has `aria-label` equal to the field label. |
-| `#options output[data-readout-for="<field>"]` | `output` | One per mm field. Text equals the field's current text, rounded for display to one decimal. |
+| `#options output[data-readout-for="<field>"]` | `output` | One per mm field. Text equals the field's current text exactly, with no rounding. |
 
 ## Rules for future changes
 
 - A new control in `#options` MUST NOT reuse one of the five option `name`s. Use `data-*`
   attributes to link companions to their field.
 - Companions MUST NOT change the field's `name`, `type`, or `id`.
-- Any new companion control that changes a value MUST dispatch a bubbling `input` event on the field.
+- Any new companion control that changes a value MUST dispatch a bubbling `input` event on the field when the value is committed (a tap or a slider release). A drag in progress MUST NOT dispatch.

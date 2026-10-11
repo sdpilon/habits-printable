@@ -53,14 +53,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T004 [P] [US1] Create `tests/e2e/mobile-numeric-controls.spec.ts` with a phone-viewport (390×844, `hasTouch: true`) describe block covering: stepper increment changes the value and redraws the preview; "−" on Days stops at 1 with the button disabled; "+" on Dots per row stops at 31 with the button disabled; stepper from an empty Days field goes to 1 on "+" and 365 on "−"; each button has the accessible name `Increase habits` / `Decrease habits` (and the same pattern for Days and Dots per row) and each is at least 44×44 px
+- [ ] T004 [US1] Create `tests/e2e/mobile-numeric-controls.spec.ts` with a phone-viewport (390×844, `hasTouch: true`) describe block covering: stepper increment changes the value and redraws the preview; "−" on Days stops at 1 with the button disabled; "+" on Dots per row stops at 31 with the button disabled; stepper from an empty Days field goes to 1 on "+" and 365 on "−"; each button has the accessible name `Increase habits` / `Decrease habits` (and the same pattern for Days and Dots per row) and each is at least 44×44 px
 
 ### Implementation for User Story 1
 
 - [ ] T005 [US1] In `web/index.html`, wrap each of the `habits`, `days`, and `perRow` fields in a `<div class="numeric-row">` inside `#options`. Keep the existing `<label>` element around the input only. Place a `<button type="button">` before and after the `<label>`, not inside it, because a button inside a label becomes the label's labelable control. Each button has `data-stepper="<field>"`, `data-direction="decrease"` or `"increase"`, an `aria-label` such as `Decrease habits`, and visible text `−` or `+`. Leave the existing `name` attributes and input types unchanged, and do not add a `name` to any button.
 - [ ] T006 [US1] In `web/src/style.css`, hide the native spinners on `input[type="number"]` for the five option fields (`appearance: none` on the input, `::-webkit-inner-spin-button` and `::-webkit-outer-spin-button` with `appearance: none; margin: 0`, and `-moz-appearance: textfield`). Style the stepper row as `[−] [input] [+]` with 44×44 px buttons, and under the existing 720px breakpoint make each integer field a full-width row with its label above, per research.md §4. Keep label font size unchanged.
 - [ ] T007 [US1] Add a `:disabled` style for stepper buttons in `web/src/style.css` that keeps the border visible at 3:1 contrast in light and dark color schemes, matching the existing `--control-border` treatment.
-- [ ] T008 [US1] In `web/src/numeric-controls.ts`, add `initSteppers(form: HTMLFormElement): void`. On each `[data-stepper]` button click, read the matching field, call `stepValue` from T002, write the result to `input.value`, dispatch `new Event('input', { bubbles: true })` on the field, and update the button's `disabled` state with `atLimit`. Also update disabled state on every `input` event on the form so typed values keep the buttons correct.
+- [ ] T008 [US1] In `web/src/numeric-controls.ts`, add `initSteppers(form: HTMLFormElement): void`. On each `[data-stepper]` button click, read the matching field, call `stepValue` from T002, write the result to `input.value`, dispatch `new Event('input', { bubbles: true })` on the field only when the text actually changed, and update the button's `disabled` state with `atLimit`. Also update disabled state on every `input` event on the form so typed values keep the buttons correct.
 - [ ] T009 [US1] In `web/src/main.ts`, import `initSteppers` from `./numeric-controls.ts` and call `initSteppers(form)` once at startup, before the first `void update()` call at the bottom of the file, so the initial disabled state is correct.
 
 **Checkpoint**: User Story 1 works on its own. `pnpm e2e tests/e2e/mobile-numeric-controls.spec.ts` passes for the stepper cases, and the MVP can be demoed.
@@ -75,13 +75,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T010 [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element
+- [ ] T010 [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element; each slider has the accessible name `Dot diameter (mm)` / `Dot spacing (mm)` (checked with `getByRole('slider', { name })`); and releasing a slider at its current value leaves `#preview-section` `aria-busy` as `"false"` in a read taken right after the release
 
 ### Implementation for User Story 2
 
 - [ ] T011 [US2] In `web/index.html`, add next to each of the `dotDiameterMm` and `dotSpacingMm` labels (outside the `<label>` element, for the same reason as T005) an `<input type="range">` with `min`, `max`, and `step` copied from the limits table above, `data-slider-for="<field>"`, `aria-label` equal to the visible label (`Dot diameter (mm)` / `Dot spacing (mm)`), and an `id` such as `dotDiameterMm-slider`. Add an `<output data-readout-for="<field>" for="<id>">` after it. The range input MUST NOT have a `name` attribute.
 - [ ] T012 [US2] In `web/src/style.css`, lay out each mm field as `[range] [readout]` on phones, with the range taking the remaining width and the readout a fixed width so the value does not shift as it changes. Keep the existing label font size.
-- [ ] T013 [US2] In `web/src/numeric-controls.ts`, add `initSliders(form: HTMLFormElement): void`. A `input` event on a range writes its value to the paired field (`data-slider-for`), dispatches a bubbling `input` event on that field, and updates the readout. A `input` event on a mm field sets the range to `sliderValueFor` from T002 (or leaves the range unchanged when the text is not a number) and updates the readout to the field's text.
+- [ ] T013 [US2] In `web/src/numeric-controls.ts`, add `initSliders(form: HTMLFormElement): void`. An `input` event on a range (fires during the drag) writes its value to the paired field (`data-slider-for`) and updates the readout, without dispatching. A `change` event on a range (fires on release) dispatches a bubbling `input` event on that field, but only if the field's text changed since the drag began (record it on `pointerdown`). A `input` event on a mm field sets the range to `sliderValueFor` from T002 (or leaves the range unchanged when the text is not a number) and updates the readout to the field's text.
 - [ ] T014 [US2] In `web/src/main.ts`, call `initSliders(form)` next to `initSteppers(form)` added in T009.
 
 **Checkpoint**: User Stories 1 and 2 both work independently. Sliders update the preview, and the e2e name-uniqueness assertion passes.
@@ -114,6 +114,7 @@
 - [ ] T021 [P] Verify the stepper and slider borders meet the 3:1 UI contrast floor in light and dark color schemes (`prefers-color-scheme: dark`), per feature 006's clarification.
 - [ ] T022 Run `pnpm typecheck`, `pnpm lint`, and `pnpm format:check`, and fix any findings in `web/src/numeric-controls.ts`, `web/src/main.ts`, `web/src/style.css`, `web/index.html`, and the new test files.
 - [ ] T023 Run the quickstart.md scenarios by hand at 390×844 and record pass or fail for each in `specs/010-mobile-numeric-controls/quickstart.md`.
+- [ ] T024 Run `pnpm margins` and record its result in `specs/010-mobile-numeric-controls/quickstart.md` (constitution Development Workflow; see plan.md Constitution Check).
 
 ---
 

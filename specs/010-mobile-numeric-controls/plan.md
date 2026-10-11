@@ -29,16 +29,14 @@ Playwright). Package manager is pnpm (`pnpm-lock.yaml` present).
 
 **Testing**: Vitest (`pnpm test`, `tests/unit`) for the pure stepper/slider helpers. Playwright
 (`pnpm e2e`, `tests/e2e`) for the existing suite, unmodified, plus one new phone-viewport spec for
-the new controls. `pnpm margins` is not required because Typst output is untouched (see Constitution
-Check), but it is cheap and may be run as a regression guard.
+the new controls. `pnpm margins` is run and its result is recorded in the review, because the constitution's Development Workflow requires it for layout changes (see Constitution Check; task T024).
 
 **Target Platform**: Browser. Phone-sized viewports (width at or below the existing 720px breakpoint,
 verified at 390×844) and the existing desktop sidebar layout, in light and dark color schemes.
 
 **Project Type**: Single web app. Changes are scoped to `web/` plus tests.
 
-**Performance Goals**: A stepper or slider change reaches the form's `input` listener in the same
-frame; the existing preview recompile budget (5 s settle rule in the e2e suite) is unchanged.
+**Performance Goals**: A stepper tap reaches the form's `input` listener immediately, and a slider drag reaches it once, on release; the existing preview recompile budget (5 s settle rule in the e2e suite) is unchanged.
 
 **Constraints**:
 
@@ -61,9 +59,9 @@ frame; the existing preview recompile budget (5 s settle rule in the e2e suite) 
 | Principle | Status | Notes |
 | --- | --- | --- |
 | I. Single Layout Source | PASS | No drawing code added to the page. Controls only set option values. |
-| II. Preview Equals Print | PASS | Typst template, dot geometry, and margins are untouched, so the printed output is unchanged for identical option values. |
+| II. Preview Equals Print | PASS | Typst template, dot geometry, and margins are untouched, so the printed output is unchanged for identical option values. The Development Workflow requires the margin check for layout changes; the options panel change is treated as one, so the check is run and recorded (T024). |
 | III. Hand-Fillable Output | PASS | No change to the PDF. |
-| IV. Responsive Options | PASS | Each stepper/slider change dispatches the same `input` event as typing, so the preview updates immediately. Steppers clamp to limits, so they cannot create an invalid value. Typed invalid input still produces the existing message and blocks download. |
+| IV. Responsive Options | PASS | A stepper tap or slider release dispatches the same `input` event as typing, so the preview updates immediately; a slider drag updates only the readout until release. Steppers clamp to limits, so they cannot create an invalid value. Typed invalid input still produces the existing message and blocks download. |
 | V. Scope Discipline | PASS | Only the requested controls. No new option, persistence, or analytics. |
 | Technical Constraints: Typst, US Letter, 100% scale, explicit limits | PASS | Limits already defined in `LIMITS`; not changed. |
 | Development Workflow: spec + checklist before planning | PASS | `checklists/requirements.md` passed on 2026-10-10. |
