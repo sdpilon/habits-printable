@@ -21,7 +21,7 @@ A user configuring their habit tracker currently picks from a single "layout" dr
 **Acceptance Scenarios**:
 
 1. **Given** the options panel, **When** the user sets Shape to Line and Direction to Rows, **Then** the output matches today's "One row per habit" preset exactly (days wrap into lines of "dots per row" width, lines stack vertically within a habit, habits stack vertically down the page).
-2. **Given** the options panel, **When** the user sets Shape to Line and Direction to Columns, **Then** the output matches today's "Habits as columns" preset exactly.
+2. **Given** the options panel, **When** the user sets Shape to Line, Direction to Columns, and Repeat to Stacked, **Then** the output matches today's "Habits as columns" preset exactly (the new default for this combination is Side-by-side, a deliberate change from today — see User Story 2).
 3. **Given** the options panel, **When** the user sets Shape to Calendar, **Then** the output matches today's "One mini calendar per habit" preset exactly, and no Direction control is shown.
 
 ---
@@ -30,7 +30,7 @@ A user configuring their habit tracker currently picks from a single "layout" dr
 
 A user whose habits wrap into short lines (e.g. few days or a small "dots per row") wants multiple habits' blocks to sit side-by-side on the page instead of stacking in one long column, to use page space efficiently. Today this is only possible with the "calendars" preset — a user who wants the Rows or Columns shape, but tiled side-by-side the way calendars already tile, has no way to get it.
 
-**Why this priority**: This is the concrete capability gap the user identified ("columns still try to stack vertically" even when there's room to tile) — it's the second most important thing the new model needs to deliver after making the existing presets legible.
+**Why this priority**: This is the concrete capability gap the user identified ("columns still try to stack vertically" even when there's room to tile) — it's the second most important thing the new model needs to deliver after making the existing presets legible. Resolving it means Columns' default behavior changes: today Columns always stacks vertically with no alternative; under the new model, Columns defaults to Side-by-side (the more natural default for a columns-oriented shape), with Stacked available as an explicit override for anyone who wants today's exact old behavior.
 
 **Independent Test**: Can be fully tested by setting Shape=Line, Direction=Columns, Repeat=Side-by-side with enough habits that today's "columns" preset would overflow a single vertical stack, and confirming the extra habit-groups tile to the right instead of only growing downward.
 
@@ -72,13 +72,13 @@ A user choosing the Calendar shape wants to set "dots per row" to control the ca
 - **FR-002**: System MUST provide a "Direction" control with options Rows and Columns, visible and applicable only when Shape is set to Line.
 - **FR-003**: System MUST hide or disable the Direction control, and ignore any previously selected Direction value, when Shape is set to Calendar.
 - **FR-004**: System MUST provide a "Repeat" control with options Stacked and Side-by-side, available and meaningful for every Shape/Direction combination.
-- **FR-005**: System MUST default Repeat to Stacked when Direction is Rows, to Side-by-side when Direction is Columns, and to Side-by-side when Shape is Calendar, so that each Shape/Direction combination's default reproduces one of today's three presets exactly.
+- **FR-005**: System MUST default Repeat to Stacked when Direction is Rows, to Side-by-side when Direction is Columns, and to Side-by-side when Shape is Calendar. The Rows and Calendar defaults reproduce today's existing behavior exactly; the Columns default is a deliberate change from today's behavior (which always stacks vertically with no alternative), chosen because side-by-side is the more natural default for a columns-oriented shape.
 - **FR-006**: Users MUST be able to override the default Repeat selection for any Shape/Direction combination.
 - **FR-007**: System MUST continue to let users independently set total days per habit and dots-per-row/calendar-row-width, unaffected by Shape, Direction, or Repeat selections.
 - **FR-008**: System MUST allow habit-column groups (Shape=Line, Direction=Columns) to tile left-to-right and wrap when Repeat is set to Side-by-side, rather than only ever stacking vertically as today.
 - **FR-009**: System MUST allow habit-row blocks (Shape=Line, Direction=Rows) to tile left-to-right and wrap when Repeat is set to Side-by-side, matching the tiling behavior already available to calendar blocks today.
 - **FR-010**: System MUST allow calendar blocks (Shape=Calendar) to stack in a single vertical column when Repeat is set to Stacked, in addition to their existing side-by-side tiling.
-- **FR-011**: System MUST map each of today's three preset values (rows, columns, calendars) to one specific Shape+Direction+Repeat combination, so that any existing configuration continues to render identically by default after this change.
+- **FR-011**: System MUST map each of today's three preset values (rows, columns, calendars) to one specific Shape+Direction+Repeat combination. The Rows and Calendars mappings MUST render identically by default after this change; the Columns mapping's default output changes from today (see FR-005) but the exact prior behavior MUST remain reachable via Direction=Columns, Repeat=Stacked.
 
 ### Key Entities
 
@@ -90,7 +90,7 @@ A user choosing the Calendar shape wants to set "dots per row" to control the ca
 
 - **SC-001**: A user can determine, from the on-screen controls alone (no external documentation), which Shape/Direction/Repeat combination reproduces each of the three previously available presets.
 - **SC-002**: A user can produce a side-by-side tiled layout using Line+Rows or Line+Columns shapes — a combination not previously reachable through any existing preset.
-- **SC-003**: Every configuration producible under the old three-preset model remains producible under the new model with pixel-identical output, via each preset's mapped default combination.
+- **SC-003**: Every configuration producible under the old three-preset model remains producible under the new model with pixel-identical output — for Rows and Calendars via each preset's mapped default combination, and for Columns via Direction=Columns with Repeat explicitly set to Stacked (since Columns' new default is Side-by-side, a deliberate behavior change — see FR-005).
 - **SC-004**: Switching Shape never leaves a visible control on screen that has no effect on the rendered layout.
 
 ## Assumptions
