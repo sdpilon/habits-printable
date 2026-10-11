@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791604256338,
+  "lastUpdate": 1791738078403,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1450,6 +1450,36 @@ window.BENCHMARK_DATA = {
             "value": 153.2352800000001,
             "unit": "ms",
             "extra": "branch: main"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "c89088d9f72cff3d6ce7a155060966a45f31e397",
+          "message": "fix(web): keep desktop stepper and slider layouts from overflowing",
+          "timestamp": "2026-10-11T10:37:38-06:00",
+          "tree_id": "73d363504de138947d76fb7e45b6e494e18b0ead",
+          "url": "https://github.com/sdpilon/habits-printable/commit/c89088d9f72cff3d6ce7a155060966a45f31e397"
+        },
+        "date": 1791738077181,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 160.05901700000004,
+            "unit": "ms",
+            "extra": "branch: 010-mobile-numeric-controls"
           }
         ]
       }
