@@ -57,6 +57,15 @@ label {
   gap: 0.15rem;
 }
 
+/* The sidebar column is capped at 20rem (main's grid-template-columns) at every width above the
+   720px breakpoint, not just on small windows — so a 3-column grid for the stepper rows never had
+   room to fit a usable input plus two 44px buttons, on desktop or mobile. Stack them full-width
+   unconditionally; the slider field-group above keeps its own responsive column count, since a
+   slider doesn't need the same width a stepper row does. */
+.numeric-field-group {
+  grid-template-columns: 1fr;
+}
+
 /* Stepper row: [−] [label+input] [+]. The label keeps its own text-above-input layout from the
    rule above; this row only places the two stepper buttons beside it (research.md §4). */
 .numeric-row {
@@ -88,9 +97,15 @@ label {
   color: var(--ink);
 }
 
-/* Slider row: [label+input] on its own line, then [range] [readout] beneath. */
+/* Slider row: [label+input] on its own line, then [range] [readout] beneath. An implicit "auto"
+   column (the default with no grid-template-columns) sizes to its content's max-content width and
+   does not shrink below it, unlike a `1fr` track — that let the label (and its ~180px-wide number
+   input) overflow past this row's own box into the next field-group column. `minmax(0, 1fr)` makes
+   the column actually fit the space this row is given, like a bare <label> directly in field-group
+   already did before this row wrapper was introduced. */
 .slider-row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.2rem;
 }
 
@@ -229,8 +244,9 @@ button:disabled {
     padding: 1rem;
   }
 
-  /* Each numeric field becomes a full-width row (research.md §4): the narrow multi-column grid
-     used above 720px doesn't leave room for a usable input plus two 44px buttons. */
+  /* Pre-existing feature-006 behavior: the mm-slider field-group's own multi-column grid
+     (repeat(auto-fit, minmax(5rem, 1fr))) collapses to one column below 720px. The integer
+     stepper group above is single-column at every width already, independent of this rule. */
   .field-group {
     grid-template-columns: 1fr;
   }
