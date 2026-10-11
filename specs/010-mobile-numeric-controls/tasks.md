@@ -75,7 +75,7 @@
 
 ### Tests for User Story 2
 
-- [ ] T010 [P] [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element
+- [ ] T010 [US2] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for sliders covering: dragging Dot diameter to each end sets the field and readout to 2 and 5; dragging Dot spacing to the left end sets 0.5; typing `3.7` into Dot diameter moves the slider thumb to 3.7 and the readout reads `3.7`; and `#options [name="dotDiameterMm"]` and `#options [name="dotSpacingMm"]` each match exactly one element
 
 ### Implementation for User Story 2
 
@@ -97,7 +97,7 @@
 ### Implementation for User Story 3
 
 - [ ] T015 [US3] In `web/src/numeric-controls.ts`, make `initSliders` pin the range thumb to the nearest end for a typed out-of-range value (via `sliderValueFor`), and leave the readout showing the typed text. Confirm that no code in this file writes to a field on a `input` event that came from the field itself (no feedback loop).
-- [ ] T016 [P] [US3] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for typing: `typeOption` (from `tests/e2e/support/page.ts`) into Days `12` updates the preview; `0` into Habits shows a `#messages li` error and `input[aria-invalid="true"]` on habits, and leaves Download disabled; `9` into Dot spacing shows an error and the range value is `5`; and the four existing typed-invalid cases in `tests/e2e/` still pass
+- [ ] T016 [US3] Add to `tests/e2e/mobile-numeric-controls.spec.ts` a describe block for typing: `typeOption` (from `tests/e2e/support/page.ts`) into Days `12` updates the preview; `0` into Habits shows a `#messages li` error and `input[aria-invalid="true"]` on habits, and leaves Download disabled; `9` into Dot spacing shows an error and the range value is `5`; and the four existing typed-invalid cases in `tests/e2e/` still pass
 
 **Checkpoint**: All three stories work independently and together. Validation is still owned by `validate()` in `web/src/options.ts`.
 
