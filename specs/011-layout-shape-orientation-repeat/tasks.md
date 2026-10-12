@@ -242,7 +242,7 @@ both still don't hold up: scenario 3's `Habits: 40` exceeded the UI's own 1–20
 default `Habits: 5` never uses enough width to wrap at all (just tiles on one row).
 
 - [x] T033 Resolved by expanding `LIMITS.habits.max` from 20 to 40 in `web/src/options.ts` (mirrored in `web/index.html`'s `input[name=habits]` `max` attribute, `contracts/tracker-options.schema.json`, and `data-model.md`) at the user's explicit request to widen the habit range — this makes quickstart.md scenario 3's existing `Habits: 40, Days: 17` directly reachable through the live form exactly as written, so no further quickstart.md edit was needed; confirmed live that `habits=40` no longer triggers a validation error and the scenario still wraps into two groups per FR-017/SC-002 (missing → now satisfied)
-- [ ] T034 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace `Days: 3` (with the default `Habits: 5`) — confirmed live that all 5 blocks fit on one row (98.5mm of 195.9mm usable width), so nothing wraps — with `Habits: 12, Days: 5` (the already-proven `tests/comparison/cases.json` `rows-side-by-side` case) — confirmed live to wrap into two rows of blocks per FR-009/FR-015/SC-002 (partial)
+- [x] T034 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace `Days: 3` (with the default `Habits: 5`) — confirmed live that all 5 blocks fit on one row (98.5mm of 195.9mm usable width), so nothing wraps — with `Habits: 12, Days: 5` (the already-proven `tests/comparison/cases.json` `rows-side-by-side` case) — confirmed live to wrap into two rows of blocks per FR-009/FR-015/SC-002 (partial)
 
 **Checkpoint**: Performing quickstart.md scenarios 3 and 5 exactly as written, through the live UI,
 actually reproduces the wrap each one claims — not just a configuration that compiles via
@@ -259,15 +259,21 @@ compile it times no longer matches the "largest fitting page via calendar layout
 scenario its own header comment describes. Neither `pnpm typecheck` (tsconfig excludes `tests/`)
 nor `pnpm perf` (no static type enforcement at runtime) catches this.
 
-- [ ] T035 Update `tests/perf/timing.test.ts`'s `largestFit` fixture: replace `layout: 'calendars'`
-  with `shape: 'calendar', direction: 'rows', repeat: 'side-by-side'` so the timed compile again
-  matches the file's documented "US Letter, 9 habits, 360 days, calendars, 24 per row, 2 mm dots:
-  3,240 dots" scenario per plan.md (missing)
+- [x] T035 Update `tests/perf/timing.test.ts`'s `largestFit` fixture: replace `layout: 'calendars'`
+      with `shape: 'calendar', direction: 'rows', repeat: 'side-by-side'` so the timed compile again
+      matches the file's documented "US Letter, 9 habits, 360 days, calendars, 24 per row, 2 mm dots:
+      3,240 dots" scenario per plan.md (missing)
 - [x] T036 Document that FR-014–FR-017's core implementation (hiding `perRow` for Shape=Line in
-  `web/src/main.ts`'s `shapeSelect` listener; the `line-per-row`/`columns-group-size` derivation in
-  `typst/tracker.typ`) was delivered via commit `33d0abf` ("fix(layout): lock dots-per-row to
-  calendar shape only, cap mobile options height") outside the Phase 1–5 task list — recorded here
-  for traceability; no further code change needed (missing → now documented)
+      `web/src/main.ts`'s `shapeSelect` listener; the `line-per-row`/`columns-group-size` derivation in
+      `typst/tracker.typ`) was delivered via commit `33d0abf` ("fix(layout): lock dots-per-row to
+      calendar shape only, cap mobile options height") outside the Phase 1–5 task list — recorded here
+      for traceability; no further code change needed (missing → now documented)
+- [x] T037 Found while running the full `pnpm e2e` suite as part of closing out T034/T035:
+      `tests/e2e/mobile-numeric-controls.spec.ts`'s "increasing Habits to its maximum" test and
+      `tests/e2e/preview-and-input.spec.ts`'s "above maximum" invalid-habits case still used the
+      pre-T033 habits max of 20 (`setOption(page, 'habits', '20')` / `'21'`), left stale when T033
+      widened `LIMITS.habits.max` to 40 — both now use `'40'`/`'41'`; `pnpm e2e` passes (42/42)
+      (missing → now fixed)
 
 **Checkpoint**: `pnpm perf` times the documented calendars scenario again, not an unintended
-default-shape fallback.
+default-shape fallback; `pnpm e2e` passes in full against the widened habits range.

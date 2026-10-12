@@ -99,7 +99,7 @@ test.describe('US2: invalid habit count', () => {
     // Chromium drops letters from a number input, so the browser flags the value as bad input (badInput).
     // Typing 'e' is accepted, so '1e' produces that state. Confirm with the probe in T014 before relying on it.
     { kind: 'non-numeric', enter: (page) => typeOption(page, 'habits', '1e') },
-    { kind: 'above maximum', enter: (page) => setOption(page, 'habits', '21') },
+    { kind: 'above maximum', enter: (page) => setOption(page, 'habits', '41') },
   ];
 
   for (const { kind, enter } of invalid) {

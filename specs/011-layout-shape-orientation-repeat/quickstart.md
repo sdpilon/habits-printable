@@ -57,10 +57,12 @@ Open the printed local URL. The form starts at these defaults:
      grid), and no Direction control visible (User Story 3, scenario 1).
 5. **Rows can now tile side-by-side too** (User Story 2, scenario 1; SC-002 — a combination not
    previously reachable). Change:
-   - Days: 3 (short lines, so several habit blocks fit per page-row — a Line's line length always
-     equals Days now, FR-014/FR-015; "Dots per row" is hidden for Shape=Line and has no effect)
+   - Habits: 12, Days: 5 (short lines, so several habit blocks fit per page-row — a Line's line
+     length always equals Days now, FR-014/FR-015; "Dots per row" is hidden for Shape=Line and has
+     no effect; matches `tests/comparison/cases.json`'s `rows-side-by-side` case)
    - Repeat: Side-by-side
-   - Expect habit blocks to tile left-to-right and wrap, the way calendar blocks already do today.
+   - Expect habit blocks to tile left-to-right and wrap into two rows of blocks, the way calendar
+     blocks already do today.
 6. **Calendar can now stack instead of tile** (User Story 2, scenario 3). Change:
    - Shape: Calendar
    - Repeat: Stacked

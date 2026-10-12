@@ -49,7 +49,7 @@ test.describe('US1: integer steppers', () => {
   });
 
   test('increasing Habits to its maximum disables the increase button', async ({ page }) => {
-    await setOption(page, 'habits', '20');
+    await setOption(page, 'habits', '40');
     await waitForSettled(page);
     const increase = page.locator('[data-stepper="habits"][data-direction="increase"]');
     await expect(increase).toBeDisabled();

@@ -6,7 +6,9 @@ import { describe, expect, it } from 'vitest';
 import { compileTracker } from '../../web/src/typst-engine.ts';
 
 const largestFit = {
-  layout: 'calendars' as const,
+  shape: 'calendar' as const,
+  direction: 'rows' as const,
+  repeat: 'side-by-side' as const,
   habits: 9,
   days: 360,
   perRow: 24,
