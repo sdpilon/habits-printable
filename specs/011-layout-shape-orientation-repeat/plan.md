@@ -80,9 +80,11 @@ tests/
 │   ├── options.test.ts    # Validation of the new shape/direction/repeat fields
 │   ├── fit-model.ts        # Mirrors tracker.typ's width/height fit formulas for tests
 │   └── fit.test.ts
-└── comparison/
-    ├── margins.ts          # Printable-margin gate (constitution Principle II/III)
-    └── cases.json          # Add cases for newly-reachable combinations
+├── comparison/
+│   ├── margins.ts          # Printable-margin gate (constitution Principle II/III)
+│   └── cases.json          # Add cases for newly-reachable combinations
+└── perf/
+    └── timing.test.ts      # Compile-time budget fixture; must use shape/direction/repeat, not layout
 ```
 
 **Structure Decision**: Single existing web app project (Vite + TypeScript + Typst-via-WASM); no new top-level directories. This feature only touches the files listed above — the control markup and wiring in `web/`, the single layout definition in `typst/tracker.typ`, and the test mirrors/cases that assert on layout geometry.

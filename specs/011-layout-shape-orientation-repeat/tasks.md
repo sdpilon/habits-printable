@@ -263,6 +263,11 @@ nor `pnpm perf` (no static type enforcement at runtime) catches this.
   with `shape: 'calendar', direction: 'rows', repeat: 'side-by-side'` so the timed compile again
   matches the file's documented "US Letter, 9 habits, 360 days, calendars, 24 per row, 2 mm dots:
   3,240 dots" scenario per plan.md (missing)
+- [x] T036 Document that FR-014–FR-017's core implementation (hiding `perRow` for Shape=Line in
+  `web/src/main.ts`'s `shapeSelect` listener; the `line-per-row`/`columns-group-size` derivation in
+  `typst/tracker.typ`) was delivered via commit `33d0abf` ("fix(layout): lock dots-per-row to
+  calendar shape only, cap mobile options height") outside the Phase 1–5 task list — recorded here
+  for traceability; no further code change needed (missing → now documented)
 
 **Checkpoint**: `pnpm perf` times the documented calendars scenario again, not an unintended
 default-shape fallback.

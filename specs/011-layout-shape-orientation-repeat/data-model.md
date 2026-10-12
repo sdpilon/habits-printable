@@ -89,9 +89,11 @@ Builds on `specs/001-printable-habit-grid/data-model.md`'s fit rules (page size,
 label/gap constants — all unchanged). What changes is how block width/height combine when `repeat`
 is `side-by-side`, generalized from the existing calendars-only calculation (research.md):
 
-- A HabitBlock's own width: `perRow * pitch` for `direction: rows` (or `shape: calendar`); a
-  column-group's width is `num-w + n * pitch` where `n` is that group's habit-column count (≤ `perRow`,
-  and less than `perRow` for a trailing group when `habits` isn't a multiple of `perRow`).
+- A HabitBlock's own width: `line-per-row * pitch`, where `line-per-row` is `days` for `shape: line`
+  (a line always wraps at the full day count — FR-015) or `perRow` for `shape: calendar` (its own
+  user-chosen wrap width — FR-014); a column-group's width is `num-w + n * pitch` where `n` is that
+  group's habit-column count (≤ the computed `columns-group-size`, and less than it for a trailing
+  group when `habits` isn't a multiple of it — FR-016/FR-017).
 - `repeat: stacked`: total height sums every block's/group's height (plus `gap` between them); width
   is a single block's/group's width (today's `rows`/`columns` fit check, unchanged).
 - `repeat: side-by-side`: blocks/groups pack left-to-right into the usable width, wrapping to a new
