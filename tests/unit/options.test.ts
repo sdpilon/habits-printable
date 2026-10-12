@@ -21,7 +21,7 @@ describe('validate', () => {
 
   it.each([
     ['habits', '0'],
-    ['habits', '21'],
+    ['habits', '41'],
     ['habits', '-1'],
     ['habits', '2.5'],
     ['days', '0'],
@@ -66,7 +66,7 @@ describe('validate', () => {
   it('accepts the limit values', () => {
     const result = validate({
       ...valid,
-      habits: '20',
+      habits: '40',
       days: '365',
       perRow: '31',
       dotDiameterMm: '2',

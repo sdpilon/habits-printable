@@ -38,7 +38,7 @@ export const LIMITS: Record<
   NumericField,
   { min: number; max: number; integer: boolean; label: string }
 > = {
-  habits: { min: 1, max: 20, integer: true, label: 'Habits' },
+  habits: { min: 1, max: 40, integer: true, label: 'Habits' },
   days: { min: 1, max: 365, integer: true, label: 'Days' },
   perRow: { min: 1, max: 31, integer: true, label: 'Dots per row' },
   dotDiameterMm: { min: 2, max: 5, integer: false, label: 'Dot diameter (mm)' },

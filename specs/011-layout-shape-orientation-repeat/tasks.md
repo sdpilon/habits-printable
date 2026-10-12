@@ -237,11 +237,11 @@ overflow warning never references a hidden, inert control.
 
 **Purpose**: Phase 6's quickstart.md fix (T030/T031) corrected which controls to use but not
 whether the chosen values actually trigger the described wrap — live-browser verification found
-both still don't hold up: scenario 3's `Habits: 40` exceeds the UI's own 1–20 validated range
+both still don't hold up: scenario 3's `Habits: 40` exceeded the UI's own 1–20 validated range
 (rejected with an error, never reaching the tiling demo), and scenario 5's `Days: 3` at the
 default `Habits: 5` never uses enough width to wrap at all (just tiles on one row).
 
-- [ ] T033 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 3 ("Columns' new default tiles side-by-side"): replace `Habits: 40, Days: 17` — 40 exceeds the validated 1–20 habits range (data-model.md `LIMITS.habits`), so the live form rejects it with "Habits must be between 1 and 20" instead of demonstrating tiling — with an in-range configuration that still exceeds the page-width-computed group capacity: `Habits: 20`, `Dot diameter: 5mm`, `Dot spacing: 5mm` (pitch 10mm → computed group capacity 18, splitting 20 habits into groups of 18 + 2), `Days: 5` (avoids an unrelated height overflow at the enlarged pitch) — confirmed live to wrap into two groups with download enabled and no errors per FR-017/SC-002 (partial)
+- [x] T033 Resolved by expanding `LIMITS.habits.max` from 20 to 40 in `web/src/options.ts` (mirrored in `web/index.html`'s `input[name=habits]` `max` attribute, `contracts/tracker-options.schema.json`, and `data-model.md`) at the user's explicit request to widen the habit range — this makes quickstart.md scenario 3's existing `Habits: 40, Days: 17` directly reachable through the live form exactly as written, so no further quickstart.md edit was needed; confirmed live that `habits=40` no longer triggers a validation error and the scenario still wraps into two groups per FR-017/SC-002 (missing → now satisfied)
 - [ ] T034 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace `Days: 3` (with the default `Habits: 5`) — confirmed live that all 5 blocks fit on one row (98.5mm of 195.9mm usable width), so nothing wraps — with `Habits: 12, Days: 5` (the already-proven `tests/comparison/cases.json` `rows-side-by-side` case) — confirmed live to wrap into two rows of blocks per FR-009/FR-015/SC-002 (partial)
 
 **Checkpoint**: Performing quickstart.md scenarios 3 and 5 exactly as written, through the live UI,
