@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791828635883,
+  "lastUpdate": 1791830795384,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1646,6 +1646,32 @@ window.BENCHMARK_DATA = {
           {
             "name": "Typst compile (largest fitting page, median of 10)",
             "value": 163.4185010000001,
+            "unit": "ms",
+            "extra": "branch: 12/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "id": "cc488220626409985063c1c9e7b043e3cad8e2e6",
+          "message": "Layout controls: Shape, Direction, Repeat",
+          "timestamp": "2026-10-11T17:11:32Z",
+          "url": "https://github.com/sdpilon/habits-printable/pull/12/commits/cc488220626409985063c1c9e7b043e3cad8e2e6"
+        },
+        "date": 1791830794641,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 165.09436099999994,
             "unit": "ms",
             "extra": "branch: 12/merge"
           }
