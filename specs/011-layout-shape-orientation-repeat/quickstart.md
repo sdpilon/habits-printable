@@ -18,17 +18,16 @@ pnpm dev
 
 Open the printed local URL. The form starts at these defaults:
 
-| Setting      | Default   |
-| ------------ | --------- |
-| Shape        | Line      |
-| Direction    | Rows      |
-| Repeat       | Stacked   |
-| Habits       | 5         |
-| Days         | 31        |
-| Per row      | 7         |
-| Dot diameter | 4 mm      |
-| Dot spacing  | 1.5 mm    |
-| Paper        | US Letter |
+| Setting      | Default |
+| ------------ | ------- |
+| Shape        | Line    |
+| Direction    | Rows    |
+| Repeat       | Stacked |
+| Habits       | 5       |
+| Days         | 31      |
+| Per row      | 7       |
+| Dot diameter | 4 mm    |
+| Dot spacing  | 1.5 mm  |
 
 ## Scenarios to check by hand
 

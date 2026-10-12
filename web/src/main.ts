@@ -64,7 +64,6 @@ function readForm(): RawOptions {
     perRow: value('perRow'),
     dotDiameterMm: value('dotDiameterMm'),
     dotSpacingMm: value('dotSpacingMm'),
-    paper: value('paper'),
     title: value('title'),
   };
 }

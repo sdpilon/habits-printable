@@ -53,6 +53,15 @@ label {
   display: none;
 }
 
+/* Title/Shape/Direction/Repeat: one per row by default (desktop), paired 2-up on mobile
+   below (research: this feature's mobile-overflow fix) to actually shrink the options
+   panel's content height instead of capping it with a nested scroll area. */
+.select-field-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
+}
+
 .field-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
@@ -73,6 +82,13 @@ label {
    slider doesn't need the same width a stepper row does. */
 .numeric-field-group {
   grid-template-columns: 1fr;
+}
+
+/* Habits + Days rows: stacked by default, paired 2-up on mobile (see .select-field-group). */
+.numeric-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
 }
 
 /* Stepper row: [−] [label+input] [+]. The label keeps its own text-above-input layout from the
@@ -270,6 +286,23 @@ button:disabled {
      stepper group above is single-column at every width already, independent of this rule. */
   .field-group {
     grid-template-columns: 1fr;
+  }
+
+  /* Pair fields 2-up to shrink the options panel's actual content height on mobile, rather
+     than relying on #options's overflow-y: auto above to hide the excess. .slider-field-group
+     (two classes, specificity (0,2,0)) wins over the plain .field-group rule above it. */
+  .select-field-group,
+  .numeric-pair,
+  .slider-field-group {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Each paired column is too narrow for the label's usual 6rem text column beside the
+     control (e.g. "Direction" + a select both fit in ~175px, but not side by side) — stack
+     text above control instead, same pattern .field-group label already uses. */
+  .select-field-group label {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
   }
 }
 

@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { expect, type Page } from '@playwright/test';
 
-// The quickstart.md defaults. Paper is fixed to letter: the form offers no other size.
+// The quickstart.md defaults.
 export const DEFAULTS = {
   shape: 'line',
   direction: 'rows',
@@ -11,12 +11,11 @@ export const DEFAULTS = {
   perRow: '7',
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
-  paper: 'letter',
 } as const;
 
 export type OptionName = keyof typeof DEFAULTS;
 
-const SELECTS: ReadonlySet<OptionName> = new Set(['shape', 'direction', 'repeat', 'paper']);
+const SELECTS: ReadonlySet<OptionName> = new Set(['shape', 'direction', 'repeat']);
 
 // Waits for the first preview to be drawn. Startup loads the compiler, so this uses a longer limit than
 // the 5-second settle rule, which applies to option changes only.

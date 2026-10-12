@@ -12,8 +12,9 @@ const NUM_GAP_BELOW_MM = 0.4;
 const NUM_TEXT_H_MM = 1.8;
 const NUM_W_MM = 6;
 
-export function usableArea(paper: TrackerOptions['paper']): { w: number; h: number } {
-  const [pageW, pageH] = paper === 'letter' ? [215.9, 279.4] : [210, 297];
+// US Letter is the only paper size Typst renders (typst/tracker.typ hardcodes it).
+export function usableArea(): { w: number; h: number } {
+  const [pageW, pageH] = [215.9, 279.4];
   return { w: pageW - 2 * MARGIN_MM, h: pageH - 2 * MARGIN_MM };
 }
 
@@ -38,7 +39,7 @@ function packSideBySide(widths: number[], areaW: number): number {
 export function predictFits(o: TrackerOptions): boolean {
   const pitch = o.dotDiameterMm + o.dotSpacingMm;
   const lineH = pitch + NUM_GAP_ABOVE_MM + NUM_TEXT_H_MM + NUM_GAP_BELOW_MM;
-  const area = usableArea(o.paper);
+  const area = usableArea();
   const headerH = o.title === '' ? 0 : HEADER_H_MM + GAP_MM;
   const effectiveDirection = o.shape === 'calendar' ? 'rows' : o.direction;
   let width: number;

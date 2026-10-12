@@ -12,8 +12,8 @@ import {
 } from './support/page.ts';
 
 // One test per option, so a broken option fails only its own scenario (FR-004, US2 AC1).
-// Paper is not listed: the form offers only letter. Each value is chosen so the layout still fits one page:
-// habits 6 and dots per row 5 overflow at the default days, which leaves page 1 unchanged.
+// Each value is chosen so the layout still fits one page: habits 6 and dots per row 5 overflow
+// at the default days, which leaves page 1 unchanged.
 const changes: {
   option: OptionName;
   value: string;

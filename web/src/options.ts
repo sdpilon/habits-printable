@@ -3,8 +3,6 @@
 export type Shape = 'line' | 'calendar';
 export type Direction = 'rows' | 'columns';
 export type Repeat = 'stacked' | 'side-by-side';
-// US Letter is the only paper size (constitution Technical Constraints).
-export type Paper = 'letter';
 
 export interface TrackerOptions {
   shape: Shape;
@@ -15,7 +13,6 @@ export interface TrackerOptions {
   perRow: number;
   dotDiameterMm: number;
   dotSpacingMm: number;
-  paper: Paper;
   title: string;
 }
 
@@ -28,14 +25,12 @@ export const DEFAULTS: TrackerOptions = {
   perRow: 7,
   dotDiameterMm: 4,
   dotSpacingMm: 1.5,
-  paper: 'letter',
   title: '',
 };
 
 export const SHAPES: readonly Shape[] = ['line', 'calendar'];
 export const DIRECTIONS: readonly Direction[] = ['rows', 'columns'];
 export const REPEATS: readonly Repeat[] = ['stacked', 'side-by-side'];
-export const PAPERS: readonly Paper[] = ['letter'];
 
 type NumericField = 'habits' | 'days' | 'perRow' | 'dotDiameterMm' | 'dotSpacingMm';
 
@@ -50,7 +45,7 @@ export const LIMITS: Record<
   dotSpacingMm: { min: 0.5, max: 5, integer: false, label: 'Dot spacing (mm)' },
 };
 
-export type Field = NumericField | 'shape' | 'direction' | 'repeat' | 'paper' | 'title';
+export type Field = NumericField | 'shape' | 'direction' | 'repeat' | 'title';
 
 export type ValidationResult =
   | { ok: true; options: TrackerOptions }
@@ -92,8 +87,6 @@ export function validate(raw: RawOptions): ValidationResult {
   if (!DIRECTIONS.includes(direction)) errors.direction = 'Choose a direction.';
   const repeat = raw.repeat as Repeat;
   if (!REPEATS.includes(repeat)) errors.repeat = 'Choose a repeat direction.';
-  const paper = raw.paper as Paper;
-  if (!PAPERS.includes(paper)) errors.paper = 'Choose a paper size.';
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 
@@ -108,7 +101,6 @@ export function validate(raw: RawOptions): ValidationResult {
       perRow: numbers.perRow!,
       dotDiameterMm: numbers.dotDiameterMm!,
       dotSpacingMm: numbers.dotSpacingMm!,
-      paper,
       title: raw.title.slice(0, 200),
     },
   };
@@ -125,7 +117,6 @@ export function toTypstInputs(options: TrackerOptions): Record<string, string> {
     perRow: String(options.perRow),
     dotDiameterMm: String(options.dotDiameterMm),
     dotSpacingMm: String(options.dotSpacingMm),
-    paper: options.paper,
     title: options.title,
   };
 }

@@ -212,3 +212,21 @@ Task: "Add columns-explicit-override margin-check case to tests/comparison/cases
   auto-commits are already wired for `before_implement/after_implement`).
 - Run `pnpm margins` after any change to `typst/tracker.typ` block/tiling logic — a failing margin
   check is a constitution defect (Principle III), not a tolerance to accept.
+
+---
+
+## Phase 6: Convergence
+
+**Purpose**: FR-014–FR-017 (dots-per-row locked to `days`/a computed group size for Shape=Line) were
+added and implemented after Phase 3–5 were signed off; `typst/tracker.typ`, `options.ts`, `main.ts`,
+and the automated `cases.json`/`fit-model.ts` coverage all correctly reflect them, but
+`quickstart.md` — the manual guide T019/T023/T026/T029 already claim to have run clean — was never
+updated to match, so two of its scenarios no longer demonstrate what they claim to, and the
+in-app overflow message still references a control that FR-014 hid.
+
+- [ ] T030 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 3 ("Columns' new default tiles side-by-side"): replace `Habits: 15` with a habit count large enough to exceed FR-017's computed `columns-group-size` (~34 at the default dot size: `floor((195.9mm - 6mm) / 5.5mm)`), e.g. `Habits: 40` to match `tests/comparison/cases.json`'s `columns-side-by-side-trailing-group` case, so the scenario actually exercises wraparound into a second row of groups instead of fitting in one unbroken group per FR-017 (partial)
+- [ ] T031 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace the `Per row: 3` step — inapplicable for Shape=Line, which FR-014 hides that control for and FR-015 makes inert — with a `Days` reduction, the value that now governs line length for Shape=Line, so the scenario is actually performable through the UI and still demonstrates the intended side-by-side tiling per FR-014/FR-015 (partial)
+- [ ] T032 Update `web/index.html`'s `#warning` text ("Reduce habits, days, or dots per row to enable download.") so it no longer suggests adjusting "dots per row" when Shape=Line — either make the message shape-aware (e.g. have `web/src/main.ts` swap the wording when `shape === 'calendar'` vs. not) or reword it to reference only the controls that remain visible for every Shape, per FR-014/FR-016 (partial)
+
+**Checkpoint**: `quickstart.md`'s scenarios 3 and 5 reflect FR-014–FR-017's actual behavior, and the
+overflow warning never references a hidden, inert control.

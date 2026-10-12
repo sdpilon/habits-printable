@@ -11,50 +11,54 @@
       <form id="options" autocomplete="off">
         <h1>Printable Habit Grid</h1>
 
-        <label>Title <input name="title" type="text" maxlength="200" /></label>
+        <div class="select-field-group">
+          <label>Title <input name="title" type="text" maxlength="200" /></label>
 
-        <label
-          >Shape
-          <select name="shape">
-            <option value="line" selected>Line</option>
-            <option value="calendar">Calendar</option>
-          </select>
-        </label>
+          <label
+            >Shape
+            <select name="shape">
+              <option value="line" selected>Line</option>
+              <option value="calendar">Calendar</option>
+            </select>
+          </label>
 
-        <label id="direction-field"
-          >Direction
-          <select name="direction">
-            <option value="rows" selected>Rows</option>
-            <option value="columns">Columns</option>
-          </select>
-        </label>
+          <label id="direction-field"
+            >Direction
+            <select name="direction">
+              <option value="rows" selected>Rows</option>
+              <option value="columns">Columns</option>
+            </select>
+          </label>
 
-        <label
-          >Repeat
-          <select name="repeat">
-            <option value="stacked" selected>Stacked</option>
-            <option value="side-by-side">Side-by-side</option>
-          </select>
-        </label>
+          <label
+            >Repeat
+            <select name="repeat">
+              <option value="stacked" selected>Stacked</option>
+              <option value="side-by-side">Side-by-side</option>
+            </select>
+          </label>
+        </div>
 
         <div class="field-group numeric-field-group">
-          <div class="numeric-row">
-            <button type="button" data-stepper="habits" data-direction="decrease" aria-label="Decrease habits">
-              −
-            </button>
-            <label>Habits <input name="habits" type="number" min="1" max="20" step="1" value="5" /></label>
-            <button type="button" data-stepper="habits" data-direction="increase" aria-label="Increase habits">
-              +
-            </button>
-          </div>
-          <div class="numeric-row">
-            <button type="button" data-stepper="days" data-direction="decrease" aria-label="Decrease days">
-              −
-            </button>
-            <label>Days <input name="days" type="number" min="1" max="365" step="1" value="31" /></label>
-            <button type="button" data-stepper="days" data-direction="increase" aria-label="Increase days">
-              +
-            </button>
+          <div class="numeric-pair">
+            <div class="numeric-row">
+              <button type="button" data-stepper="habits" data-direction="decrease" aria-label="Decrease habits">
+                −
+              </button>
+              <label>Habits <input name="habits" type="number" min="1" max="20" step="1" value="5" /></label>
+              <button type="button" data-stepper="habits" data-direction="increase" aria-label="Increase habits">
+                +
+              </button>
+            </div>
+            <div class="numeric-row">
+              <button type="button" data-stepper="days" data-direction="decrease" aria-label="Decrease days">
+                −
+              </button>
+              <label>Days <input name="days" type="number" min="1" max="365" step="1" value="31" /></label>
+              <button type="button" data-stepper="days" data-direction="increase" aria-label="Increase days">
+                +
+              </button>
+            </div>
           </div>
           <div class="numeric-row" id="per-row-field" hidden>
             <button
@@ -79,7 +83,7 @@
           </div>
         </div>
 
-        <div class="field-group">
+        <div class="field-group slider-field-group">
           <div class="slider-row">
             <label
               >Dot diameter (mm)
@@ -119,13 +123,6 @@
             </div>
           </div>
         </div>
-
-        <label
-          >Paper
-          <select name="paper">
-            <option value="letter" selected>US Letter</option>
-          </select>
-        </label>
 
         <ul id="messages" aria-live="polite"></ul>
         <button id="download" type="button" disabled>Download PDF</button>

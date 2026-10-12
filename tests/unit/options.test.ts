@@ -10,7 +10,6 @@ const valid: RawOptions = {
   perRow: '7',
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
-  paper: 'letter',
   title: '',
 };
 
@@ -40,20 +39,18 @@ describe('validate', () => {
     if (!result.ok) expect(result.errors[field as keyof RawOptions]).toBeTruthy();
   });
 
-  it('rejects an unknown shape, direction, repeat, and paper', () => {
+  it('rejects an unknown shape, direction, and repeat', () => {
     const result = validate({
       ...valid,
       shape: 'grid',
       direction: 'diagonal',
       repeat: 'random',
-      paper: 'b5',
     });
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.errors.shape).toBeTruthy();
       expect(result.errors.direction).toBeTruthy();
       expect(result.errors.repeat).toBeTruthy();
-      expect(result.errors.paper).toBeTruthy();
     }
   });
 
@@ -64,12 +61,6 @@ describe('validate', () => {
       expect(result.options.shape).toBe('calendar');
       expect(result.options.direction).toBe('columns');
     }
-  });
-
-  it('rejects A4, because US Letter is the only paper size', () => {
-    const result = validate({ ...valid, paper: 'a4' });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.errors.paper).toBeTruthy();
   });
 
   it('accepts the limit values', () => {
@@ -118,7 +109,6 @@ describe('toTypstInputs', () => {
       perRow: '7',
       dotDiameterMm: '4',
       dotSpacingMm: '1.5',
-      paper: 'letter',
       title: '',
     });
   });

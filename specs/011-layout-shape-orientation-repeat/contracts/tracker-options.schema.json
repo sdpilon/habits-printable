@@ -11,8 +11,7 @@
     "days",
     "perRow",
     "dotDiameterMm",
-    "dotSpacingMm",
-    "paper"
+    "dotSpacingMm"
   ],
   "additionalProperties": false,
   "properties": {
@@ -27,7 +26,6 @@
     "days": { "type": "integer", "minimum": 1, "maximum": 365 },
     "perRow": { "type": "integer", "minimum": 1, "maximum": 31 },
     "dotDiameterMm": { "type": "number", "minimum": 2, "maximum": 5 },
-    "dotSpacingMm": { "type": "number", "minimum": 0.5, "maximum": 5 },
-    "paper": { "type": "string", "enum": ["letter"] }
+    "dotSpacingMm": { "type": "number", "minimum": 0.5, "maximum": 5 }
   }
 }
