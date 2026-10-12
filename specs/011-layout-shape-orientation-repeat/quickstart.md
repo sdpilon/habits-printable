@@ -43,7 +43,10 @@ Open the printed local URL. The form starts at these defaults:
 3. **Columns' new default tiles side-by-side** (User Story 2, scenario 2; this is a deliberate
    behavior change — see spec FR-005). Change:
    - Direction: Columns
-   - Habits: 15 (enough to span more than one group at the default `perRow`)
+   - Habits: 40, Days: 17 (40 exceeds the page-width-computed group size — FR-017 — which fits
+     around 34 habit-columns per group at the default dot size, not the old `perRow`; Days is
+     lowered so the two resulting page-rows of groups still fit one page — matches
+     `tests/comparison/cases.json`'s `columns-side-by-side-trailing-group` case)
    - Leave Repeat at its default (Side-by-side)
    - Expect multiple column-groups to tile left-to-right and wrap to a new row of groups, instead of
      only stacking downward.
@@ -54,7 +57,8 @@ Open the printed local URL. The form starts at these defaults:
      grid), and no Direction control visible (User Story 3, scenario 1).
 5. **Rows can now tile side-by-side too** (User Story 2, scenario 1; SC-002 — a combination not
    previously reachable). Change:
-   - Per row: 3 (short lines, so several habit blocks fit per page-row)
+   - Days: 3 (short lines, so several habit blocks fit per page-row — a Line's line length always
+     equals Days now, FR-014/FR-015; "Dots per row" is hidden for Shape=Line and has no effect)
    - Repeat: Side-by-side
    - Expect habit blocks to tile left-to-right and wrap, the way calendar blocks already do today.
 6. **Calendar can now stack instead of tile** (User Story 2, scenario 3). Change:
