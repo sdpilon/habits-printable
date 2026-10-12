@@ -1,0 +1,279 @@
+---
+description: "Task list for layout controls: Shape, Direction, Repeat"
+---
+
+# Tasks: Layout controls: Shape, Direction, Repeat
+
+**Input**: Design documents from `/specs/011-layout-shape-orientation-repeat/`
+
+**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
+
+**Tests**: Not explicitly requested as new TDD scaffolding in spec.md. This project's existing unit
+tests, margin check, and perf check are maintained/extended as part of each phase's tasks, since the
+constitution (Principles II/III) requires them to pass for every reachable combination.
+
+**Organization**: Tasks are grouped by user story (spec.md priorities P1/P2/P3) to enable
+independent implementation and testing of each story.
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
+- **[Story]**: Which user story this task belongs to (US1, US2, US3)
+- File paths are exact
+
+## Path Conventions
+
+Single existing project (plan.md Structure Decision): `web/`, `typst/`, `tests/` at repository root.
+No new directories.
+
+---
+
+## Phase 1: Setup
+
+**Purpose**: Confirm the environment; no new dependencies are introduced by this feature.
+
+- [x] T001 Confirm environment ready: `pnpm install` on branch `011-layout-shape-orientation-repeat`. No new dependencies required (plan.md Primary Dependencies list is unchanged).
+
+**Checkpoint**: Environment ready.
+
+---
+
+## Phase 2: Foundational (Blocking Prerequisites)
+
+**Purpose**: Replace the `layout` option with `shape`/`direction`/`repeat` end-to-end — types,
+markup, wiring, the Typst rendering it drives, and the existing test fixtures that still reference
+the removed field — so every user story can build on a working default combination.
+
+**⚠️ CRITICAL**: No user story work can begin until this phase is complete.
+
+- [x] T002 Replace `layout` with `shape`/`direction`/`repeat` in `web/src/options.ts`: add `type Shape = 'line' | 'calendar'`, `type Direction = 'rows' | 'columns'`, `type Repeat = 'stacked' | 'side-by-side'`; update `TrackerOptions` (remove `layout`, add `shape`, `direction`, `repeat`); update `DEFAULTS` to `shape: 'line'`, `direction: 'rows'`, `repeat: 'stacked'` (data-model.md TrackerOptions table); replace the `LAYOUTS` export with `SHAPES`, `DIRECTIONS`, `REPEATS` readonly arrays (mirroring the existing `PAPERS` pattern); update the `Field` union; update `validate()` to validate the three new enum fields instead of `layout` — a `direction` value MUST still validate successfully even when `shape === 'calendar'` (FR-003: direction has no effect, not an error, in that case); update `toTypstInputs()` to serialize `shape`, `direction`, `repeat` instead of `layout`.
+- [x] T003 [P] `typst/tracker.typ`: replace `#let layout-kind = inp("layout", "rows")` with `shape`, `direction`, `repeat` `sys.inputs` reads, and derive `#let effective-direction = if shape == "calendar" { "rows" } else { direction }` (data-model.md HabitBlock table).
+- [x] T004 `typst/tracker.typ`: delete the duplicate `calendar-block` function; keep one shared per-habit block builder (today's `row-habit` body) used whenever `effective-direction == "rows"` (research.md: "Collapse row-habit and calendar-block into one shared block builder"). Depends on T003.
+- [x] T005 `typst/tracker.typ`: implement one shared tiling function taking a list of blocks (each with a known width) and `repeat`: `"stacked"` → plain `ttb` stack (today's rows/columns behavior); `"side-by-side"` → today's calendars `ltr`-then-wrap grid math, generalized to any block kind (research.md: "One shared tiling function, parameterized by repeat"). Depends on T003.
+- [x] T006 `typst/tracker.typ`: generalize the side-by-side page-row packing to use each column-group's own width (`num-w + n * pitch` for that group's habit-column count `n`) rather than assuming a uniform block width, so a narrower trailing group (when `habits` isn't a multiple of `perRow`) packs correctly (research.md: "Column-group tiling reuses the same per-page-row math, with group width in place of block width"). Depends on T005.
+- [x] T007 `typst/tracker.typ`: update the `fits-w` check and the final layout-dispatch `#if`/`#else` block to select the block builder from `effective-direction` (T004) and the arrangement from `repeat` (T005/T006), replacing the old three-way `layout-kind` branch — same width formulas as today (data-model.md Fit rules). Depends on T004, T006.
+- [x] T008 [P] `web/index.html`: replace the single `<select name="layout">` with three controls — "Shape" (`line`/`calendar`), "Direction" (`rows`/`columns`), "Repeat" (`stacked`/`side-by-side`) — per FR-001, FR-002, FR-004. (Direction's visibility toggling when Shape=Calendar is US3's concern, not this task.)
+- [x] T009 `web/src/main.ts`: replace the `layout: value('layout')` read with reads of `shape`, `direction`, `repeat`, feeding the same immediate-recompile path (constitution Principle IV). Depends on T002, T008.
+- [x] T010 [P] `tests/e2e/support/page.ts`: replace `layout` in `DEFAULTS` with `shape: 'line'`, `direction: 'rows'`, `repeat: 'stacked'`; add `shape`, `direction`, `repeat` to the `SELECTS` set (all three are `<select>` elements, same as today's `layout`).
+- [x] T011 [P] `tests/e2e/overflow.spec.ts`: update the two `setOption(page, 'layout', ...)` calls — `'columns'` → `setOption(page, 'direction', 'columns')`, `'calendars'` → `setOption(page, 'shape', 'calendar')` — preserving each test's existing intent (width-overflow trigger via `fits-w`, unaffected by this feature). Depends on T010.
+- [x] T012 [P] `tests/e2e/preview-and-input.spec.ts`: update the `{ option: 'layout', value: 'columns' }` case to `{ option: 'direction', value: 'columns' }`. Depends on T010.
+- [x] T013 [P] `tests/e2e/download.spec.ts`: update `setOption(page, 'layout', 'columns')` to `setOption(page, 'direction', 'columns')` and the `select[name="layout"]` assertion to `select[name="direction"]`. Depends on T010.
+- [x] T014 [P] `tests/comparison/cases.json`: migrate all 12 existing entries off the removed `layout` field to `shape`/`direction`/`repeat`, preserving each case's _original_ geometry (not the new Columns default) — `rows-*` cases → `shape: "line", direction: "rows", repeat: "stacked"`; `columns-*` cases → `shape: "line", direction: "columns", repeat: "stacked"` (explicit Stacked override, matching pre-change behavior — FR-011); `calendars-*` cases → `shape: "calendar", repeat: "side-by-side"` (`direction` value is ignored per FR-003; include `"rows"` for schema completeness). Without this task, `margins.ts` casts `cases.json` straight to `TrackerOptions` with no validation, so the 6 `columns-*`/`calendars-*` cases would silently compile via the rows/line-block default instead of their intended configuration — a passing margin check that tests the wrong thing. Depends on T002, T007.
+
+**Checkpoint**: The new three-control model renders end-to-end for the default combination
+(Shape=Line, Direction=Rows, Repeat=Stacked), no remaining e2e test references the removed
+`layout` field, and `tests/comparison/cases.json`'s existing cases use the new field names.
+
+---
+
+## Phase 3: User Story 1 - Understand what each layout control actually does (Priority: P1) 🎯 MVP
+
+**Goal**: Each of today's three legacy presets is reachable through one specific
+Shape/Direction/Repeat combination, with the Rows and Calendar combinations producing
+pixel-identical output to today, and Columns reachable with identical output via an explicit
+override (its new default changes — see User Story 2).
+
+**Independent Test**: quickstart.md scenarios 1 ("Defaults reproduce today's rows preset"), 2
+("Columns reproduces today's columns preset — with Repeat overridden"), and 4 ("Calendar reproduces
+today's calendars preset").
+
+### Implementation for User Story 1
+
+- [x] T015 [US1] In `web/src/main.ts` (or `web/src/options.ts`, wherever form-state updates are applied): when `direction` changes, set `repeat` to that direction's default (`rows` → `stacked`, `columns` → `side-by-side`); when `shape` changes to `calendar`, set `repeat` to `side-by-side` (data-model.md Repeat defaults table, FR-005). Re-defaults on every change, not only on first load — consistent with Direction resetting to `rows` when Shape leaves `calendar` (User Story 3).
+- [x] T016 [P] [US1] `tests/unit/options.test.ts`: replace `layout`-based validation assertions with `shape`/`direction`/`repeat` assertions, including the FR-003 case (a `direction` value validates successfully even when `shape === 'calendar'`).
+- [x] T017 [US1] `tests/comparison/cases.json`: add/confirm a case for Shape=Line, Direction=Rows, Repeat=Stacked and a case for Shape=Calendar, Repeat=Side-by-side, each asserting pixel-identical output to the pre-change `rows`/`calendars` cases (quickstart.md scenarios 1 and 4; SC-003).
+- [x] T018 [US1] `tests/comparison/cases.json`: add a case for Shape=Line, Direction=Columns, Repeat=Stacked (explicit override) asserting pixel-identical output to the pre-change `columns` case (quickstart.md scenario 2; FR-011).
+- [x] T019 [US1] Run `pnpm margins` and `pnpm test`; confirm quickstart.md scenarios 1, 2, and 4 pass.
+
+**Checkpoint**: SC-001 holds, and the Rows/Calendar/Columns(-via-explicit-override) halves of SC-003
+hold.
+
+---
+
+## Phase 4: User Story 2 - Tile habit blocks side-by-side regardless of shape (Priority: P2)
+
+**Goal**: Columns' new default (side-by-side) works correctly, including when a trailing
+column-group is narrower than the rest; Rows and Calendar can also use their non-default Repeat
+value.
+
+**Independent Test**: quickstart.md scenarios 3 ("Columns' new default tiles side-by-side"), 5
+("Rows can now tile side-by-side too"), and 6 ("Calendar can now stack instead of tile").
+
+### Implementation for User Story 2
+
+- [x] T020 [US2] `tests/unit/fit-model.ts`: rename the existing `o.layout === 'rows'` / `o.layout === 'columns'` branches to `o.direction === 'rows'` / `o.direction === 'columns'` (this is a compile error otherwise, once T002 removes `layout` from `TrackerOptions`), and add width/height formulas for `repeat: side-by-side` with `direction: rows` (uniform block width, mirrors today's calendars math) and with `direction: columns` (per-group width packing, research.md Decision on group width) — per data-model.md Fit rules.
+- [x] T021 [P] [US2] `tests/unit/fit.test.ts`: add cases asserting the new fit-model formulas (T020) agree with Typst's actual page count for Rows+Side-by-side and Columns+Side-by-side, including a case where `habits` isn't a multiple of `perRow` (non-uniform trailing group).
+- [x] T022 [US2] `tests/comparison/cases.json`: add margin-check cases for Columns+Side-by-side (multiple groups tiling, quickstart.md scenario 3), Rows+Side-by-side (short `perRow`, quickstart.md scenario 5), and Calendar+Stacked (quickstart.md scenario 6).
+- [x] T023 [US2] Run `pnpm margins`, `pnpm test`, and `pnpm perf`; confirm quickstart.md scenarios 3, 5, 6 pass with no regression in the Typst compile-time budget (plan.md Performance Goals).
+
+**Checkpoint**: SC-002 holds — side-by-side tiling is correct for every Shape/Direction combination.
+
+---
+
+## Phase 5: User Story 3 - Configure a calendar shape without an irrelevant control (Priority: P3)
+
+**Goal**: The Direction control is hidden (and has no effect) when Shape=Calendar, and reappears
+defaulted to Rows when switching back to Line.
+
+**Independent Test**: quickstart.md scenarios 7 ("Switching Shape never leaves a stale control") and
+8 ("Narrow-page side-by-side fallback").
+
+### Implementation for User Story 3
+
+- [x] T024 [US3] `web/src/main.ts`: hide/disable the Direction control when `shape === 'calendar'`; reset `direction` to `'rows'` when `shape` switches from `calendar` back to `line` (FR-003; quickstart.md scenario 7).
+- [x] T025 [P] [US3] `tests/unit/options.test.ts`: assert `validate()` ignores a stale `direction` value with no error when `shape === 'calendar'` (FR-003) — skip if already covered by T016.
+- [x] T026 [US3] Manually run quickstart.md scenarios 7 (Shape toggle resets Direction, no stale control left visible or in effect) and 8 (Repeat=Side-by-side with `habits: 1` degrades gracefully, no error).
+
+**Checkpoint**: All three user stories are independently functional; SC-004 holds.
+
+---
+
+## Final Phase: Polish & Cross-Cutting Concerns
+
+- [x] T027 [P] Run `pnpm lint`, `pnpm typecheck`, and `pnpm format:check` across all changed files.
+- [x] T028 Run `pnpm e2e` (full Playwright suite) to confirm no regression beyond the renamed-field updates from T011–T013.
+- [x] T029 Run the full quickstart.md validation guide (all 8 scenarios) end-to-end as final manual sign-off before PR.
+
+---
+
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: No dependencies.
+- **Foundational (Phase 2)**: Depends on Setup. BLOCKS all user stories — the Typst refactor (T003–T007), control replacement (T002, T008–T013), and the existing-fixture migration (T014) are a single interdependent unit; none of the three stories has a working, correctly-verified default combination without it.
+- **User Stories (Phase 3–5)**: All depend on Foundational completion. US1, US2, and US3 touch different concerns (default-selection logic, tiling-case coverage, control-visibility logic) and can proceed in parallel once Foundational is done, though US1 should land first since it's the MVP and the other two build confidence on top of a working baseline.
+- **Polish (Final Phase)**: Depends on all three user stories being complete.
+
+### Within Each User Story
+
+- US1: T015 (defaulting logic) has no file dependency on T016–T018 (test/case updates); T019 (run checks) depends on all of T015–T018.
+- US2: T020 (fit-model formulas) blocks T021 (fit tests exercising them); T022 (margin cases) is independent of T020/T021; T023 (run checks) depends on T020–T022.
+- US3: T024 (control logic) has no file dependency on T025 (validation test); T026 (manual run) depends on T024.
+
+### Parallel Opportunities
+
+- Within Foundational: T003 can start alongside T002 (different files); T008 can start alongside T002/T003; T010 can start once T008 lands (same control names), and T011–T013 can all run in parallel once T010 lands (three different spec files); T014 can start once T002 and T007 land (independent of T008–T013).
+- Within US1: T016, T017, and T018 can run in parallel (different files) once T015 lands.
+- Within US2: T020 and T022 can start in parallel; T021 depends on T020.
+- Within US3: T025 can run in parallel with T024 (different files).
+- T027 (lint/typecheck/format) can run in parallel with T028/T029.
+
+---
+
+## Parallel Example: Foundational phase
+
+```bash
+# Once T008 (index.html controls) lands, these four e2e/support updates can run together:
+Task: "Update tests/e2e/support/page.ts DEFAULTS/SELECTS for shape/direction/repeat"
+Task: "Update tests/e2e/overflow.spec.ts layout references"
+Task: "Update tests/e2e/preview-and-input.spec.ts layout reference"
+Task: "Update tests/e2e/download.spec.ts layout references"
+```
+
+## Parallel Example: User Story 1
+
+```bash
+# Once T015 (defaulting logic) lands, these three can run together:
+Task: "Update tests/unit/options.test.ts for shape/direction/repeat validation"
+Task: "Add rows/calendar margin-check cases to tests/comparison/cases.json"
+Task: "Add columns-explicit-override margin-check case to tests/comparison/cases.json"
+```
+
+---
+
+## Implementation Strategy
+
+### MVP First (User Story 1 Only)
+
+1. Complete Phase 1: Setup.
+2. Complete Phase 2: Foundational (CRITICAL — blocks all stories).
+3. Complete Phase 3: User Story 1.
+4. **STOP and VALIDATE**: run quickstart.md scenarios 1, 2, 4 and confirm all three legacy presets
+   are reachable with correct output.
+5. At this point the new controls are live and legible (the core problem from spec.md User Story 1)
+   even before the new side-by-side capability (US2) or control-hygiene polish (US3) land.
+
+### Incremental Delivery
+
+1. Setup + Foundational → new controls render correctly at defaults, with test fixtures already
+   migrated off the removed `layout` field.
+2. Add User Story 1 → legacy-preset parity confirmed → this is the MVP.
+3. Add User Story 2 → side-by-side tiling available for every combination (the concrete capability
+   gap from the original request).
+4. Add User Story 3 → no stale controls when switching Shape (final polish on the control surface).
+5. Final Phase → lint/typecheck/format, full e2e suite, full quickstart.md sign-off.
+
+## Notes
+
+- [P] tasks touch different files with no completed-task dependency between them.
+- [Story] labels map tasks to spec.md's user stories for traceability.
+- Commit after each task or logical group, per this project's existing git convention (speckit hook
+  auto-commits are already wired for `before_implement/after_implement`).
+- Run `pnpm margins` after any change to `typst/tracker.typ` block/tiling logic — a failing margin
+  check is a constitution defect (Principle III), not a tolerance to accept.
+
+---
+
+## Phase 6: Convergence
+
+**Purpose**: FR-014–FR-017 (dots-per-row locked to `days`/a computed group size for Shape=Line) were
+added and implemented after Phase 3–5 were signed off; `typst/tracker.typ`, `options.ts`, `main.ts`,
+and the automated `cases.json`/`fit-model.ts` coverage all correctly reflect them, but
+`quickstart.md` — the manual guide T019/T023/T026/T029 already claim to have run clean — was never
+updated to match, so two of its scenarios no longer demonstrate what they claim to, and the
+in-app overflow message still references a control that FR-014 hid.
+
+- [x] T030 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 3 ("Columns' new default tiles side-by-side"): replace `Habits: 15` with a habit count large enough to exceed FR-017's computed `columns-group-size` (~34 at the default dot size: `floor((195.9mm - 6mm) / 5.5mm)`), e.g. `Habits: 40` to match `tests/comparison/cases.json`'s `columns-side-by-side-trailing-group` case, so the scenario actually exercises wraparound into a second row of groups instead of fitting in one unbroken group per FR-017 (partial)
+- [x] T031 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace the `Per row: 3` step — inapplicable for Shape=Line, which FR-014 hides that control for and FR-015 makes inert — with a `Days` reduction, the value that now governs line length for Shape=Line, so the scenario is actually performable through the UI and still demonstrates the intended side-by-side tiling per FR-014/FR-015 (partial)
+- [x] T032 Update `web/index.html`'s `#warning` text ("Reduce habits, days, or dots per row to enable download.") so it no longer suggests adjusting "dots per row" when Shape=Line — either make the message shape-aware (e.g. have `web/src/main.ts` swap the wording when `shape === 'calendar'` vs. not) or reword it to reference only the controls that remain visible for every Shape, per FR-014/FR-016 (partial)
+
+**Checkpoint**: `quickstart.md`'s scenarios 3 and 5 reflect FR-014–FR-017's actual behavior, and the
+overflow warning never references a hidden, inert control.
+
+---
+
+## Phase 7: Convergence
+
+**Purpose**: Phase 6's quickstart.md fix (T030/T031) corrected which controls to use but not
+whether the chosen values actually trigger the described wrap — live-browser verification found
+both still don't hold up: scenario 3's `Habits: 40` exceeded the UI's own 1–20 validated range
+(rejected with an error, never reaching the tiling demo), and scenario 5's `Days: 3` at the
+default `Habits: 5` never uses enough width to wrap at all (just tiles on one row).
+
+- [x] T033 Resolved by expanding `LIMITS.habits.max` from 20 to 40 in `web/src/options.ts` (mirrored in `web/index.html`'s `input[name=habits]` `max` attribute, `contracts/tracker-options.schema.json`, and `data-model.md`) at the user's explicit request to widen the habit range — this makes quickstart.md scenario 3's existing `Habits: 40, Days: 17` directly reachable through the live form exactly as written, so no further quickstart.md edit was needed; confirmed live that `habits=40` no longer triggers a validation error and the scenario still wraps into two groups per FR-017/SC-002 (missing → now satisfied)
+- [x] T034 Update `specs/011-layout-shape-orientation-repeat/quickstart.md` scenario 5 ("Rows can now tile side-by-side too"): replace `Days: 3` (with the default `Habits: 5`) — confirmed live that all 5 blocks fit on one row (98.5mm of 195.9mm usable width), so nothing wraps — with `Habits: 12, Days: 5` (the already-proven `tests/comparison/cases.json` `rows-side-by-side` case) — confirmed live to wrap into two rows of blocks per FR-009/FR-015/SC-002 (partial)
+
+**Checkpoint**: Performing quickstart.md scenarios 3 and 5 exactly as written, through the live UI,
+actually reproduces the wrap each one claims — not just a configuration that compiles via
+`cases.json`'s direct-to-Typst path.
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: `tests/perf/timing.test.ts` was never migrated off the removed `layout` field when
+T002/T014 replaced `TrackerOptions.layout` with `shape`/`direction`/`repeat` — its fixture still
+sets `layout: 'calendars'`, which `toTypstInputs()` (`web/src/options.ts`) no longer reads, so the
+compile it times no longer matches the "largest fitting page via calendar layout, 3,240 dots"
+scenario its own header comment describes. Neither `pnpm typecheck` (tsconfig excludes `tests/`)
+nor `pnpm perf` (no static type enforcement at runtime) catches this.
+
+- [x] T035 Update `tests/perf/timing.test.ts`'s `largestFit` fixture: replace `layout: 'calendars'`
+      with `shape: 'calendar', direction: 'rows', repeat: 'side-by-side'` so the timed compile again
+      matches the file's documented "US Letter, 9 habits, 360 days, calendars, 24 per row, 2 mm dots:
+      3,240 dots" scenario per plan.md (missing)
+- [x] T036 Document that FR-014–FR-017's core implementation (hiding `perRow` for Shape=Line in
+      `web/src/main.ts`'s `shapeSelect` listener; the `line-per-row`/`columns-group-size` derivation in
+      `typst/tracker.typ`) was delivered via commit `33d0abf` ("fix(layout): lock dots-per-row to
+      calendar shape only, cap mobile options height") outside the Phase 1–5 task list — recorded here
+      for traceability; no further code change needed (missing → now documented)
+- [x] T037 Found while running the full `pnpm e2e` suite as part of closing out T034/T035:
+      `tests/e2e/mobile-numeric-controls.spec.ts`'s "increasing Habits to its maximum" test and
+      `tests/e2e/preview-and-input.spec.ts`'s "above maximum" invalid-habits case still used the
+      pre-T033 habits max of 20 (`setOption(page, 'habits', '20')` / `'21'`), left stale when T033
+      widened `LIMITS.habits.max` to 40 — both now use `'40'`/`'41'`; `pnpm e2e` passes (42/42)
+      (missing → now fixed)
+
+**Checkpoint**: `pnpm perf` times the documented calendars scenario again, not an unintended
+default-shape fallback; `pnpm e2e` passes in full against the widened habits range.

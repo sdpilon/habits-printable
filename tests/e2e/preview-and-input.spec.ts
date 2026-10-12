@@ -12,19 +12,22 @@ import {
 } from './support/page.ts';
 
 // One test per option, so a broken option fails only its own scenario (FR-004, US2 AC1).
-// Paper is not listed: the form offers only letter. Each value is chosen so the layout still fits one page:
-// habits 6 and dots per row 5 overflow at the default days, which leaves page 1 unchanged.
+// Each value is chosen so the layout still fits one page: habits 6 and dots per row 5 overflow
+// at the default days, which leaves page 1 unchanged.
 const changes: {
   option: OptionName;
   value: string;
   counts?: { habits: string; days: string };
+  // Extra option(s) to set before capturing the "before" hash — used only for perRow, which is
+  // hidden and has no effect under the default Shape=Line (it only matters for Shape=Calendar).
+  setup?: { option: OptionName; value: string }[];
 }[] = [
   { option: 'habits', value: '4', counts: { habits: '4', days: '31' } },
   { option: 'days', value: '14', counts: { habits: '5', days: '14' } },
-  { option: 'perRow', value: '10' },
+  { option: 'perRow', value: '10', setup: [{ option: 'shape', value: 'calendar' }] },
   { option: 'dotDiameterMm', value: '3' },
   { option: 'dotSpacingMm', value: '2' },
-  { option: 'layout', value: 'columns' },
+  { option: 'direction', value: 'columns' },
 ];
 
 test.describe('US2: preview and input', () => {
@@ -33,6 +36,9 @@ test.describe('US2: preview and input', () => {
       await test.step('open page with defaults and wait for preview', async () => {
         await openPage(page);
         await resetDefaults(page);
+        if (change.setup) {
+          for (const s of change.setup) await setOption(page, s.option, s.value);
+        }
         await waitForSettled(page);
       });
       const before = await readCanvasHash(page);
@@ -93,7 +99,7 @@ test.describe('US2: invalid habit count', () => {
     // Chromium drops letters from a number input, so the browser flags the value as bad input (badInput).
     // Typing 'e' is accepted, so '1e' produces that state. Confirm with the probe in T014 before relying on it.
     { kind: 'non-numeric', enter: (page) => typeOption(page, 'habits', '1e') },
-    { kind: 'above maximum', enter: (page) => setOption(page, 'habits', '21') },
+    { kind: 'above maximum', enter: (page) => setOption(page, 'habits', '41') },
   ];
 
   for (const { kind, enter } of invalid) {

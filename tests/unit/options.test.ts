@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULTS, toTypstInputs, validate, type RawOptions } from '../../web/src/options.ts';
 
 const valid: RawOptions = {
-  layout: 'rows',
+  shape: 'line',
+  direction: 'rows',
+  repeat: 'stacked',
   habits: '5',
   days: '31',
   perRow: '7',
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
-  paper: 'letter',
   title: '',
 };
 
@@ -20,7 +21,7 @@ describe('validate', () => {
 
   it.each([
     ['habits', '0'],
-    ['habits', '21'],
+    ['habits', '41'],
     ['habits', '-1'],
     ['habits', '2.5'],
     ['days', '0'],
@@ -38,25 +39,34 @@ describe('validate', () => {
     if (!result.ok) expect(result.errors[field as keyof RawOptions]).toBeTruthy();
   });
 
-  it('rejects an unknown layout and paper', () => {
-    const result = validate({ ...valid, layout: 'grid', paper: 'b5' });
+  it('rejects an unknown shape, direction, and repeat', () => {
+    const result = validate({
+      ...valid,
+      shape: 'grid',
+      direction: 'diagonal',
+      repeat: 'random',
+    });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.errors.layout).toBeTruthy();
-      expect(result.errors.paper).toBeTruthy();
+      expect(result.errors.shape).toBeTruthy();
+      expect(result.errors.direction).toBeTruthy();
+      expect(result.errors.repeat).toBeTruthy();
     }
   });
 
-  it('rejects A4, because US Letter is the only paper size', () => {
-    const result = validate({ ...valid, paper: 'a4' });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.errors.paper).toBeTruthy();
+  it('accepts a direction value even when shape is calendar (FR-003: direction has no effect, not an error)', () => {
+    const result = validate({ ...valid, shape: 'calendar', direction: 'columns' });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.options.shape).toBe('calendar');
+      expect(result.options.direction).toBe('columns');
+    }
   });
 
   it('accepts the limit values', () => {
     const result = validate({
       ...valid,
-      habits: '20',
+      habits: '40',
       days: '365',
       perRow: '31',
       dotDiameterMm: '2',
@@ -91,13 +101,14 @@ describe('validate', () => {
 describe('toTypstInputs', () => {
   it('passes every option as a string', () => {
     expect(toTypstInputs(DEFAULTS)).toEqual({
-      layout: 'rows',
+      shape: 'line',
+      direction: 'rows',
+      repeat: 'stacked',
       habits: '5',
       days: '31',
       perRow: '7',
       dotDiameterMm: '4',
       dotSpacingMm: '1.5',
-      paper: 'letter',
       title: '',
     });
   });

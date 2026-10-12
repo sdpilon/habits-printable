@@ -3,156 +3,210 @@
     {
       "name": "default-letter",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 5,
         "days": 31,
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "default-letter-with-title",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 5,
         "days": 31,
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": "Morning Routine"
       }
     },
     {
       "name": "rows-minimums",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 1,
         "days": 1,
         "perRow": 1,
         "dotDiameterMm": 2,
         "dotSpacingMm": 0.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "rows-max-habits-and-days",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 20,
         "days": 365,
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "rows-too-wide",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 5,
         "days": 31,
         "perRow": 31,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "rows-31-small-dots",
       "options": {
-        "layout": "rows",
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "stacked",
         "habits": 5,
         "days": 31,
         "perRow": 31,
         "dotDiameterMm": 2,
         "dotSpacingMm": 0.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "columns-small",
       "options": {
-        "layout": "columns",
+        "shape": "line",
+        "direction": "columns",
+        "repeat": "stacked",
         "habits": 5,
         "days": 31,
         "perRow": 5,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "columns-too-tall",
       "options": {
-        "layout": "columns",
+        "shape": "line",
+        "direction": "columns",
+        "repeat": "stacked",
         "habits": 20,
         "days": 365,
         "perRow": 20,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "columns-too-wide",
       "options": {
-        "layout": "columns",
+        "shape": "line",
+        "direction": "columns",
+        "repeat": "stacked",
         "habits": 20,
         "days": 31,
         "perRow": 20,
         "dotDiameterMm": 5,
         "dotSpacingMm": 5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "calendars-default",
       "options": {
-        "layout": "calendars",
+        "shape": "calendar",
+        "direction": "rows",
+        "repeat": "side-by-side",
         "habits": 20,
         "days": 31,
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "calendars-too-tall",
       "options": {
-        "layout": "calendars",
+        "shape": "calendar",
+        "direction": "rows",
+        "repeat": "side-by-side",
         "habits": 20,
         "days": 365,
         "perRow": 7,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
         "title": ""
       }
     },
     {
       "name": "calendars-one-per-row",
       "options": {
-        "layout": "calendars",
+        "shape": "calendar",
+        "direction": "rows",
+        "repeat": "side-by-side",
         "habits": 5,
         "days": 31,
         "perRow": 31,
         "dotDiameterMm": 4,
         "dotSpacingMm": 1.5,
-        "paper": "letter",
+        "title": ""
+      }
+    },
+    {
+      "name": "rows-side-by-side",
+      "options": {
+        "shape": "line",
+        "direction": "rows",
+        "repeat": "side-by-side",
+        "habits": 12,
+        "days": 5,
+        "perRow": 7,
+        "dotDiameterMm": 4,
+        "dotSpacingMm": 1.5,
+        "title": ""
+      }
+    },
+    {
+      "name": "columns-side-by-side-trailing-group",
+      "options": {
+        "shape": "line",
+        "direction": "columns",
+        "repeat": "side-by-side",
+        "habits": 40,
+        "days": 17,
+        "perRow": 7,
+        "dotDiameterMm": 4,
+        "dotSpacingMm": 1.5,
+        "title": ""
+      }
+    },
+    {
+      "name": "calendars-stacked",
+      "options": {
+        "shape": "calendar",
+        "direction": "rows",
+        "repeat": "stacked",
+        "habits": 3,
+        "days": 31,
+        "perRow": 7,
+        "dotDiameterMm": 4,
+        "dotSpacingMm": 1.5,
         "title": ""
       }
     }

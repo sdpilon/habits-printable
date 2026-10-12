@@ -21,10 +21,11 @@ test.describe('US3: overflow blocking', () => {
       await waitForSettled(page);
     });
 
-    await test.step('set habits 20, days 365, per row 1', async () => {
+    await test.step('set habits 20, days 365', async () => {
+      // No perRow here: Shape=Line always shows one unbroken line of all `days` dots, so days
+      // alone already overflows the page width regardless of perRow (which is hidden/unused).
       await setOption(page, 'habits', '20');
       await setOption(page, 'days', '365');
-      await setOption(page, 'perRow', '1');
       await waitForSettled(page);
     });
 
@@ -41,8 +42,8 @@ test.describe('US3: overflow blocking', () => {
       await waitForSettled(page);
     });
 
-    await test.step('set layout columns and days 365', async () => {
-      await setOption(page, 'layout', 'columns');
+    await test.step('set direction columns and days 365', async () => {
+      await setOption(page, 'direction', 'columns');
       await setOption(page, 'days', '365');
       await waitForSettled(page);
     });
@@ -61,8 +62,8 @@ test.describe('US3: overflow blocking', () => {
       await waitForSettled(page);
     });
 
-    await test.step('set layout calendars, habits 20, days 365, per row 1', async () => {
-      await setOption(page, 'layout', 'calendars');
+    await test.step('set shape calendar, habits 20, days 365, per row 1', async () => {
+      await setOption(page, 'shape', 'calendar');
       await setOption(page, 'habits', '20');
       await setOption(page, 'days', '365');
       await setOption(page, 'perRow', '1');

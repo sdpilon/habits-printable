@@ -12,35 +12,73 @@ const NUM_GAP_BELOW_MM = 0.4;
 const NUM_TEXT_H_MM = 1.8;
 const NUM_W_MM = 6;
 
-export function usableArea(paper: TrackerOptions['paper']): { w: number; h: number } {
-  const [pageW, pageH] = paper === 'letter' ? [215.9, 279.4] : [210, 297];
+// US Letter is the only paper size Typst renders (typst/tracker.typ hardcodes it).
+export function usableArea(): { w: number; h: number } {
+  const [pageW, pageH] = [215.9, 279.4];
   return { w: pageW - 2 * MARGIN_MM, h: pageH - 2 * MARGIN_MM };
+}
+
+// Number of page-rows needed to pack a list of block widths left-to-right with wraparound,
+// mirroring typst/tracker.typ's tile-blocks greedy packing (data-model.md Fit rules).
+function packSideBySide(widths: number[], areaW: number): number {
+  let pageRows = 1;
+  let currentW = widths[0] ?? 0;
+  for (let i = 1; i < widths.length; i++) {
+    const w = widths[i];
+    if (currentW + GAP_MM + w <= areaW) {
+      currentW += GAP_MM + w;
+    } else {
+      pageRows++;
+      currentW = w;
+    }
+  }
+  return pageRows;
 }
 
 // True when the layout fits on one page, using the formulas in data-model.md.
 export function predictFits(o: TrackerOptions): boolean {
   const pitch = o.dotDiameterMm + o.dotSpacingMm;
   const lineH = pitch + NUM_GAP_ABOVE_MM + NUM_TEXT_H_MM + NUM_GAP_BELOW_MM;
-  const area = usableArea(o.paper);
+  const area = usableArea();
   const headerH = o.title === '' ? 0 : HEADER_H_MM + GAP_MM;
+  const effectiveDirection = o.shape === 'calendar' ? 'rows' : o.direction;
   let width: number;
   let height: number;
 
-  if (o.layout === 'rows') {
-    const lines = Math.ceil(o.days / o.perRow);
-    width = o.perRow * pitch;
-    height = o.habits * (LABEL_H_MM + lines * lineH) + (o.habits - 1) * GAP_MM;
-  } else if (o.layout === 'columns') {
-    const groups = Math.ceil(o.habits / o.perRow);
-    width = NUM_W_MM + Math.min(o.habits, o.perRow) * pitch;
-    height = groups * (LABEL_COL_H_MM + o.days * pitch) + (groups - 1) * GAP_MM;
-  } else {
-    const blockW = o.perRow * pitch;
-    const blockH = LABEL_H_MM + Math.ceil(o.days / o.perRow) * lineH;
-    const blocksPerRow = Math.max(1, Math.floor((area.w + GAP_MM) / (blockW + GAP_MM)));
-    const rows = Math.ceil(o.habits / blocksPerRow);
+  if (effectiveDirection === 'rows') {
+    // A "line" is always one unbroken line (locked to days); only "calendar" wraps at its own
+    // chosen width (o.perRow). perRow is otherwise unused for shape "line".
+    const linePerRow = o.shape === 'calendar' ? o.perRow : o.days;
+    const lines = Math.ceil(o.days / linePerRow);
+    const blockW = linePerRow * pitch;
+    const blockH = LABEL_H_MM + lines * lineH;
     width = blockW;
-    height = rows * blockH + (rows - 1) * GAP_MM;
+    if (o.repeat === 'side-by-side') {
+      const widths = Array.from({ length: o.habits }, () => blockW);
+      const rows = packSideBySide(widths, area.w);
+      height = rows * blockH + (rows - 1) * GAP_MM;
+    } else {
+      height = o.habits * blockH + (o.habits - 1) * GAP_MM;
+    }
+  } else {
+    // "stacked": one single unbroken group of every habit (no artificial grouping — too wide is
+    // an overflow, not an auto-wrap). "side-by-side": the largest group that still fits the page
+    // width, so multiple such groups can tile and wrap — computed, never a user-chosen number.
+    const groupSize =
+      o.repeat === 'stacked' ? o.habits : Math.max(1, Math.floor((area.w - NUM_W_MM) / pitch));
+    const groupCount = Math.ceil(o.habits / groupSize);
+    const groupWidths = Array.from(
+      { length: groupCount },
+      (_, g) => NUM_W_MM + Math.min(groupSize, o.habits - g * groupSize) * pitch,
+    );
+    const groupH = LABEL_COL_H_MM + o.days * pitch;
+    width = NUM_W_MM + Math.min(o.habits, groupSize) * pitch;
+    if (o.repeat === 'side-by-side') {
+      const rows = packSideBySide(groupWidths, area.w);
+      height = rows * groupH + (rows - 1) * GAP_MM;
+    } else {
+      height = groupCount * groupH + (groupCount - 1) * GAP_MM;
+    }
   }
 
   return width <= area.w && height <= area.h - headerH;

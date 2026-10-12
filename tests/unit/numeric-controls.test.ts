@@ -7,7 +7,7 @@ import {
   stepValue,
 } from '../../web/src/numeric-controls.ts';
 
-const habits = LIMITS.habits; // min 1, max 20, integer, step 1
+const habits = LIMITS.habits; // min 1, max 40, integer, step 1
 const spacing = LIMITS.dotSpacingMm; // min 0.5, max 5, not integer, step 0.1
 
 describe('stepValue', () => {
@@ -17,20 +17,20 @@ describe('stepValue', () => {
   });
 
   it('clamps at the maximum and minimum', () => {
-    expect(stepValue('20', 'increase', habits)).toBe(20);
+    expect(stepValue('40', 'increase', habits)).toBe(40);
     expect(stepValue('1', 'decrease', habits)).toBe(1);
   });
 
   it('steps empty or non-numeric text to the limit in the tapped direction', () => {
     expect(stepValue('', 'increase', habits)).toBe(1);
-    expect(stepValue('', 'decrease', habits)).toBe(20);
+    expect(stepValue('', 'decrease', habits)).toBe(40);
     expect(stepValue('abc', 'increase', habits)).toBe(1);
-    expect(stepValue('abc', 'decrease', habits)).toBe(20);
+    expect(stepValue('abc', 'decrease', habits)).toBe(40);
   });
 
   it('clamps a numeric value above the maximum or below the minimum on either tap', () => {
-    expect(stepValue('25', 'increase', habits)).toBe(20);
-    expect(stepValue('25', 'decrease', habits)).toBe(20);
+    expect(stepValue('45', 'increase', habits)).toBe(40);
+    expect(stepValue('45', 'decrease', habits)).toBe(40);
     expect(stepValue('-3', 'increase', habits)).toBe(1);
     expect(stepValue('-3', 'decrease', habits)).toBe(1);
   });
@@ -48,8 +48,8 @@ describe('stepValue', () => {
 
 describe('atLimit', () => {
   it('is true only when a step in that direction would not change the value', () => {
-    expect(atLimit('20', 'increase', habits)).toBe(true);
-    expect(atLimit('20', 'decrease', habits)).toBe(false);
+    expect(atLimit('40', 'increase', habits)).toBe(true);
+    expect(atLimit('40', 'decrease', habits)).toBe(false);
     expect(atLimit('1', 'decrease', habits)).toBe(true);
     expect(atLimit('1', 'increase', habits)).toBe(false);
     expect(atLimit('5', 'increase', habits)).toBe(false);
@@ -67,7 +67,7 @@ describe('clampToRange', () => {
   });
 
   it('clamps above the maximum and below the minimum', () => {
-    expect(clampToRange(25, habits)).toBe(20);
+    expect(clampToRange(45, habits)).toBe(40);
     expect(clampToRange(-3, habits)).toBe(1);
   });
 });

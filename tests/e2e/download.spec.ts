@@ -41,16 +41,16 @@ test.describe('US1: download path', () => {
       await waitForSettled(page);
     });
 
-    await test.step('set habits 6, days 14, layout columns', async () => {
+    await test.step('set habits 6, days 14, direction columns', async () => {
       await setOption(page, 'habits', '6');
       await setOption(page, 'days', '14');
-      await setOption(page, 'layout', 'columns');
+      await setOption(page, 'direction', 'columns');
       await waitForSettled(page);
     });
 
     await test.step('check drawn counts', async () => {
       expect(await readPreviewCounts(page)).toEqual({ habits: '6', days: '14' });
-      await expect(page.locator('select[name="layout"]')).toHaveValue('columns');
+      await expect(page.locator('select[name="direction"]')).toHaveValue('columns');
       expect(await isDownloadEnabled(page)).toBe(true);
     });
   });

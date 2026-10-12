@@ -1,20 +1,21 @@
 import { createHash } from 'node:crypto';
 import { expect, type Page } from '@playwright/test';
 
-// The quickstart.md defaults. Paper is fixed to letter: the form offers no other size.
+// The quickstart.md defaults.
 export const DEFAULTS = {
-  layout: 'rows',
+  shape: 'line',
+  direction: 'rows',
+  repeat: 'stacked',
   habits: '5',
   days: '31',
   perRow: '7',
   dotDiameterMm: '4',
   dotSpacingMm: '1.5',
-  paper: 'letter',
 } as const;
 
 export type OptionName = keyof typeof DEFAULTS;
 
-const SELECTS: ReadonlySet<OptionName> = new Set(['layout', 'paper']);
+const SELECTS: ReadonlySet<OptionName> = new Set(['shape', 'direction', 'repeat']);
 
 // Waits for the first preview to be drawn. Startup loads the compiler, so this uses a longer limit than
 // the 5-second settle rule, which applies to option changes only.
@@ -25,6 +26,13 @@ export async function openPage(page: Page): Promise<void> {
 
 export async function resetDefaults(page: Page): Promise<void> {
   for (const name of Object.keys(DEFAULTS) as OptionName[]) {
+    const control = page.locator(`#options [name="${name}"]`);
+    // perRow is hidden (not just disabled) whenever Shape isn't Calendar. A display:none element
+    // can't actually receive focus — forcing .fill() past that check doesn't make the browser
+    // focus it; focus silently stays on whatever was last focused, and the typed text lands there
+    // instead (corrupting it). openPage()'s goto() already puts every field at its HTML default,
+    // including this one, so skipping a currently-hidden field here is always safe.
+    if (!(await control.isVisible())) continue;
     await setOption(page, name, DEFAULTS[name]);
   }
 }
