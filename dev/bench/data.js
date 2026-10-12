@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791757886543,
+  "lastUpdate": 1791828515427,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1592,6 +1592,36 @@ window.BENCHMARK_DATA = {
             "value": 8.90259900000001,
             "unit": "ms",
             "extra": "branch: 12/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "sdpilon@pm.me",
+            "name": "spencer",
+            "username": "sdpilon"
+          },
+          "distinct": true,
+          "id": "da2b9dc94a2b8c4f2aadc4df6fd0b79473e4a877",
+          "message": "fix(web): migrate perf fixture and e2e habits-max assertions off stale layout/limit values",
+          "timestamp": "2026-10-12T12:03:32-06:00",
+          "tree_id": "c4a0411599a0caf9bf4684f675fe18e6d26141f2",
+          "url": "https://github.com/sdpilon/habits-printable/commit/da2b9dc94a2b8c4f2aadc4df6fd0b79473e4a877"
+        },
+        "date": 1791828513853,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 146.3494209999999,
+            "unit": "ms",
+            "extra": "branch: 011-layout-shape-orientation-repeat"
           }
         ]
       }
