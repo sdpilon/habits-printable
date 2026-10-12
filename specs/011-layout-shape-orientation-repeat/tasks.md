@@ -247,3 +247,22 @@ default `Habits: 5` never uses enough width to wrap at all (just tiles on one ro
 **Checkpoint**: Performing quickstart.md scenarios 3 and 5 exactly as written, through the live UI,
 actually reproduces the wrap each one claims — not just a configuration that compiles via
 `cases.json`'s direct-to-Typst path.
+
+---
+
+## Phase 8: Convergence
+
+**Purpose**: `tests/perf/timing.test.ts` was never migrated off the removed `layout` field when
+T002/T014 replaced `TrackerOptions.layout` with `shape`/`direction`/`repeat` — its fixture still
+sets `layout: 'calendars'`, which `toTypstInputs()` (`web/src/options.ts`) no longer reads, so the
+compile it times no longer matches the "largest fitting page via calendar layout, 3,240 dots"
+scenario its own header comment describes. Neither `pnpm typecheck` (tsconfig excludes `tests/`)
+nor `pnpm perf` (no static type enforcement at runtime) catches this.
+
+- [ ] T035 Update `tests/perf/timing.test.ts`'s `largestFit` fixture: replace `layout: 'calendars'`
+  with `shape: 'calendar', direction: 'rows', repeat: 'side-by-side'` so the timed compile again
+  matches the file's documented "US Letter, 9 habits, 360 days, calendars, 24 per row, 2 mm dots:
+  3,240 dots" scenario per plan.md (missing)
+
+**Checkpoint**: `pnpm perf` times the documented calendars scenario again, not an unintended
+default-shape fallback.
