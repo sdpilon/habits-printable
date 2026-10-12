@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791830795384,
+  "lastUpdate": 1791831162440,
   "repoUrl": "https://github.com/sdpilon/habits-printable",
   "entries": {
     "Typst compile (largest fitting page, median of 10)": [
@@ -1674,6 +1674,36 @@ window.BENCHMARK_DATA = {
             "value": 165.09436099999994,
             "unit": "ms",
             "extra": "branch: 12/merge"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "33335453+sdpilon@users.noreply.github.com",
+            "name": "sdpilon",
+            "username": "sdpilon"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9976122a88077c35c45f531e27322ddf0ae0eae3",
+          "message": "Layout controls: Shape, Direction, Repeat (#12)\n\n* docs(spec): add layout shape/orientation/repeat spec\n\n* docs(plan): add layout shape/direction/repeat implementation plan\n\n* docs(tasks): add layout shape/direction/repeat task breakdown\n\n* docs(tasks): fix cases.json migration gap and typecheck coverage found in analysis\n\n* feat(layout): replace layout preset with shape, direction, and repeat controls\n\nReplaces the single rows/columns/calendars dropdown with three orthogonal\ncontrols so the control surface matches the underlying model: Shape\n(line/calendar), Direction (rows/columns, line-only), and Repeat\n(stacked/side-by-side). Side-by-side tiling, previously exclusive to\ncalendars, is now available to every combination, resolving columns'\nalways-stacks-vertically limitation. Collapses the Typst template's\nduplicate row-habit/calendar-block functions into one shared block\nbuilder and one shared repeat-parameterized tiling function.\n\n* fix(layout): lock dots-per-row to calendar shape only, cap mobile options height\n\n\"Dots per row\" now only applies to Shape=Calendar; a Line is always a\nsingle unbroken line (Rows) or group (Columns, sized from days/habits,\nor computed to fit the page width for side-by-side tiling). Also caps\nthe options form at half the mobile viewport instead of letting it push\nthe preview down to a sliver.\n\nAlong the way, fixes two bugs: the `hidden` attribute was silently\noverridden by other display rules on the same elements (so Direction\nand Dots-per-row were never actually hidden despite the DOM property\nreading true), and `main`'s desktop `align-items: start` meant the\nmobile height cap had nothing to constrain against.\n\n* feat(web): compact mobile options layout, remove unused paper option, track quickstart drift\n\n* docs(quickstart): fix scenarios drifted by the dots-per-row lock, reword overflow warning\n\n* docs(tasks): flag quickstart scenarios 3 and 5 still don't reproduce the wrap they claim\n\n* feat(options): expand habits range from 20 to 40\n\n* docs(tasks): append convergence task for stale perf-test layout field\n\n* docs: fix stale fit-rule formula, untracked touch point, missing task traceability\n\n* fix(web): migrate perf fixture and e2e habits-max assertions off stale layout/limit values\n\n* ci: restrict push trigger to main, avoiding duplicate PR/push runs",
+          "timestamp": "2026-10-12T12:52:02-06:00",
+          "tree_id": "c2349db7cfa6db09831edf71c6ccfab791e7ff7b",
+          "url": "https://github.com/sdpilon/habits-printable/commit/9976122a88077c35c45f531e27322ddf0ae0eae3"
+        },
+        "date": 1791831160694,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Typst compile (largest fitting page, median of 10)",
+            "value": 168.38293700000008,
+            "unit": "ms",
+            "extra": "branch: main"
           }
         ]
       }
